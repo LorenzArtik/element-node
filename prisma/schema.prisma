@@ -1,0 +1,475 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String?
+  passwordHash  String
+  role          Role     @default(SUBSCRIBER)
+  avatarUrl     String?
+  bio           String?  @db.Text
+  slug          String?  @unique
+  socials       Json?
+  locked        Boolean  @default(false)
+  verifiedAt    DateTime?
+  lastLoginAt   DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  pages         Page[]        @relation("PageAuthor")
+  posts         Post[]        @relation("PostAuthor")
+  media         Media[]
+  tokens        EmailToken[]
+  apiKeys       ApiKey[]      @relation("ApiKeyCreator")
+}
+
+enum Role {
+  ADMIN
+  EDITOR
+  AUTHOR
+  VIEWER
+  SUBSCRIBER
+}
+
+model EmailToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  type      EmailTokenType
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId, type])
+}
+
+enum EmailTokenType {
+  VERIFY
+  RESET
+  INVITE
+}
+
+model ApiKey {
+  id          String   @id @default(cuid())
+  name        String
+  hashedKey   String   @unique
+  prefix      String
+  tail        String
+  scopes      Json
+  createdById String?
+  createdBy   User?    @relation("ApiKeyCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  lastUsedAt  DateTime?
+  revokedAt   DateTime?
+  expiresAt   DateTime?
+  createdAt   DateTime @default(now())
+
+  @@index([revokedAt])
+}
+
+model Page {
+  id          String     @id @default(cuid())
+  title       String
+  slug        String     @unique
+  status      PageStatus @default(DRAFT)
+  // JSON tree of sections/columns/elements - the heart of the editor
+  content     Json
+  // Page-level settings: layout, custom CSS, header/footer, scripts
+  settings    Json?
+  // SEO
+  seoTitle    String?
+  seoDesc     String?  @db.Text
+  ogImage     String?
+  isHomepage  Boolean    @default(false)
+  password    String?
+  publishedAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  authorId    String
+  author      User       @relation("PageAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+
+  revisions   Revision[]
+
+  @@index([slug])
+  @@index([status])
+}
+
+enum PageStatus {
+  DRAFT
+  PUBLISHED
+  PRIVATE
+  TRASH
+}
+
+model Revision {
+  id        String   @id @default(cuid())
+  pageId    String
+  page      Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  content   Json
+  note      String?
+  createdAt DateTime @default(now())
+
+  @@index([pageId, createdAt])
+}
+
+model Template {
+  id          String   @id @default(cuid())
+  name        String
+  type        TemplateType @default(SECTION)
+  category    String?
+  preview     String?
+  content     Json
+  isGlobal    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum TemplateType {
+  SECTION
+  PAGE
+  HEADER
+  FOOTER
+  POPUP
+  ARCHIVE
+  SINGLE
+}
+
+model Media {
+  id          String   @id @default(cuid())
+  filename    String
+  url         String
+  mime        String
+  size        Int
+  width       Int?
+  height      Int?
+  alt         String?
+  // Variants ottimizzate (webp): { sm, md, lg, xl, blur } come URL relativi
+  variants    Json?
+  // Hash blurhash per LQIP (low-quality placeholder)
+  blurhash    String?
+  uploaderId  String?
+  uploader    User?    @relation(fields: [uploaderId], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+model Setting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+// Singleton: una sola row con id=1
+model Site {
+  id           Int      @id @default(1)
+
+  // Identity
+  name         String   @default("Element Node")
+  tagline      String?
+  logoLight    String?
+  logoDark     String?
+  favicon      String?
+
+  // Theme tokens (JSON con colors/typography/layout/buttons)
+  theme        Json
+
+  // Integrations (Anthropic, reCAPTCHA, SMTP, GA4, GTM)
+  integrations Json?
+
+  // Custom CSS site-wide
+  customCss    String?  @db.Text
+
+  // Custom scripts
+  headScripts  String?  @db.Text
+  bodyScripts  String?  @db.Text
+
+  // Locale di default
+  defaultLocale String  @default("it")
+
+  // Manutenzione
+  maintenance  Boolean  @default(false)
+  maintenanceMessage String? @db.Text
+
+  updatedAt    DateTime @updatedAt
+}
+
+model Redirect {
+  id        String   @id @default(cuid())
+  fromPath  String   @unique
+  toPath    String
+  type      Int      @default(301)
+  hits      Int      @default(0)
+  enabled   Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@index([enabled])
+}
+
+model ThemeBlock {
+  id          String           @id @default(cuid())
+  kind        ThemeBlockKind
+  name        String
+  // JSON tree (sections/columns/elements) – stesso schema delle Page
+  content     Json
+  // { include: ConditionRule[], exclude: ConditionRule[] }
+  conditions  Json
+  // Più alto = applicato per primo (utile quando ci sono regole sovrapposte)
+  priority    Int              @default(10)
+  status      ThemeBlockStatus @default(DRAFT)
+  publishedAt DateTime?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([kind, status, priority])
+}
+
+enum ThemeBlockKind {
+  HEADER
+  FOOTER
+}
+
+enum ThemeBlockStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model Popup {
+  id          String       @id @default(cuid())
+  name        String
+  content     Json         // sections/columns/elements
+  // { type: 'page-load'|'scroll-percent'|'exit-intent'|'click-selector'|'inactivity'|'after-seconds', ...config }
+  trigger     Json
+  // Stessa struttura conditions di theme-blocks
+  conditions  Json
+  // { width, maxWidth, height, position, overlayColor, overlayBlur, animation, dismissible, frequencyCap, frequencyMs, closeOnEscape, closeOnOverlay }
+  settings    Json
+  priority    Int          @default(10)
+  status      PopupStatus  @default(DRAFT)
+  publishedAt DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([status, priority])
+}
+
+enum PopupStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model AuditEvent {
+  id         String   @id @default(cuid())
+  actorId    String?
+  actorEmail String?
+  action     String   // page.create, page.delete, settings.update, ...
+  entity     String?  // Page, Site, User, ...
+  entityId   String?
+  before     Json?
+  after      Json?
+  ip         String?
+  ua         String?  @db.Text
+  createdAt  DateTime @default(now())
+
+  @@index([entity, entityId])
+  @@index([actorId, createdAt])
+  @@index([action, createdAt])
+}
+
+// =====================================================================
+// CPT (Custom Post Types) — Posts, Taxonomies, Terms, Templates
+// =====================================================================
+
+model PostType {
+  id          String   @id @default(cuid())
+  slug        String   @unique          // 'post', 'product', 'event', ...
+  name        String                    // singolare: "Articolo"
+  plural      String                    // plurale: "Articoli"
+  icon        String   @default("FileText") // Lucide icon name
+  description String?  @db.Text
+  // Quali feature supporta: ["title","editor","excerpt","featured","seo","taxonomies","comments"]
+  supports    Json
+  // Pattern URL pubblico (per routing). Default: '/{type.slug}/{post.slug}'
+  urlPattern  String   @default("/{type}/{slug}")
+  // Visibile nel menu admin?
+  showInMenu  Boolean  @default(true)
+  // Pubblicamente accessibile come singola URL?
+  publicSingle Boolean @default(true)
+  // Archivio pubblico? (lista a /{slug})
+  publicArchive Boolean @default(true)
+  // Rest API enabled?
+  restEnabled Boolean  @default(true)
+  // Posizione nel menu admin (per ordering)
+  menuPosition Int     @default(20)
+  // ID del Template SINGLE di default (può essere null = usa fallback automatico)
+  defaultSingleTemplateId  String?
+  // ID del Template ARCHIVE di default
+  defaultArchiveTemplateId String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  posts       Post[]
+  taxonomies  Taxonomy[]
+
+  @@index([showInMenu, menuPosition])
+}
+
+model Post {
+  id            String     @id @default(cuid())
+  postTypeId    String
+  postType      PostType   @relation(fields: [postTypeId], references: [id], onDelete: Cascade)
+
+  title         String
+  slug          String
+  status        PostStatus @default(DRAFT)
+  excerpt       String?    @db.Text
+  // JSON tree (sections/columns/elements) — opzionale, può essere null se il post type usa solo title+excerpt
+  content       Json?
+  // Contenuto markdown/html alternativo (per editor classico)
+  contentText   String?    @db.LongText
+  featured      String?    // URL immagine in evidenza
+
+  // SEO
+  seoTitle      String?
+  seoDesc       String?    @db.Text
+  ogImage       String?
+  noindex       Boolean    @default(false)
+
+  // Custom fields (key/value JSON, gestiti da CPT supports)
+  customFields  Json?
+
+  // Visibility & schedule
+  password      String?
+  publishedAt   DateTime?
+  scheduledAt   DateTime?
+
+  authorId      String?
+  author        User?      @relation("PostAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+
+  terms         PostTerm[]
+  revisions     PostRevision[]
+
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@unique([postTypeId, slug])
+  @@index([status, publishedAt])
+  @@index([authorId])
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  PRIVATE
+  SCHEDULED
+  TRASH
+}
+
+model PostRevision {
+  id        String   @id @default(cuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  content   Json?
+  contentText String? @db.LongText
+  note      String?
+  createdAt DateTime @default(now())
+
+  @@index([postId, createdAt])
+}
+
+model Taxonomy {
+  id           String   @id @default(cuid())
+  slug         String   @unique // 'category', 'tag', 'genre', ...
+  name         String   // singolare
+  plural       String
+  hierarchical Boolean  @default(false)
+  description  String?  @db.Text
+  postTypeId   String?
+  postType     PostType? @relation(fields: [postTypeId], references: [id], onDelete: Cascade)
+
+  terms        Term[]
+}
+
+model Term {
+  id          String   @id @default(cuid())
+  taxonomyId  String
+  taxonomy    Taxonomy @relation(fields: [taxonomyId], references: [id], onDelete: Cascade)
+  name        String
+  slug        String
+  description String?  @db.Text
+  parentId    String?
+  parent      Term?    @relation("TermHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children    Term[]   @relation("TermHierarchy")
+  posts       PostTerm[]
+
+  @@unique([taxonomyId, slug])
+  @@index([parentId])
+}
+
+model PostTerm {
+  postId  String
+  termId  String
+  post    Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  term    Term @relation(fields: [termId], references: [id], onDelete: Cascade)
+
+  @@id([postId, termId])
+  @@index([termId])
+}
+
+model Form {
+  id              String           @id @default(cuid())
+  name            String
+  description     String?          @db.Text
+  // Schema dei campi: [{name,label,type,required,placeholder,options,validation,...}]
+  fields          Json
+  // Schema delle action: [{type:'email'|'webhook'|'mailchimp'|'redirect'|'db-only', config:{...}}]
+  actions         Json?
+  // { successMessage, errorMessage, submitText, gdprText, captcha:'none'|'honeypot'|'recaptcha-v3', redirectUrl }
+  settings        Json?
+  recipients      String?           // Shortcut email destinatario (legacy)
+  submissionCount Int              @default(0)
+  status          FormStatus       @default(ACTIVE)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  submissions     FormSubmission[]
+
+  @@index([status])
+}
+
+enum FormStatus {
+  ACTIVE
+  PAUSED
+  ARCHIVED
+}
+
+model FormSubmission {
+  id        String           @id @default(cuid())
+  formId    String
+  form      Form             @relation(fields: [formId], references: [id], onDelete: Cascade)
+  data      Json
+  status    SubmissionStatus @default(NEW)
+  // Esito di ogni action: [{type, ok, error?, durationMs}]
+  actionLog Json?
+  ip        String?
+  ua        String?           @db.Text
+  createdAt DateTime         @default(now())
+
+  @@index([formId, createdAt])
+  @@index([status])
+}
+
+enum SubmissionStatus {
+  NEW
+  READ
+  SPAM
+  TRASH
+}
