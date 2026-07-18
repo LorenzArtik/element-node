@@ -1,5 +1,6 @@
 'use client';
 
+import { UpdaterCard } from '@/components/admin/UpdaterCard';
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
@@ -324,6 +325,8 @@ export function SiteSettingsForm({ initial }: { initial: SiteSettings }) {
                 ) : null}
               </CardContent>
             </Card>
+
+            <UpdaterCard />
 
             <Card>
               <CardHeader>
