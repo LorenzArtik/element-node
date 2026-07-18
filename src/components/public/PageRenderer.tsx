@@ -100,10 +100,8 @@ export function PageRenderer({ content }: { content: PageContent }) {
         @media (prefers-reduced-motion: reduce) {
           .en-reveal-init section > .el-container { opacity: 1 !important; transform: none !important; transition: none !important; }
         }
-        .en-hide-desktop { display: none; }
         @media (max-width: 768px) {
-          .en-hide-mobile { display: none !important; }
-          .en-hide-desktop { display: flex !important; }
+          .en-frontend [data-box-container] .en-w-button a { width: 100%; justify-content: center; }
           .en-frontend .el-container { flex-direction: column; }
           .en-frontend .en-col { flex: 1 1 auto !important; max-width: 100% !important; width: 100%; }
           .en-frontend .en-col[style*="--en-col-mobile"] { flex: 0 0 var(--en-col-mobile) !important; max-width: var(--en-col-mobile) !important; }
