@@ -150,6 +150,9 @@ function renderWidgetInner(el: ElementNode, opts: RenderOpts = {}): React.ReactN
         (style as Record<string, unknown>).WebkitTextStroke = s.textStroke as string;
         style.color = (s.color as string) || 'transparent';
       }
+      const dashEl = s.dash ? (
+        <span aria-hidden style={{ display: 'inline-block', width: 26, height: 3, background: 'currentColor', borderRadius: 2, marginRight: 9, verticalAlign: 'middle' }} />
+      ) : null;
       if (editable) {
         return (
           <InlineEditable
@@ -611,6 +614,9 @@ function renderWidgetInner(el: ElementNode, opts: RenderOpts = {}): React.ReactN
         </div>
       );
     }
+    case 'nav-drawer':
+      return <NavDrawer settings={s} />;
+
     case 'social-icons':
       return <SocialIcons settings={s} />;
 
@@ -1970,5 +1976,54 @@ function ConsentGatedHtml({ code, note }: { code: string; note: string }) {
         Accetta e carica
       </button>
     </div>
+  );
+}
+
+
+/** Burger menu mobile: bottone + pannello overlay con voci e CTA (widget nav-drawer). */
+function NavDrawer({ settings }: { settings: Record<string, unknown> }) {
+  const [open, setOpen] = useState(false);
+  const links = String(settings.links || '')
+    .split('\n')
+    .map((l) => {
+      const [label, url] = l.split('|').map((x) => (x || '').trim());
+      return label && url ? { label, url } : null;
+    })
+    .filter(Boolean) as { label: string; url: string }[];
+  const iconColor = (settings.iconColor as string) || 'var(--en-color-text, #1b1b1b)';
+  const panelBg = (settings.panelBg as string) || 'var(--en-color-surface, #fff)';
+  const linkColor = (settings.linkColor as string) || 'var(--en-color-text, #1b1b1b)';
+  const accent = (settings.accentColor as string) || 'var(--en-color-primary, #92003b)';
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [open]);
+  return (
+    <>
+      <button aria-label="Menu" onClick={() => setOpen(true)}
+        style={{ background: 'transparent', border: 0, cursor: 'pointer', padding: 8, display: 'flex', flexDirection: 'column', gap: 5 }}>
+        {[0, 1, 2].map((i) => <span key={i} style={{ width: 22, height: 2.5, background: iconColor, borderRadius: 2, display: 'block' }} />)}
+      </button>
+      {open && (
+        <div role="dialog" aria-label="Menu" style={{ position: 'fixed', inset: 0, zIndex: 10000, background: panelBg, display: 'flex', flexDirection: 'column', padding: '22px 26px' }}>
+          <button aria-label="Chiudi" onClick={() => setOpen(false)}
+            style={{ alignSelf: 'flex-end', background: 'transparent', border: 0, cursor: 'pointer', fontSize: 30, lineHeight: 1, color: linkColor, padding: 6 }}>×</button>
+          <nav style={{ display: 'flex', flexDirection: 'column', gap: 4, marginTop: 12 }}>
+            {links.map((l) => (
+              <a key={l.url} href={l.url} onClick={() => setOpen(false)}
+                 style={{ color: linkColor, textDecoration: 'none', fontFamily: 'var(--en-font-heading)', fontWeight: 600, fontSize: 22, padding: '12px 4px', borderBottom: '1px solid var(--en-color-border, #eee)' }}>
+                {l.label}
+              </a>
+            ))}
+          </nav>
+          {settings.ctaText ? (
+            <a href={(settings.ctaUrl as string) || '#'} onClick={() => setOpen(false)}
+               style={{ marginTop: 26, background: accent, color: '#fff', textAlign: 'center', padding: '15px 20px', borderRadius: 12, fontFamily: 'var(--en-font-heading)', fontWeight: 600, textDecoration: 'none', fontSize: 16 }}>
+              {settings.ctaText as string}
+            </a>
+          ) : null}
+        </div>
+      )}
+    </>
   );
 }

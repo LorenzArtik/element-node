@@ -48,7 +48,8 @@ export type WidgetType =
   | 'reviews'
   | 'lottie'
   | 'mailchimp'
-  | 'marquee';
+  | 'marquee'
+  | 'nav-drawer';
 
 export interface ElementNode {
   id: string;
@@ -124,13 +125,14 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
   // ===== BASIC (ordine identico a Elementor) =====
   heading: {
     type: 'heading', label: 'Titolo', icon: 'Heading1', category: 'basic', order: 1,
-    defaults: { text: 'Aggiungi qui il titolo', tag: 'h2', align: 'left', color: '', size: '', weight: '', letterSpacing: '', transform: 'none', textStroke: '' },
+    defaults: { text: 'Aggiungi qui il titolo', tag: 'h2', align: 'left', color: '', size: '', weight: '', letterSpacing: '', transform: 'none', textStroke: '' , dash: false},
     fields: [
       { key: 'text', label: 'Titolo', control: 'text' },
       { key: 'tag', label: 'Tag HTML', control: 'select', options: ['h1','h2','h3','h4','h5','h6'].map(v => ({ value: v, label: v.toUpperCase() })) },
       { key: 'align', label: 'Allineamento', control: 'select', options: ALIGN_OPTIONS },
       { key: 'color', label: 'Colore', control: 'color' },
       { key: 'textStroke', label: 'Contorno testo (es. 1.2px #C9BFB2 — riempimento trasparente)', control: 'text' },
+      { key: 'dash', label: 'Trattino decorativo prima del testo', control: 'toggle' },
       { key: 'size', label: 'Dimensione', control: 'text' },
       { key: 'weight', label: 'Peso', control: 'select', options: ['300','400','500','600','700','800','900'].map(v => ({ value: v, label: v })) },
       { key: 'letterSpacing', label: 'Letter spacing', control: 'text', placeholder: 'es. 0.2em / 2.4px' },
@@ -1042,6 +1044,23 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
       { key: 'separatorColor', label: 'Colore separatore', control: 'color' },
       { key: 'uppercase', label: 'Maiuscolo', control: 'toggle' },
       { key: 'gap', label: 'Spazio tra voci (px)', control: 'number' },
+    ],
+  },
+  'nav-drawer': {
+    type: 'nav-drawer', label: 'Menu Mobile (burger)', icon: 'Menu', category: 'general', order: 20,
+    defaults: {
+      links: 'Home|/\nPagina|/pagina',
+      ctaText: '', ctaUrl: '',
+      iconColor: '', panelBg: '', linkColor: '', accentColor: '',
+    },
+    fields: [
+      { key: 'links', label: 'Voci (una per riga: Etichetta|/url)', control: 'textarea' },
+      { key: 'ctaText', label: 'Bottone CTA (facoltativo)', control: 'text' },
+      { key: 'ctaUrl', label: 'URL CTA', control: 'text' },
+      { key: 'iconColor', label: 'Colore icona burger', control: 'color' },
+      { key: 'panelBg', label: 'Sfondo pannello', control: 'color' },
+      { key: 'linkColor', label: 'Colore voci', control: 'color' },
+      { key: 'accentColor', label: 'Colore accento/CTA', control: 'color' },
     ],
   },
 

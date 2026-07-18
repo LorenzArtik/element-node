@@ -80,11 +80,30 @@ function bgToCss(bg: string | BgObj | undefined): string | undefined {
   return undefined;
 }
 
+function RevealObserver() {
+  // Scroll-reveal: attivo solo con JS (senza JS la pagina resta visibile)
+  return (
+    <script
+      dangerouslySetInnerHTML={{
+        __html: `(function(){try{var r=document.querySelector('.en-frontend');if(!r)return;r.classList.add('en-reveal-init');var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('en-revealed');io.unobserve(e.target);}});},{threshold:0.08});r.querySelectorAll('section > .el-container').forEach(function(el){var rect=el.getBoundingClientRect();if(rect.top<innerHeight*0.9){el.classList.add('en-revealed');}io.observe(el);});}catch(e){}})();`,
+      }}
+    />
+  );
+}
+
 export function PageRenderer({ content }: { content: PageContent }) {
   return (
     <div className="en-frontend">
       <style>{`
+        .en-reveal-init section > .el-container { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+        .en-reveal-init section > .el-container.en-revealed { opacity: 1; transform: none; }
+        @media (prefers-reduced-motion: reduce) {
+          .en-reveal-init section > .el-container { opacity: 1 !important; transform: none !important; transition: none !important; }
+        }
+        .en-hide-desktop { display: none; }
         @media (max-width: 768px) {
+          .en-hide-mobile { display: none !important; }
+          .en-hide-desktop { display: flex !important; }
           .en-frontend .el-container { flex-direction: column; }
           .en-frontend .en-col { flex: 1 1 auto !important; max-width: 100% !important; width: 100%; }
           .en-frontend .en-col[style*="--en-col-mobile"] { flex: 0 0 var(--en-col-mobile) !important; max-width: var(--en-col-mobile) !important; }
@@ -93,6 +112,7 @@ export function PageRenderer({ content }: { content: PageContent }) {
           .en-frontend section { padding-left: 18px; padding-right: 18px; }
         }
       `}</style>
+      <RevealObserver />
       {content.sections.map((section) => {
         const s = section.settings as SectionSettings;
         const bgCss = bgToCss(s.background);
@@ -171,7 +191,7 @@ export function PageRenderer({ content }: { content: PageContent }) {
                   colStyle.padding = '20px';
                 }
                 return (
-                  <div key={col.id} className="en-col" style={colStyle}>
+                  <div key={col.id} className={`en-col${(c as Record<string, unknown>).hideOnMobile ? ' en-hide-mobile' : ''}${(c as Record<string, unknown>).hideOnDesktop ? ' en-hide-desktop' : ''}`} style={colStyle}>
                     {col.elements.map((el) => (
                       <div key={el.id}>{renderWidget(el)}</div>
                     ))}
