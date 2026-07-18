@@ -47,7 +47,8 @@ export type WidgetType =
   | 'share-buttons'
   | 'reviews'
   | 'lottie'
-  | 'mailchimp';
+  | 'mailchimp'
+  | 'marquee';
 
 export interface ElementNode {
   id: string;
@@ -123,12 +124,13 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
   // ===== BASIC (ordine identico a Elementor) =====
   heading: {
     type: 'heading', label: 'Titolo', icon: 'Heading1', category: 'basic', order: 1,
-    defaults: { text: 'Aggiungi qui il titolo', tag: 'h2', align: 'left', color: '', size: '', weight: '', letterSpacing: '', transform: 'none' },
+    defaults: { text: 'Aggiungi qui il titolo', tag: 'h2', align: 'left', color: '', size: '', weight: '', letterSpacing: '', transform: 'none', textStroke: '' },
     fields: [
       { key: 'text', label: 'Titolo', control: 'text' },
       { key: 'tag', label: 'Tag HTML', control: 'select', options: ['h1','h2','h3','h4','h5','h6'].map(v => ({ value: v, label: v.toUpperCase() })) },
       { key: 'align', label: 'Allineamento', control: 'select', options: ALIGN_OPTIONS },
       { key: 'color', label: 'Colore', control: 'color' },
+      { key: 'textStroke', label: 'Contorno testo (es. 1.2px #C9BFB2 — riempimento trasparente)', control: 'text' },
       { key: 'size', label: 'Dimensione', control: 'text' },
       { key: 'weight', label: 'Peso', control: 'select', options: ['300','400','500','600','700','800','900'].map(v => ({ value: v, label: v })) },
       { key: 'letterSpacing', label: 'Letter spacing', control: 'text', placeholder: 'es. 0.2em / 2.4px' },
@@ -1016,6 +1018,25 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
       { key: 'buttonText', label: 'Testo bottone', control: 'text' },
       { key: 'successText', label: 'Messaggio successo', control: 'text' },
       { key: 'align', label: 'Allineamento', control: 'select', options: ALIGN_OPTIONS },
+    ],
+  },
+  marquee: {
+    type: 'marquee', label: 'Ticker / Marquee', icon: 'MoveRight', category: 'pro', order: 16,
+    defaults: {
+      items: 'Voce uno · Voce due · Voce tre', separator: '●', speed: 28,
+      fontSize: '20px', textColor: '', textStroke: '', separatorColor: '',
+      uppercase: true, letterSpacing: '0.06em', gap: 56,
+    },
+    fields: [
+      { key: 'items', label: 'Voci (separate da ·)', control: 'textarea' },
+      { key: 'separator', label: 'Separatore', control: 'text' },
+      { key: 'speed', label: 'Velocità (secondi per giro)', control: 'number' },
+      { key: 'fontSize', label: 'Dimensione testo', control: 'text' },
+      { key: 'textColor', label: 'Colore testo', control: 'color' },
+      { key: 'textStroke', label: 'Contorno testo (alternativa al colore, es. 1.2px #C9BFB2)', control: 'text' },
+      { key: 'separatorColor', label: 'Colore separatore', control: 'color' },
+      { key: 'uppercase', label: 'Maiuscolo', control: 'toggle' },
+      { key: 'gap', label: 'Spazio tra voci (px)', control: 'number' },
     ],
   },
 

@@ -2,7 +2,7 @@
 
 import * as LucideIcons from 'lucide-react';
 import type { ElementNode } from '@/lib/widgets-schema';
-import { useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { useRenderContext } from '@/components/public/render-context';
 import { InlineEditable } from './InlineEditable';
@@ -146,6 +146,10 @@ function renderWidgetInner(el: ElementNode, opts: RenderOpts = {}): React.ReactN
         letterSpacing: (s.letterSpacing as string) || undefined,
         textTransform: s.transform && s.transform !== 'none' ? (s.transform as React.CSSProperties['textTransform']) : undefined,
       };
+      if (s.textStroke) {
+        (style as Record<string, unknown>).WebkitTextStroke = s.textStroke as string;
+        style.color = (s.color as string) || 'transparent';
+      }
       if (editable) {
         return (
           <InlineEditable
@@ -568,6 +572,41 @@ function renderWidgetInner(el: ElementNode, opts: RenderOpts = {}): React.ReactN
       );
     }
 
+    case 'marquee': {
+      const items = String(s.items || '').split('·').map((t) => t.trim()).filter(Boolean);
+      const sep = (s.separator as string) || '●';
+      const gap = Number(s.gap ?? 56);
+      const trackStyle: React.CSSProperties = {
+        display: 'flex', gap, whiteSpace: 'nowrap', width: 'max-content',
+        animation: `en-marquee ${Number(s.speed ?? 28)}s linear infinite`,
+      };
+      const textStyle: React.CSSProperties = {
+        fontFamily: 'var(--en-font-heading)', fontWeight: 700,
+        fontSize: (s.fontSize as string) || '20px',
+        letterSpacing: (s.letterSpacing as string) || '0.06em',
+        textTransform: s.uppercase === false ? undefined : 'uppercase',
+        color: (s.textColor as string) || undefined,
+        display: 'flex', alignItems: 'center', gap,
+      };
+      if (s.textStroke) {
+        (textStyle as Record<string, unknown>).WebkitTextStroke = s.textStroke as string;
+        textStyle.color = 'transparent';
+      }
+      const sepStyle: React.CSSProperties = { color: (s.separatorColor as string) || 'var(--en-color-primary)', WebkitTextStroke: '0', fontSize: '12px' };
+      const seq = (
+        <span style={textStyle}>
+          {items.map((t, i) => (
+            <Fragment key={i}>{t}<i style={{ ...sepStyle, fontStyle: 'normal' }}>{sep}</i></Fragment>
+          ))}
+        </span>
+      );
+      return (
+        <div style={{ overflow: 'hidden' }}>
+          <style>{'@keyframes en-marquee { to { transform: translateX(-50%); } }'}</style>
+          <div style={trackStyle}>{seq}{seq}</div>
+        </div>
+      );
+    }
     case 'social-icons':
       return <SocialIcons settings={s} />;
 
