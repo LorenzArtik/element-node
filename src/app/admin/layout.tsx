@@ -150,7 +150,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           {updateAvailable && (
             <div className="border-b border-sky-200 bg-sky-50 px-8 py-2 text-sm text-sky-900 dark:border-sky-900 dark:bg-sky-950 dark:text-sky-200">
               Aggiornamento disponibile: v{latest} (installata v{currentVersion()}).{' '}
-              <Link href="/admin/settings/site" className="font-medium underline underline-offset-2">Vai agli aggiornamenti</Link>
+              <Link href="/admin/settings/site?tab=integrations" className="font-medium underline underline-offset-2">Vai agli aggiornamenti</Link>
             </div>
           )}
           {!license.valid && (
@@ -158,7 +158,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               {license.key
                 ? 'Licenza non attiva: aggiornamenti e supporto sospesi. '
                 : 'Aggiornamenti non attivi: inserisci la licenza per ricevere update e patch di sicurezza. '}
-              <Link href="/admin/settings/site" className="font-medium underline underline-offset-2">Gestisci licenza</Link>
+              <Link href="/admin/settings/site?tab=integrations" className="font-medium underline underline-offset-2">Gestisci licenza</Link>
             </div>
           )}
           {children}

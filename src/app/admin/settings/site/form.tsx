@@ -21,7 +21,7 @@ import { FontPicker } from '@/components/admin/FontPicker';
 
 type Patch = Partial<SiteSettings>;
 
-export function SiteSettingsForm({ initial }: { initial: SiteSettings }) {
+export function SiteSettingsForm({ initial, defaultTab }: { initial: SiteSettings; defaultTab?: string }) {
   const [data, setData] = useState<SiteSettings>(initial);
   const [pending, start] = useTransition();
   const router = useRouter();
@@ -86,8 +86,8 @@ export function SiteSettingsForm({ initial }: { initial: SiteSettings }) {
 
   return (
     <>
-      <Tabs defaultValue="brand">
-        <TabsList className="grid grid-cols-8 w-full">
+      <Tabs defaultValue={defaultTab || 'brand'}>
+        <TabsList className="flex h-auto w-full flex-wrap justify-start gap-1">
           <TabsTrigger value="brand"><ImageIcon className="h-3.5 w-3.5 mr-1" />Brand</TabsTrigger>
           <TabsTrigger value="colors"><Palette className="h-3.5 w-3.5 mr-1" />Colori</TabsTrigger>
           <TabsTrigger value="typography"><Type className="h-3.5 w-3.5 mr-1" />Font</TabsTrigger>

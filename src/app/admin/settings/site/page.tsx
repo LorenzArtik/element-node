@@ -5,7 +5,8 @@ import { SiteSettingsForm } from './form';
 
 export const dynamic = 'force-dynamic';
 
-export default async function SiteSettingsPage() {
+export default async function SiteSettingsPage({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
+  const { tab } = await searchParams;
   const session = await auth();
   if (!session?.user) redirect('/login');
   const settings = await getSiteSettings();
@@ -15,7 +16,7 @@ export default async function SiteSettingsPage() {
         <h1 className="text-3xl font-bold tracking-tight">Impostazioni sito</h1>
         <p className="text-muted-foreground">Brand, colori, tipografia e configurazione globale</p>
       </div>
-      <SiteSettingsForm initial={settings} />
+      <SiteSettingsForm initial={settings} defaultTab={tab} />
     </div>
   );
 }
