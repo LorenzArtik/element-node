@@ -24,6 +24,7 @@ interface CheckInfo {
 
 const STEP_LABELS: Record<string, string> = {
   download: 'Scarico la nuova versione…',
+  backup: 'Backup automatico del database…',
   extract: 'Aggiorno i file…',
   install: 'Installo le dipendenze…',
   database: 'Aggiorno lo schema del database…',
@@ -122,8 +123,13 @@ export function UpdaterCard() {
         ) : state.status === 'ok' ? (
           <div className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-200">
             <CheckCircle2 className="h-4 w-4" />
-            Aggiornato a v{state.toVersion ?? check?.current}
-            {state.finishedAt ? ` (${new Date(state.finishedAt).toLocaleString('it-IT')})` : ''}
+            <span>
+              Aggiornato a v{state.toVersion ?? check?.current}
+              {state.finishedAt ? ` (${new Date(state.finishedAt).toLocaleString('it-IT')})` : ''}
+            </span>
+            <button type="button" onClick={() => window.location.reload()} className="ml-auto rounded-md border border-emerald-300 px-2.5 py-1 text-xs font-medium hover:bg-emerald-100 dark:hover:bg-emerald-900">
+              Ricarica il pannello
+            </button>
           </div>
         ) : state.status === 'error' ? (
           <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
@@ -152,6 +158,8 @@ export function UpdaterCard() {
         )}
         <p className="text-xs text-muted-foreground">
           Durante l&rsquo;aggiornamento il sito resta online: la nuova versione viene attivata solo a build riuscita.
+          Prima di toccare il database viene creato un backup automatico in <code>tmp/</code> (ultimi 3 conservati).
+          Si consiglia comunque un backup completo di file e database prima di aggiornare.
         </p>
       </CardContent>
     </Card>

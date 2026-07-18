@@ -98,6 +98,34 @@ async function main() {
   setState({ step: 'install' });
   run(npm, ['install', '--no-audit', '--no-fund']);
 
+  // 4a. backup automatico del database (mysqldump) prima di toccare lo schema
+  setState({ step: 'backup' });
+  try {
+    const envText = readFileSync(join(ROOT, '.env'), 'utf8');
+    const dbUrl = (envText.match(/^DATABASE_URL="?([^"\n]+)"?/m) || [])[1];
+    if (dbUrl) {
+      const u = new URL(dbUrl);
+      const dumpFile = join(TMP, `pre-update-${fromVersion}-${Date.now()}.sql.gz`);
+      execSync(
+        `mysqldump -h ${u.hostname} -P ${u.port || 3306} -u ${decodeURIComponent(u.username)} -p'${decodeURIComponent(u.password)}' ${u.pathname.slice(1).split('?')[0]} | gzip > "${dumpFile}"`,
+        { cwd: ROOT }
+      );
+      log(`backup DB creato: ${dumpFile}`);
+      // tieni solo gli ultimi 3 backup
+      const { readdirSync, statSync } = await import('fs');
+      const backups = readdirSync(TMP).filter((n) => n.startsWith('pre-update-')).sort();
+      while (backups.length > 3) {
+        const old = backups.shift();
+        rmSync(join(TMP, old), { force: true });
+        log(`backup vecchio rimosso: ${old}`);
+      }
+    } else {
+      log('DATABASE_URL non trovato: backup DB saltato');
+    }
+  } catch (e) {
+    log(`backup DB non riuscito (proseguo comunque): ${e?.message || e}`);
+  }
+
   // 4. schema DB (senza --accept-data-loss: se l'update perderebbe dati, ci si ferma qui)
   setState({ step: 'database' });
   run(npx, ['prisma', 'db', 'push', '--skip-generate']);
