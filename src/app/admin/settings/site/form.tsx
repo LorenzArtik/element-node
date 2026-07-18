@@ -594,18 +594,27 @@ export function SiteSettingsForm({ initial, defaultTab }: { initial: SiteSetting
                         <option value="maintenance">Manutenzione (pagina di cortesia)</option>
                       </select>
                     </Field>
-                    <Field label="Password di anteprima" help="Richiesta solo in modalità Protetto: chi la inserisce naviga il sito per 7 giorni.">
-                      <Input value={(sa.password as string) ?? ''} onChange={(e) => up('password', e.target.value)} placeholder="es. anteprima2026" />
-                    </Field>
-                    <div className="grid grid-cols-2 gap-3">
-                      <Field label="Titolo schermata"><Input value={(sa.lockTitle as string) ?? ''} onChange={(e) => up('lockTitle', e.target.value)} placeholder="Sito in costruzione" /></Field>
-                      <Field label="Messaggio schermata"><Input value={(sa.lockMessage as string) ?? ''} onChange={(e) => up('lockMessage', e.target.value)} placeholder="Inserisci la password…" /></Field>
-                    </div>
-                    <Field label="Messaggio di manutenzione" help="Mostrato in modalità Manutenzione al posto del sito.">
-                      <Textarea rows={3} value={data.maintenanceMessage ?? ''}
-                                onChange={(e) => update('maintenanceMessage', e.target.value || null)}
-                                placeholder="Stiamo facendo manutenzione. Torneremo presto." />
-                    </Field>
+                    {((sa.mode as string) ?? 'public') === 'password' && (
+                      <>
+                        <Field label="Password di anteprima" help="Chi la inserisce naviga il sito per 7 giorni.">
+                          <Input value={(sa.password as string) ?? ''} onChange={(e) => up('password', e.target.value)} placeholder="es. anteprima2026" />
+                        </Field>
+                        <div className="grid grid-cols-2 gap-3">
+                          <Field label="Titolo schermata"><Input value={(sa.lockTitle as string) ?? ''} onChange={(e) => up('lockTitle', e.target.value)} placeholder="Sito in costruzione" /></Field>
+                          <Field label="Messaggio schermata"><Input value={(sa.lockMessage as string) ?? ''} onChange={(e) => up('lockMessage', e.target.value)} placeholder="Inserisci la password…" /></Field>
+                        </div>
+                      </>
+                    )}
+                    {((sa.mode as string) ?? 'public') === 'maintenance' && (
+                      <Field label="Messaggio di manutenzione" help="Mostrato al posto del sito.">
+                        <Textarea rows={3} value={data.maintenanceMessage ?? ''}
+                                  onChange={(e) => update('maintenanceMessage', e.target.value || null)}
+                                  placeholder="Stiamo facendo manutenzione. Torneremo presto." />
+                      </Field>
+                    )}
+                    {((sa.mode as string) ?? 'public') === 'public' && (
+                      <p className="text-sm text-muted-foreground">Il sito è online, indicizzabile e visibile a tutti.</p>
+                    )}
                   </>
                 );
               })()}
