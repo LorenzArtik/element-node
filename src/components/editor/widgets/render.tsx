@@ -531,12 +531,12 @@ function renderWidgetInner(el: ElementNode, opts: RenderOpts = {}): React.ReactN
       const spacing = (s.spacing as number) ?? 12;
       const iconColor = (s.iconColor as string) || '#92003b';
       return (
-        <ul style={{ listStyle: 'none', margin: 0, padding: 0, textAlign: align, color: (s.textColor as string) || undefined, ...(s.direction === 'row' ? { display: 'flex', flexWrap: 'wrap' as const, gap: spacing, alignItems: 'center', justifyContent: align === 'center' ? 'center' : align === 'right' ? 'flex-end' : 'flex-start' } : {}) }}>
+        <ul style={{ listStyle: 'none', margin: 0, padding: 0, textAlign: align, color: (s.textColor as string) || undefined, fontSize: (s.textSize as string) || undefined, ...(s.direction === 'row' ? { display: 'flex', flexWrap: 'wrap' as const, gap: spacing, alignItems: 'center', justifyContent: align === 'center' ? 'center' : align === 'right' ? 'flex-end' : 'flex-start' } : {}) }}>
           {items.map((it, i) => {
             const Ico = (LucideIcons as unknown as Record<string, React.ComponentType<{ size?: number; color?: string }>>)[it.icon || 'Check'] ?? LucideIcons.Check;
             const inner = (
               <span style={{ display: 'inline-flex', alignItems: 'flex-start', gap: 10 }}>
-                <Ico size={20} color={iconColor} />
+                <Ico size={Number(s.iconSize ?? 20)} color={iconColor} />
                 {/<[a-z]/i.test(it.text) ? <span dangerouslySetInnerHTML={{ __html: it.text }} /> : <span>{it.text}</span>}
               </span>
             );

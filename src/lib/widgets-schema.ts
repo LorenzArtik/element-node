@@ -314,7 +314,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     defaults: {
       align: 'left', iconColor: '', spacing: 12,
       items: [
-        { icon: 'Check', text: 'Voce della lista #1', link: '' , direction: 'column', textColor: ''},
+        { icon: 'Check', text: 'Voce della lista #1', link: '' , direction: 'column', textColor: '', textSize: '', iconSize: 20},
         { icon: 'Check', text: 'Voce della lista #2', link: '' },
         { icon: 'Check', text: 'Voce della lista #3', link: '' },
       ],
@@ -1033,6 +1033,8 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
       { key: 'speed', label: 'Velocità (secondi per giro)', control: 'number' },
       { key: 'fontSize', label: 'Dimensione testo', control: 'text' },
       { key: 'textColor', label: 'Colore testo', control: 'color' },
+      { key: 'textSize', label: 'Dimensione testo (es. 13px)', control: 'text' },
+      { key: 'iconSize', label: 'Dimensione icone (px)', control: 'number' },
       { key: 'textStroke', label: 'Contorno testo (alternativa al colore, es. 1.2px #C9BFB2)', control: 'text' },
       { key: 'separatorColor', label: 'Colore separatore', control: 'color' },
       { key: 'uppercase', label: 'Maiuscolo', control: 'toggle' },
