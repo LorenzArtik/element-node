@@ -314,7 +314,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     defaults: {
       align: 'left', iconColor: '', spacing: 12,
       items: [
-        { icon: 'Check', text: 'Voce della lista #1', link: '' },
+        { icon: 'Check', text: 'Voce della lista #1', link: '' , direction: 'column'},
         { icon: 'Check', text: 'Voce della lista #2', link: '' },
         { icon: 'Check', text: 'Voce della lista #3', link: '' },
       ],

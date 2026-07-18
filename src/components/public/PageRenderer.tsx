@@ -83,6 +83,16 @@ function bgToCss(bg: string | BgObj | undefined): string | undefined {
 export function PageRenderer({ content }: { content: PageContent }) {
   return (
     <div className="en-frontend">
+      <style>{`
+        @media (max-width: 768px) {
+          .en-frontend .el-container { flex-direction: column; }
+          .en-frontend .en-col { flex: 1 1 auto !important; max-width: 100% !important; width: 100%; }
+          .en-frontend .en-col[style*="--en-col-mobile"] { flex: 0 0 var(--en-col-mobile) !important; max-width: var(--en-col-mobile) !important; }
+          .en-frontend h1 { font-size: clamp(30px, 9vw, 40px) !important; }
+          .en-frontend h2 { font-size: clamp(24px, 7vw, 32px) !important; }
+          .en-frontend section { padding-left: 18px; padding-right: 18px; }
+        }
+      `}</style>
       {content.sections.map((section) => {
         const s = section.settings as SectionSettings;
         const bgCss = bgToCss(s.background);
@@ -131,6 +141,7 @@ export function PageRenderer({ content }: { content: PageContent }) {
                   flex: `0 0 ${col.width}%`,
                   minWidth: 0,
                   maxWidth: `${col.width}%`,
+                  ...(c.mobileWidth ? ({ ['--en-col-mobile' as string]: `${c.mobileWidth}` } as CSSProperties) : {}),
                   padding: c.padding,
                   paddingLeft: c.paddingLeft,
                   paddingRight: c.paddingRight,
@@ -160,7 +171,7 @@ export function PageRenderer({ content }: { content: PageContent }) {
                   colStyle.padding = '20px';
                 }
                 return (
-                  <div key={col.id} style={colStyle}>
+                  <div key={col.id} className="en-col" style={colStyle}>
                     {col.elements.map((el) => (
                       <div key={el.id}>{renderWidget(el)}</div>
                     ))}
