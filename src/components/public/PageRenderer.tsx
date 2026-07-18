@@ -102,9 +102,8 @@ export function PageRenderer({ content }: { content: PageContent }) {
         }
         @media (max-width: 768px) {
           .en-frontend [data-box-container] .en-w-button a { width: 100%; justify-content: center; }
-          .en-frontend .el-container { flex-direction: column; }
-          .en-frontend .en-col { flex: 1 1 auto !important; max-width: 100% !important; width: 100%; }
-          .en-frontend .en-col[style*="--en-col-mobile"] { flex: 0 0 var(--en-col-mobile) !important; max-width: var(--en-col-mobile) !important; }
+          .en-frontend .en-col { flex: 0 0 100% !important; max-width: 100% !important; }
+          .en-frontend .en-col[style*="--en-col-mobile"] { flex: 0 0 var(--en-col-mobile) !important; max-width: var(--en-col-mobile) !important; width: auto; }
           .en-frontend h1 { font-size: clamp(30px, 9vw, 40px) !important; }
           .en-frontend h2 { font-size: clamp(24px, 7vw, 32px) !important; }
           .en-frontend section { padding-left: 18px; padding-right: 18px; }
