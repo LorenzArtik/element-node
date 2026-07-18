@@ -13,12 +13,18 @@ export interface CookieBannerSettings {
   acceptLabel: string;
   declineLabel: string;
   policyUrl: string;
+  cookiePolicyUrl?: string;
   titleEn?: string;
   messageEn?: string;
   acceptLabelEn?: string;
   declineLabelEn?: string;
   policyUrlEn?: string;
+  cookiePolicyUrlEn?: string;
   position: 'bottom-bar' | 'bottom-left' | 'bottom-right';
+  bgColor?: string;
+  textColor?: string;
+  accentColor?: string;
+  radius?: string;
 }
 
 export const CONSENT_KEY = 'en-cookie-consent';
@@ -48,6 +54,7 @@ export function CookieBanner({ settings, path }: { settings: CookieBannerSetting
     accept: (en && settings.acceptLabelEn) || settings.acceptLabel,
     decline: (en && settings.declineLabelEn) || settings.declineLabel,
     policy: (en && settings.policyUrlEn) || settings.policyUrl,
+    cookiePolicy: (en && settings.cookiePolicyUrlEn) || settings.cookiePolicyUrl || '',
   };
 
   const choose = (v: 'accepted' | 'declined') => {
@@ -68,10 +75,10 @@ export function CookieBanner({ settings, path }: { settings: CookieBannerSetting
   return (
     <div style={wrapStyle} role="dialog" aria-live="polite" aria-label={t.title}>
       <div style={{
-        background: 'var(--en-color-surface, #fff)',
-        color: 'var(--en-color-text, #1b1b1b)',
+        background: settings.bgColor || 'var(--en-color-surface, #fff)',
+        color: settings.textColor || 'var(--en-color-text, #1b1b1b)',
         border: '1px solid var(--en-color-border, #e5e7eb)',
-        borderRadius: 14,
+        borderRadius: settings.radius || 14,
         boxShadow: '0 18px 50px -18px rgba(0,0,0,.35)',
         padding: '18px 20px',
         display: 'flex',
@@ -86,9 +93,17 @@ export function CookieBanner({ settings, path }: { settings: CookieBannerSetting
           <span>
             {t.message}{' '}
             {t.policy && (
-              <a href={t.policy} style={{ color: 'var(--en-color-primary)', textDecoration: 'underline' }}>
+              <a href={t.policy} style={{ color: settings.accentColor || 'var(--en-color-primary)', textDecoration: 'underline' }}>
                 Privacy
               </a>
+            )}
+            {t.cookiePolicy && (
+              <>
+                {' · '}
+                <a href={t.cookiePolicy} style={{ color: settings.accentColor || 'var(--en-color-primary)', textDecoration: 'underline' }}>
+                  Cookie Policy
+                </a>
+              </>
             )}
           </span>
         </div>
@@ -105,7 +120,7 @@ export function CookieBanner({ settings, path }: { settings: CookieBannerSetting
           <button
             onClick={() => choose('accepted')}
             style={{
-              border: 0, background: 'var(--en-color-primary, #92003b)', color: '#fff',
+              border: 0, background: settings.accentColor || 'var(--en-color-primary, #92003b)', color: '#fff',
               borderRadius: 10, padding: '9px 18px', fontSize: 14, fontWeight: 600, cursor: 'pointer',
             }}
           >

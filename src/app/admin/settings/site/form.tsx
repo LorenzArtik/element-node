@@ -495,7 +495,10 @@ export function SiteSettingsForm({ initial }: { initial: SiteSettings }) {
                       <Field label="Etichetta Accetta"><Input value={(cb.acceptLabel as string) ?? 'Accetta'} onChange={(e) => up('acceptLabel', e.target.value)} /></Field>
                       <Field label="Etichetta Rifiuta"><Input value={(cb.declineLabel as string) ?? 'Rifiuta'} onChange={(e) => up('declineLabel', e.target.value)} /></Field>
                     </div>
-                    <Field label="Link privacy policy"><Input value={(cb.policyUrl as string) ?? '/privacy'} onChange={(e) => up('policyUrl', e.target.value)} /></Field>
+                    <div className="grid grid-cols-2 gap-3">
+                      <Field label="Link privacy policy"><Input value={(cb.policyUrl as string) ?? '/privacy'} onChange={(e) => up('policyUrl', e.target.value)} /></Field>
+                      <Field label="Link cookie policy (facoltativo)"><Input value={(cb.cookiePolicyUrl as string) ?? ''} onChange={(e) => up('cookiePolicyUrl', e.target.value)} /></Field>
+                    </div>
                     <Field label="Posizione">
                       <select className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm" value={(cb.position as string) ?? 'bottom-bar'} onChange={(e) => up('position', e.target.value)}>
                         <option value="bottom-bar">Barra in basso</option>
@@ -507,11 +510,19 @@ export function SiteSettingsForm({ initial }: { initial: SiteSettings }) {
                     <div className="grid grid-cols-2 gap-3">
                       <Field label="Titolo EN"><Input value={(cb.titleEn as string) ?? ''} onChange={(e) => up('titleEn', e.target.value)} /></Field>
                       <Field label="Link privacy EN"><Input value={(cb.policyUrlEn as string) ?? ''} onChange={(e) => up('policyUrlEn', e.target.value)} /></Field>
+                      <Field label="Link cookie policy EN"><Input value={(cb.cookiePolicyUrlEn as string) ?? ''} onChange={(e) => up('cookiePolicyUrlEn', e.target.value)} /></Field>
                     </div>
                     <Field label="Messaggio EN"><Input value={(cb.messageEn as string) ?? ''} onChange={(e) => up('messageEn', e.target.value)} /></Field>
                     <div className="grid grid-cols-2 gap-3">
                       <Field label="Accetta EN"><Input value={(cb.acceptLabelEn as string) ?? ''} onChange={(e) => up('acceptLabelEn', e.target.value)} /></Field>
                       <Field label="Rifiuta EN"><Input value={(cb.declineLabelEn as string) ?? ''} onChange={(e) => up('declineLabelEn', e.target.value)} /></Field>
+                    </div>
+                    <p className="text-xs text-muted-foreground pt-2">Aspetto: vuoto = eredita dal tema del sito.</p>
+                    <div className="grid grid-cols-4 gap-3">
+                      <Field label="Sfondo"><Input value={(cb.bgColor as string) ?? ''} onChange={(e) => up('bgColor', e.target.value)} placeholder="tema" /></Field>
+                      <Field label="Testo"><Input value={(cb.textColor as string) ?? ''} onChange={(e) => up('textColor', e.target.value)} placeholder="tema" /></Field>
+                      <Field label="Accento"><Input value={(cb.accentColor as string) ?? ''} onChange={(e) => up('accentColor', e.target.value)} placeholder="primario" /></Field>
+                      <Field label="Raggio"><Input value={(cb.radius as string) ?? ''} onChange={(e) => up('radius', e.target.value)} placeholder="14px" /></Field>
                     </div>
                   </>
                 );
