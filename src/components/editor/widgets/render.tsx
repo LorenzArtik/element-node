@@ -608,7 +608,7 @@ function renderWidgetInner(el: ElementNode, opts: RenderOpts = {}): React.ReactN
         </span>
       );
       return (
-        <div style={{ overflow: 'hidden' }}>
+        <div style={{ overflow: 'hidden', maxWidth: '100%', contain: 'inline-size' }}>
           <style>{'@keyframes en-marquee { to { transform: translateX(-50%); } }'}</style>
           <div style={trackStyle}>{seq}{seq}</div>
         </div>
