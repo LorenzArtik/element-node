@@ -491,7 +491,7 @@ function renderWidgetInner(el: ElementNode, opts: RenderOpts = {}): React.ReactN
       return (
         <div style={boxStyle} data-box-container>
           {children.map((child) => (
-            <div key={child.id} style={{ minWidth: 0, flex: s.childrenFlex != null && s.childrenFlex !== '' ? String(s.childrenFlex) : undefined }}>{renderWidget(child)}</div>
+            <div key={child.id} style={{ minWidth: 0, flex: (child.settings as Record<string, unknown>)?._flex != null && (child.settings as Record<string, unknown>)._flex !== '' ? String((child.settings as Record<string, unknown>)._flex) : s.childrenFlex != null && s.childrenFlex !== '' ? String(s.childrenFlex) : undefined }}>{renderWidget(child)}</div>
           ))}
         </div>
       );
