@@ -59,7 +59,11 @@ function bgToCss(bg: string | BgObj | undefined): string | undefined {
   if (!bg) return undefined;
   if (typeof bg === 'string') return bg;
   const layers: string[] = [];
-  if (bg.overlay) layers.push(bg.overlay);
+  if (bg.overlay) {
+    // un colore puro non può stare nei layer intermedi del shorthand: avvolgilo in un gradient
+    const ov = /gradient\(/.test(bg.overlay) ? bg.overlay : `linear-gradient(${bg.overlay}, ${bg.overlay})`;
+    layers.push(ov);
+  }
   if (bg.image) {
     const size = bg.size ?? 'cover';
     const pos = bg.position ?? 'center';

@@ -534,9 +534,9 @@ function renderWidgetInner(el: ElementNode, opts: RenderOpts = {}): React.ReactN
           {items.map((it, i) => {
             const Ico = (LucideIcons as unknown as Record<string, React.ComponentType<{ size?: number; color?: string }>>)[it.icon || 'Check'] ?? LucideIcons.Check;
             const inner = (
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+              <span style={{ display: 'inline-flex', alignItems: 'flex-start', gap: 10 }}>
                 <Ico size={20} color={iconColor} />
-                <span>{it.text}</span>
+                {/<[a-z]/i.test(it.text) ? <span dangerouslySetInnerHTML={{ __html: it.text }} /> : <span>{it.text}</span>}
               </span>
             );
             return (
