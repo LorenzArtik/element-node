@@ -135,6 +135,12 @@ export const integrationsSchema = z.object({
   ga4Id: z.string().default(''),
   gtmId: z.string().default(''),
   // Licenza Element Node (aggiornamenti + supporto) — validata contro elementnode.cloud
+  siteAccess: z.object({
+    mode: z.enum(['public', 'maintenance', 'password']).default('public'),
+    password: z.string().default(''),
+    lockTitle: z.string().default('Sito in costruzione'),
+    lockMessage: z.string().default('Questo sito è protetto. Inserisci la password per accedere all\'anteprima.'),
+  }).default({}),
   cookieBanner: z.object({
     enabled: z.boolean().default(false),
     title: z.string().default('Cookie'),

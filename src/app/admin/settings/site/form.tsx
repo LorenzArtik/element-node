@@ -15,7 +15,7 @@ import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Cookie, Key, Save, Loader2, RotateCcw, Palette, Type, Layout, MousePointerClick, Code2, Image as ImageIcon, Wrench, Globe, Plug, Sparkles, Shield, Mail } from 'lucide-react';
+import { Lock, Cookie, Key, Save, Loader2, RotateCcw, Palette, Type, Layout, MousePointerClick, Code2, Image as ImageIcon, Wrench, Globe, Plug, Sparkles, Shield, Mail } from 'lucide-react';
 import { MediaField } from '@/components/editor/MediaField';
 import { FontPicker } from '@/components/admin/FontPicker';
 
@@ -571,6 +571,41 @@ export function SiteSettingsForm({ initial, defaultTab }: { initial: SiteSetting
 
         {/* ===== ADVANCED ===== */}
         <TabsContent value="advanced">
+          <Card className="mb-4">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2"><Lock className="h-4 w-4 text-primary" /> Accesso al sito</CardTitle>
+              <CardDescription>
+                Con &ldquo;Manutenzione&rdquo; o &ldquo;Protetto da password&rdquo; il sito NON viene indicizzato
+                (meta robots noindex + robots.txt Disallow) e gli admin loggati vedono sempre tutto.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4 max-w-2xl">
+              {(() => {
+                const sa = (data.integrations.siteAccess ?? {}) as Record<string, unknown>;
+                const up = (k: string, v: unknown) => updateIntegrations('siteAccess', { ...sa, [k]: v });
+                return (
+                  <>
+                    <Field label="Modalità">
+                      <select className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+                              value={(sa.mode as string) ?? 'public'} onChange={(e) => up('mode', e.target.value)}>
+                        <option value="public">Pubblico (online e indicizzabile)</option>
+                        <option value="password">Protetto da password (anteprima per il cliente)</option>
+                        <option value="maintenance">Manutenzione (pagina di cortesia)</option>
+                      </select>
+                    </Field>
+                    <Field label="Password di anteprima" help="Richiesta solo in modalità Protetto: chi la inserisce naviga il sito per 7 giorni.">
+                      <Input value={(sa.password as string) ?? ''} onChange={(e) => up('password', e.target.value)} placeholder="es. anteprima2026" />
+                    </Field>
+                    <div className="grid grid-cols-2 gap-3">
+                      <Field label="Titolo schermata"><Input value={(sa.lockTitle as string) ?? ''} onChange={(e) => up('lockTitle', e.target.value)} placeholder="Sito in costruzione" /></Field>
+                      <Field label="Messaggio"><Input value={(sa.lockMessage as string) ?? ''} onChange={(e) => up('lockMessage', e.target.value)} placeholder="Inserisci la password…" /></Field>
+                    </div>
+                  </>
+                );
+              })()}
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <CardTitle>Manutenzione</CardTitle>

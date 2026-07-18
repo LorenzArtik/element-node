@@ -1,27 +1,16 @@
 import { getSiteSettings } from '@/lib/site-settings';
 
-export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  const baseUrl = (process.env.AUTH_URL || process.env.PUBLIC_URL || 'http://localhost:3000').replace(/\/$/, '');
-  const site = await getSiteSettings();
-
-  // Se in manutenzione: blocca tutto
-  if (site.maintenance) {
-    return new Response(`User-agent: *\nDisallow: /\n`, { headers: { 'content-type': 'text/plain' } });
-  }
-
-  const txt = `User-agent: *
-Allow: /
-Disallow: /admin
-Disallow: /api
-Disallow: /editor
-Disallow: /login
-Disallow: /reset-password
-Disallow: /forgot-password
-
-Sitemap: ${baseUrl}/sitemap.xml
-`;
-  return new Response(txt, { headers: { 'content-type': 'text/plain; charset=utf-8' } });
+  let mode = 'public';
+  let base = process.env.PUBLIC_URL || '';
+  try {
+    const site = await getSiteSettings();
+    mode = (site.integrations as { siteAccess?: { mode?: string } }).siteAccess?.mode ?? 'public';
+  } catch { /* pre-install */ }
+  const body = mode !== 'public'
+    ? 'User-agent: *\nDisallow: /\n'
+    : `User-agent: *\nAllow: /\n${base ? `Sitemap: ${base.replace(/\/$/, '')}/sitemap.xml\n` : ''}`;
+  return new Response(body, { headers: { 'content-type': 'text/plain' } });
 }

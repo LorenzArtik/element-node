@@ -6,6 +6,9 @@ import { PageRenderer } from './PageRenderer';
 import { PublicProviderClient } from './PublicProviderClient';
 import { PopupRunner } from './PopupRunner';
 import { CookieBanner, type CookieBannerSettings } from './CookieBanner';
+import { LockScreen } from './LockScreen';
+import { resolveSiteAccess } from '@/lib/site-access';
+import MaintenancePage from '@/app/maintenance/page';
 import type { RenderPost } from './render-context';
 
 interface Props {
@@ -17,6 +20,13 @@ interface Props {
 
 export async function PublicShell({ content, page, path, post }: Props) {
   const [session, site] = await Promise.all([auth(), getSiteSettings()]);
+  const { access, allowed } = await resolveSiteAccess();
+  if (!allowed && access.mode === 'maintenance') {
+    return <MaintenancePage />;
+  }
+  if (!allowed && access.mode === 'password') {
+    return <LockScreen siteName={site.name} title={access.lockTitle || 'Sito in costruzione'} message={access.lockMessage || 'Questo sito è protetto. Inserisci la password per accedere all\'anteprima.'} />;
+  }
   const userRole = session?.user?.role ?? null;
   const ctx = { path, isHomepage: page.isHomepage, pageSlug: page.slug, userRole };
 
