@@ -501,6 +501,7 @@ function renderWidgetInner(el: ElementNode, opts: RenderOpts = {}): React.ReactN
     }
 
     case 'html':
+      if (s.consentGate && !editable) return <ConsentGatedHtml code={(s.code as string) || ''} note={(s.consentNote as string) || ''} />;
       return <div dangerouslySetInnerHTML={{ __html: (s.code as string) || '' }} />;
 
     case 'contact-form':
@@ -1934,6 +1935,40 @@ function Gallery({ settings }: { settings: Record<string, unknown> }) {
         // eslint-disable-next-line @next/next/no-img-element
         <img key={i} src={img.src} alt={img.alt || ''} style={{ width: '100%', aspectRatio: '1/1', objectFit: 'cover', borderRadius: 6 }} />
       ))}
+    </div>
+  );
+}
+
+
+/** Contenuto html di terze parti mostrato solo dopo il consenso cookie (widget html.consentGate). */
+function ConsentGatedHtml({ code, note }: { code: string; note: string }) {
+  const [consent, setConsentState] = useState<string | null>(null);
+  useEffect(() => {
+    try { setConsentState(localStorage.getItem('en-cookie-consent')); } catch { /* no storage */ }
+    const onChange = (e: Event) => setConsentState((e as CustomEvent).detail as string);
+    window.addEventListener('en-consent-changed', onChange);
+    return () => window.removeEventListener('en-consent-changed', onChange);
+  }, []);
+  if (consent === 'accepted') return <div dangerouslySetInnerHTML={{ __html: code }} />;
+  return (
+    <div style={{
+      minHeight: 320, height: '100%', borderRadius: 18, border: '1px dashed var(--en-color-border, #d1d5db)',
+      background: 'var(--en-color-surface, #f8f8f7)', display: 'flex', flexDirection: 'column',
+      alignItems: 'center', justifyContent: 'center', gap: 12, padding: 24, textAlign: 'center',
+    }}>
+      <span style={{ fontSize: 14, color: 'var(--en-color-text-muted, #6b7280)', maxWidth: 380 }}>
+        {note || 'Questo contenuto è fornito da terze parti e può impostare cookie. Accetta i cookie per visualizzarlo.'}
+      </span>
+      <button
+        onClick={() => {
+          try { localStorage.setItem('en-cookie-consent', 'accepted'); } catch { /* no storage */ }
+          window.dispatchEvent(new CustomEvent('en-consent-changed', { detail: 'accepted' }));
+        }}
+        style={{ border: 0, background: 'var(--en-color-primary, #92003b)', color: '#fff', borderRadius: 10,
+                 padding: '10px 20px', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}
+      >
+        Accetta e carica
+      </button>
     </div>
   );
 }

@@ -135,6 +135,20 @@ export const integrationsSchema = z.object({
   ga4Id: z.string().default(''),
   gtmId: z.string().default(''),
   // Licenza Element Node (aggiornamenti + supporto) — validata contro elementnode.cloud
+  cookieBanner: z.object({
+    enabled: z.boolean().default(false),
+    title: z.string().default('Cookie'),
+    message: z.string().default('Questo sito usa cookie tecnici e, previo consenso, contenuti di terze parti (es. mappe) che possono impostare cookie.'),
+    acceptLabel: z.string().default('Accetta'),
+    declineLabel: z.string().default('Rifiuta'),
+    policyUrl: z.string().default('/privacy'),
+    titleEn: z.string().default(''),
+    messageEn: z.string().default(''),
+    acceptLabelEn: z.string().default(''),
+    declineLabelEn: z.string().default(''),
+    policyUrlEn: z.string().default(''),
+    position: z.enum(['bottom-bar', 'bottom-left', 'bottom-right']).default('bottom-bar'),
+  }).default({}),
   licenseKey: z.string().default(''),
   licenseCache: z.object({
     valid: z.boolean().default(false),

@@ -450,7 +450,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
   },
   html: {
     type: 'html', label: 'HTML', icon: 'Code2', category: 'basic', order: 19,
-    defaults: { code: '<div>Inserisci HTML personalizzato.</div>' },
+    defaults: { code: '<div>Inserisci HTML personalizzato.</div>' , consentGate: false, consentNote: ''},
     fields: [{ key: 'code', label: 'Codice HTML', control: 'textarea' }],
   },
   box: {
@@ -489,6 +489,8 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
       { key: 'minHeight', label: 'Altezza minima', control: 'text', placeholder: 'es. 200px' },
       { key: 'sticky', label: 'Fisso allo scroll (sidebar)', control: 'switch' },
       { key: 'stickyTop', label: 'Offset sticky', control: 'text', placeholder: '96px' },
+      { key: 'consentGate', label: 'Richiedi consenso cookie (terze parti)', control: 'toggle' },
+      { key: 'consentNote', label: 'Messaggio placeholder consenso', control: 'text' },
     ],
   },
 

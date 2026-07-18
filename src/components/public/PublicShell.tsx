@@ -5,6 +5,7 @@ import type { PageContent } from '@/lib/widgets-schema';
 import { PageRenderer } from './PageRenderer';
 import { PublicProviderClient } from './PublicProviderClient';
 import { PopupRunner } from './PopupRunner';
+import { CookieBanner, type CookieBannerSettings } from './CookieBanner';
 import type { RenderPost } from './render-context';
 
 interface Props {
@@ -42,6 +43,9 @@ export async function PublicShell({ content, page, path, post }: Props) {
         </footer>
       )}
       <PopupRunner path={path} />
+      {(site.integrations as { cookieBanner?: CookieBannerSettings }).cookieBanner?.enabled && (
+        <CookieBanner settings={(site.integrations as { cookieBanner: CookieBannerSettings }).cookieBanner} path={path} />
+      )}
     </PublicProviderClient>
   );
 }

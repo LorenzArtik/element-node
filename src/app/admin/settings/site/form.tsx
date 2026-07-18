@@ -15,7 +15,7 @@ import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Key, Save, Loader2, RotateCcw, Palette, Type, Layout, MousePointerClick, Code2, Image as ImageIcon, Wrench, Globe, Plug, Sparkles, Shield, Mail } from 'lucide-react';
+import { Cookie, Key, Save, Loader2, RotateCcw, Palette, Type, Layout, MousePointerClick, Code2, Image as ImageIcon, Wrench, Globe, Plug, Sparkles, Shield, Mail } from 'lucide-react';
 import { MediaField } from '@/components/editor/MediaField';
 import { FontPicker } from '@/components/admin/FontPicker';
 
@@ -94,6 +94,7 @@ export function SiteSettingsForm({ initial }: { initial: SiteSettings }) {
           <TabsTrigger value="layout"><Layout className="h-3.5 w-3.5 mr-1" />Layout</TabsTrigger>
           <TabsTrigger value="buttons"><MousePointerClick className="h-3.5 w-3.5 mr-1" />Buttons</TabsTrigger>
           <TabsTrigger value="integrations"><Plug className="h-3.5 w-3.5 mr-1" />API</TabsTrigger>
+          <TabsTrigger value="privacy"><Cookie className="h-3.5 w-3.5 mr-1" />Privacy</TabsTrigger>
           <TabsTrigger value="code"><Code2 className="h-3.5 w-3.5 mr-1" />Codice</TabsTrigger>
           <TabsTrigger value="advanced"><Wrench className="h-3.5 w-3.5 mr-1" />Avanzate</TabsTrigger>
         </TabsList>
@@ -469,6 +470,56 @@ export function SiteSettingsForm({ initial }: { initial: SiteSettings }) {
         </TabsContent>
 
         {/* ===== CODE ===== */}
+        <TabsContent value="privacy">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2"><Cookie className="h-4 w-4 text-primary" /> Banner cookie</CardTitle>
+              <CardDescription>
+                Banner di consenso nativo: mostra Accetta/Rifiuta e sblocca i contenuti di terze parti
+                (widget HTML con &ldquo;Richiedi consenso cookie&rdquo;). Lo stato è salvato nel browser del visitatore.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4 max-w-2xl">
+              {(() => {
+                const cb = (data.integrations.cookieBanner ?? {}) as Record<string, unknown>;
+                const up = (k: string, v: unknown) => updateIntegrations('cookieBanner', { ...cb, [k]: v });
+                return (
+                  <>
+                    <label className="flex items-center gap-2 text-sm font-medium">
+                      <input type="checkbox" checked={!!cb.enabled} onChange={(e) => up('enabled', e.target.checked)} />
+                      Banner attivo
+                    </label>
+                    <Field label="Titolo"><Input value={(cb.title as string) ?? 'Cookie'} onChange={(e) => up('title', e.target.value)} /></Field>
+                    <Field label="Messaggio"><Input value={(cb.message as string) ?? ''} onChange={(e) => up('message', e.target.value)} /></Field>
+                    <div className="grid grid-cols-2 gap-3">
+                      <Field label="Etichetta Accetta"><Input value={(cb.acceptLabel as string) ?? 'Accetta'} onChange={(e) => up('acceptLabel', e.target.value)} /></Field>
+                      <Field label="Etichetta Rifiuta"><Input value={(cb.declineLabel as string) ?? 'Rifiuta'} onChange={(e) => up('declineLabel', e.target.value)} /></Field>
+                    </div>
+                    <Field label="Link privacy policy"><Input value={(cb.policyUrl as string) ?? '/privacy'} onChange={(e) => up('policyUrl', e.target.value)} /></Field>
+                    <Field label="Posizione">
+                      <select className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm" value={(cb.position as string) ?? 'bottom-bar'} onChange={(e) => up('position', e.target.value)}>
+                        <option value="bottom-bar">Barra in basso</option>
+                        <option value="bottom-left">Card in basso a sinistra</option>
+                        <option value="bottom-right">Card in basso a destra</option>
+                      </select>
+                    </Field>
+                    <p className="text-xs text-muted-foreground pt-2">Varianti inglesi (facoltative, usate sui percorsi /en):</p>
+                    <div className="grid grid-cols-2 gap-3">
+                      <Field label="Titolo EN"><Input value={(cb.titleEn as string) ?? ''} onChange={(e) => up('titleEn', e.target.value)} /></Field>
+                      <Field label="Link privacy EN"><Input value={(cb.policyUrlEn as string) ?? ''} onChange={(e) => up('policyUrlEn', e.target.value)} /></Field>
+                    </div>
+                    <Field label="Messaggio EN"><Input value={(cb.messageEn as string) ?? ''} onChange={(e) => up('messageEn', e.target.value)} /></Field>
+                    <div className="grid grid-cols-2 gap-3">
+                      <Field label="Accetta EN"><Input value={(cb.acceptLabelEn as string) ?? ''} onChange={(e) => up('acceptLabelEn', e.target.value)} /></Field>
+                      <Field label="Rifiuta EN"><Input value={(cb.declineLabelEn as string) ?? ''} onChange={(e) => up('declineLabelEn', e.target.value)} /></Field>
+                    </div>
+                  </>
+                );
+              })()}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="code">
           <Card>
             <CardHeader>
