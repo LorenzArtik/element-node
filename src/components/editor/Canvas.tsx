@@ -19,7 +19,10 @@ const DEVICE_WIDTH = { desktop: '100%', tablet: '768px', mobile: '375px' } as co
 function bgObjToCss(bg: Record<string, unknown>): string | undefined {
   if (!bg) return undefined;
   const layers: string[] = [];
-  if (bg.overlay) layers.push(bg.overlay as string);
+  if (bg.overlay) {
+    const ov = /gradient\(/.test(String(bg.overlay)) ? (bg.overlay as string) : `linear-gradient(${bg.overlay}, ${bg.overlay})`;
+    layers.push(ov);
+  }
   if (bg.image) {
     const size = (bg.size as string) ?? 'cover';
     const pos = (bg.position as string) ?? 'center';
@@ -148,7 +151,7 @@ function SectionView({ section, index }: { section: SectionNode; index: number }
   const addColumn = useEditor((s) => s.addColumn);
 
   const isSelected = selected?.kind === 'section' && selected.sectionId === section.id;
-  const settings = section.settings as { padding?: string; background?: string; gap?: string; color?: string };
+  const settings = section.settings as { padding?: string; background?: string; gap?: string; color?: string; maxWidth?: string; containerWidth?: string; marginTop?: string | number };
 
   const { attributes, listeners, setNodeRef, isDragging: dragging } = useDraggable({
     id: `section-${section.id}`,
@@ -198,7 +201,7 @@ function SectionView({ section, index }: { section: SectionNode; index: number }
             </button>
           </div>
 
-          <div className="flex flex-wrap w-full" style={{ gap: settings.gap ?? '0' }}>
+          <div className="flex flex-wrap w-full" style={{ gap: settings.gap ?? '0', maxWidth: settings.maxWidth ?? settings.containerWidth ?? undefined, marginLeft: 'auto', marginRight: 'auto' }}>
             {section.columns.map((col) => (
               <ColumnView key={col.id} sectionId={section.id} column={col} />
             ))}
