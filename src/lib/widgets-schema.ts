@@ -335,7 +335,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
   },
   counter: {
     type: 'counter', label: 'Contatore', icon: 'Hash', category: 'basic', order: 12,
-    defaults: { from: 0, to: 100, duration: 2000, prefix: '', suffix: '+', label: 'Clienti soddisfatti', size: '64px', color: '', labelColor: '', labelSize: '', labelWeight: '' },
+    defaults: { from: 0, to: 100, duration: 2000, prefix: '', suffix: '+', label: 'Clienti soddisfatti', size: '64px', color: '', labelColor: '', labelSize: '', labelWeight: '' , accentColor: ''},
     fields: [
       { key: 'from', label: 'Da', control: 'number' },
       { key: 'to', label: 'A', control: 'number' },
@@ -345,6 +345,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
       { key: 'label', label: 'Etichetta', control: 'text' },
       { key: 'size', label: 'Dimensione', control: 'text' },
       { key: 'color', label: 'Colore', control: 'color' },
+      { key: 'accentColor', label: 'Colore prefisso/suffisso', control: 'color' },
       { key: 'labelColor', label: 'Colore etichetta', control: 'color' },
       { key: 'labelSize', label: 'Dimensione etichetta', control: 'text', placeholder: 'es. 15px' },
       { key: 'labelWeight', label: 'Peso etichetta', control: 'select', options: ['300','400','500','600','700'].map(v => ({ value: v, label: v })) },
@@ -459,7 +460,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
       background: '', borderRadius: '', padding: '', border: '', boxShadow: 'none',
       minHeight: '', sticky: false, stickyTop: '96px',
       children: [],
-    },
+    , overflow: '', link: ''},
     fields: [
       { key: 'direction', label: 'Direzione', control: 'select', options: [
         { value: 'column', label: 'Colonna (impilati)' },

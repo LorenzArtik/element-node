@@ -487,15 +487,17 @@ function renderWidgetInner(el: ElementNode, opts: RenderOpts = {}): React.ReactN
         border: (s.border as string) || undefined,
         boxShadow: (s.boxShadow as string) && s.boxShadow !== 'none' ? (s.boxShadow as string) : undefined,
         minHeight: (s.minHeight as string) || undefined,
+        overflow: (s.overflow as string) || undefined,
         ...(s.sticky ? { position: 'sticky' as const, top: (s.stickyTop as string) || '96px' } : {}),
       };
-      return (
+      const boxInner = (
         <div style={boxStyle} data-box-container>
           {children.map((child) => (
             <div key={child.id} style={{ minWidth: 0, flex: (child.settings as Record<string, unknown>)?._flex != null && (child.settings as Record<string, unknown>)._flex !== '' ? String((child.settings as Record<string, unknown>)._flex) : s.childrenFlex != null && s.childrenFlex !== '' ? String(s.childrenFlex) : undefined }}>{renderWidget(child)}</div>
           ))}
         </div>
       );
+      return s.link ? <a href={s.link as string} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>{boxInner}</a> : boxInner;
     }
 
     case 'html':
@@ -1694,7 +1696,9 @@ function CounterWidget({ settings }: { settings: Record<string, unknown> }) {
   return (
     <div ref={ref} style={{ textAlign: 'center' }}>
       <div style={{ fontSize: (settings.size as string) || '4rem', fontWeight: 800, color: (settings.color as string) || 'var(--en-color-primary, #92003b)', lineHeight: 1 }}>
-        {(settings.prefix as string) || ''}{val}{(settings.suffix as string) || ''}
+        {settings.prefix ? <span style={{ color: (settings.accentColor as string) || undefined }}>{settings.prefix as string}</span> : null}
+        {val}
+        {settings.suffix ? <span style={{ color: (settings.accentColor as string) || undefined }}>{settings.suffix as string}</span> : null}
       </div>
       {settings.label ? (
         <div style={{
