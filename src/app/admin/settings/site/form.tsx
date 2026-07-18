@@ -587,7 +587,8 @@ export function SiteSettingsForm({ initial, defaultTab }: { initial: SiteSetting
                   <>
                     <Field label="Modalità">
                       <select className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
-                              value={(sa.mode as string) ?? 'public'} onChange={(e) => up('mode', e.target.value)}>
+                              value={(sa.mode as string) ?? 'public'}
+                              onChange={(e) => { up('mode', e.target.value); update('maintenance', e.target.value === 'maintenance'); }}>
                         <option value="public">Pubblico (online e indicizzabile)</option>
                         <option value="password">Protetto da password (anteprima per il cliente)</option>
                         <option value="maintenance">Manutenzione (pagina di cortesia)</option>
@@ -598,35 +599,16 @@ export function SiteSettingsForm({ initial, defaultTab }: { initial: SiteSetting
                     </Field>
                     <div className="grid grid-cols-2 gap-3">
                       <Field label="Titolo schermata"><Input value={(sa.lockTitle as string) ?? ''} onChange={(e) => up('lockTitle', e.target.value)} placeholder="Sito in costruzione" /></Field>
-                      <Field label="Messaggio"><Input value={(sa.lockMessage as string) ?? ''} onChange={(e) => up('lockMessage', e.target.value)} placeholder="Inserisci la password…" /></Field>
+                      <Field label="Messaggio schermata"><Input value={(sa.lockMessage as string) ?? ''} onChange={(e) => up('lockMessage', e.target.value)} placeholder="Inserisci la password…" /></Field>
                     </div>
+                    <Field label="Messaggio di manutenzione" help="Mostrato in modalità Manutenzione al posto del sito.">
+                      <Textarea rows={3} value={data.maintenanceMessage ?? ''}
+                                onChange={(e) => update('maintenanceMessage', e.target.value || null)}
+                                placeholder="Stiamo facendo manutenzione. Torneremo presto." />
+                    </Field>
                   </>
                 );
               })()}
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Manutenzione</CardTitle>
-              <CardDescription>Modalità manutenzione: il sito pubblico mostra una pagina di blocco. Il backoffice resta accessibile.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-5 max-w-2xl">
-              <div className="flex items-center justify-between p-3 border rounded-lg">
-                <div>
-                  <Label className="font-medium">Modalità manutenzione</Label>
-                  <p className="text-xs text-muted-foreground mt-0.5">Quando attiva, il sito pubblico mostra solo il messaggio configurato</p>
-                </div>
-                <Switch checked={data.maintenance} onCheckedChange={(v) => update('maintenance', v)} />
-              </div>
-              <Field label="Messaggio di manutenzione">
-                <Textarea
-                  rows={4}
-                  value={data.maintenanceMessage ?? ''}
-                  onChange={(e) => update('maintenanceMessage', e.target.value || null)}
-                  placeholder="Stiamo facendo manutenzione. Torneremo presto."
-                />
-              </Field>
             </CardContent>
           </Card>
         </TabsContent>
