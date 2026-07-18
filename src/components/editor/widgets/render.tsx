@@ -531,7 +531,7 @@ function renderWidgetInner(el: ElementNode, opts: RenderOpts = {}): React.ReactN
       const spacing = (s.spacing as number) ?? 12;
       const iconColor = (s.iconColor as string) || '#92003b';
       return (
-        <ul style={{ listStyle: 'none', margin: 0, padding: 0, textAlign: align, ...(s.direction === 'row' ? { display: 'flex', flexWrap: 'wrap' as const, gap: spacing, alignItems: 'center', justifyContent: align === 'center' ? 'center' : align === 'right' ? 'flex-end' : 'flex-start' } : {}) }}>
+        <ul style={{ listStyle: 'none', margin: 0, padding: 0, textAlign: align, color: (s.textColor as string) || undefined, ...(s.direction === 'row' ? { display: 'flex', flexWrap: 'wrap' as const, gap: spacing, alignItems: 'center', justifyContent: align === 'center' ? 'center' : align === 'right' ? 'flex-end' : 'flex-start' } : {}) }}>
           {items.map((it, i) => {
             const Ico = (LucideIcons as unknown as Record<string, React.ComponentType<{ size?: number; color?: string }>>)[it.icon || 'Check'] ?? LucideIcons.Check;
             const inner = (
