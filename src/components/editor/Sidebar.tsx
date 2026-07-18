@@ -6,18 +6,35 @@ import { useDraggable } from '@dnd-kit/core';
 import { WIDGETS, WIDGET_CATEGORIES, WidgetType, WidgetCategory, getWidgetsByCategory } from '@/lib/widgets-schema';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Search, LayoutGrid, Globe, Sparkles, ChevronDown, Grip } from 'lucide-react';
+import { Search, LayoutGrid, Globe, Sparkles, ChevronDown, Grip, Lock } from 'lucide-react';
+import { isWidgetLocked, requiredPlanFor, type LicenseTier } from '@/lib/license-features';
 import { useEditor } from '@/lib/editor-store';
 import { PropertyPanelContent } from './PropertyPanel';
 import { GlobalsPanel } from './GlobalsPanel';
 
-function WidgetCard({ type }: { type: WidgetType }) {
+function WidgetCard({ type, tier }: { type: WidgetType; tier: LicenseTier }) {
   const w = WIDGETS[type];
   const Icon = (LucideIcons as unknown as Record<string, React.ComponentType<{ className?: string }>>)[w.icon] ?? LucideIcons.Box;
+  const locked = isWidgetLocked(type, tier);
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `widget-${type}`,
     data: { kind: 'new-widget', widgetType: type },
+    disabled: locked,
   });
+
+  if (locked) {
+    return (
+      <button
+        onClick={() => window.open('https://elementnode.cloud/it/pricing', '_blank', 'noopener')}
+        className="group relative flex flex-col items-center justify-center gap-1.5 p-3 rounded-md bg-card border border-transparent opacity-60 hover:opacity-100 hover:border-amber-300/60 transition-all select-none"
+        title={`${w.label} — disponibile dal piano ${requiredPlanFor(type)}. Clicca per i piani.`}
+      >
+        <Lock className="absolute right-1.5 top-1.5 h-3 w-3 text-amber-500" />
+        <Icon className="h-6 w-6 text-muted-foreground" strokeWidth={1.5} />
+        <div className="text-[11px] font-medium text-center leading-tight text-muted-foreground">{w.label}</div>
+      </button>
+    );
+  }
 
   return (
     <div
@@ -35,7 +52,7 @@ function WidgetCard({ type }: { type: WidgetType }) {
   );
 }
 
-function CategorySection({ category, widgets }: { category: WidgetCategory; widgets: typeof WIDGETS[WidgetType][] }) {
+function CategorySection({ category, widgets, tier }: { category: WidgetCategory; widgets: typeof WIDGETS[WidgetType][]; tier: LicenseTier }) {
   const [open, setOpen] = useState(true);
   const cat = WIDGET_CATEGORIES.find((c) => c.key === category);
   if (widgets.length === 0) return null;
@@ -53,7 +70,7 @@ function CategorySection({ category, widgets }: { category: WidgetCategory; widg
       </button>
       {open && (
         <div className="grid grid-cols-2 gap-px bg-border p-px">
-          {widgets.map((w) => <WidgetCard key={w.type} type={w.type} />)}
+          {widgets.map((w) => <WidgetCard key={w.type} type={w.type} tier={tier} />)}
         </div>
       )}
     </div>
@@ -97,6 +114,13 @@ export function Sidebar() {
 function WidgetsListView() {
   const [q, setQ] = useState('');
   const [tab, setTab] = useState<'elements' | 'globals'>('elements');
+  const [tier, setTier] = useState<LicenseTier>('full');
+  useEffect(() => {
+    fetch('/api/admin/license-tier')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => { if (j?.tier) setTier(j.tier as LicenseTier); })
+      .catch(() => { /* fail-open: senza risposta non blocchiamo nulla */ });
+  }, []);
   const allWidgets = Object.values(WIDGETS);
   const filtered = allWidgets.filter((w) => w.label.toLowerCase().includes(q.toLowerCase()));
 
@@ -152,7 +176,7 @@ function WidgetsListView() {
           <ScrollArea className="flex-1">
             {q ? (
               <div className="p-px grid grid-cols-2 gap-px bg-border">
-                {filtered.map((w) => <WidgetCard key={w.type} type={w.type} />)}
+                {filtered.map((w) => <WidgetCard key={w.type} type={w.type} tier={tier} />)}
                 {filtered.length === 0 && (
                   <div className="col-span-2 p-8 text-center text-xs text-muted-foreground">Nessun risultato per &ldquo;{q}&rdquo;</div>
                 )}
@@ -160,7 +184,7 @@ function WidgetsListView() {
             ) : (
               <>
                 {WIDGET_CATEGORIES.map((cat) => (
-                  <CategorySection key={cat.key} category={cat.key} widgets={getWidgetsByCategory(cat.key)} />
+                  <CategorySection key={cat.key} category={cat.key} widgets={getWidgetsByCategory(cat.key)} tier={tier} />
                 ))}
               </>
             )}
