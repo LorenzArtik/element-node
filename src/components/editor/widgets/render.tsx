@@ -1879,7 +1879,7 @@ function renderInput(f: DynamicField): React.ReactNode {
       return (
         <label style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 14 }}>
           <input type="checkbox" name={f.name} required={f.required} value="yes" style={{ marginTop: 2 }} />
-          <span>{f.label}</span>
+          {/<[a-z]/i.test(f.label) ? <span dangerouslySetInnerHTML={{ __html: f.label }} /> : <span>{f.label}</span>}
         </label>
       );
     case 'file':
