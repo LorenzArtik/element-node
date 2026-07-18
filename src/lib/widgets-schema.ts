@@ -459,8 +459,8 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
       direction: 'column', gap: 12, align: 'stretch', justify: 'flex-start', wrap: false,
       background: '', borderRadius: '', padding: '', border: '', boxShadow: 'none',
       minHeight: '', sticky: false, stickyTop: '96px',
-      children: [],
-    , overflow: '', link: ''},
+      children: [], overflow: '', link: '',
+    },
     fields: [
       { key: 'direction', label: 'Direzione', control: 'select', options: [
         { value: 'column', label: 'Colonna (impilati)' },
