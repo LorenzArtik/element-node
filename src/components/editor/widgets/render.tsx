@@ -1804,7 +1804,7 @@ function ContactForm({ settings }: { settings: Record<string, unknown> }) {
         const err = errors[f.name];
         return (
           <div key={f.name} style={{ gridColumn: `span ${w}` }}>
-            {f.type !== 'hidden' && f.type !== 'consent' && (
+            {f.type !== 'hidden' && f.type !== 'consent' && f.type !== 'checkbox' && (
               <label style={{ display: 'block', fontSize: 13, fontWeight: 500, marginBottom: 4 }}>
                 {f.label}{f.required && <span style={{ color: 'var(--en-color-danger, #ef4444)' }}> *</span>}
               </label>
