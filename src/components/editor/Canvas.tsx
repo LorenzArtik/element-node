@@ -287,6 +287,7 @@ function ColumnView({ sectionId, column }: { sectionId: string; column: ColumnNo
           className={`column-outline relative group/col ${isSelected ? 'selected' : ''}`}
           style={{
             flex: `0 0 ${column.width}%`,
+            minWidth: 0,
             maxWidth: `${column.width}%`,
             padding: settings.padding ?? '10px',
             background: typeof settings.background === 'object' ? bgObjToCss(settings.background as Record<string, unknown>) : settings.background,
