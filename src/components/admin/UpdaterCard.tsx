@@ -79,7 +79,7 @@ export function UpdaterCard() {
   const start = async () => {
     setStarting(true);
     try {
-      const res = await fetch('/api/admin/self-update', { method: 'POST' });
+      const res = await fetch('/api/admin/self-update', { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' });
       if (res.ok) {
         setRunning(true);
         wasRunning.current = true;
