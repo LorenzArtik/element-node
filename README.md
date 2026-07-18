@@ -1,5 +1,19 @@
 # Element Node
 
+## Installazione rapida
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/LorenzArtik/element-node/main/install.sh)
+```
+
+Requisiti: Node.js ≥ 20, MySQL/MariaDB. Lo script clona il repo, installa le dipendenze,
+crea `.env` e lo schema DB, compila e ti lascia al wizard `/install` (admin, sito, AI).
+Per Plesk vedi [PLESK_DEPLOY.md](PLESK_DEPLOY.md).
+
+**Il CMS è gratuito.** La [licenza](https://elementnode.cloud/it/pricing) attiva
+aggiornamenti gestiti, patch di sicurezza e supporto (Impostazioni → Licenza nel pannello).
+
+
 CMS visuale moderno costruito con **Next.js 15 + MySQL/Prisma** che replica l'editor di **Elementor PRO** con un'interfaccia molto più moderna di WordPress, **AI integrata (Claude di Anthropic)** per generare e modificare contenuti via prompt, e deploy diretto su **Plesk**.
 
 ## Highlights
