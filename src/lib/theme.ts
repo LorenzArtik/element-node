@@ -134,6 +134,15 @@ export const integrationsSchema = z.object({
   // Google Analytics / GTM
   ga4Id: z.string().default(''),
   gtmId: z.string().default(''),
+  // Licenza Element Node (aggiornamenti + supporto) — validata contro elementnode.cloud
+  licenseKey: z.string().default(''),
+  licenseCache: z.object({
+    valid: z.boolean().default(false),
+    plan: z.string().default(''),
+    reason: z.string().default(''),
+    checkedAt: z.string().default(''),
+    currentPeriodEnd: z.string().nullable().default(null),
+  }).default({}),
 });
 
 export type Integrations = z.infer<typeof integrationsSchema>;

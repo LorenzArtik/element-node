@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { auth } from '@/lib/auth';
 import { getSiteSettings, updateSiteSettings } from '@/lib/site-settings';
-import { themeSchema } from '@/lib/theme';
+import { themeSchema, integrationsSchema } from '@/lib/theme';
 import { ApiError, handleApiError } from '@/lib/api-error';
 import { assertCan } from '@/lib/permissions';
 import { logAudit } from '@/lib/audit';
@@ -35,6 +35,7 @@ const patchSchema = z.object({
   defaultLocale: z.string().min(2).max(8).optional(),
   maintenance: z.boolean().optional(),
   maintenanceMessage: z.string().max(2_000).nullable().optional(),
+  integrations: integrationsSchema.optional(),
 });
 
 export async function PATCH(req: NextRequest) {

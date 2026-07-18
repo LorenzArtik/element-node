@@ -10,6 +10,7 @@ import { ThemeProvider } from '@/components/providers/theme';
 import { NavigationProgress } from '@/components/admin/NavigationProgress';
 import { UserMenu } from '@/components/admin/UserMenu';
 import { ROLE_LABELS } from '@/lib/permissions';
+import { getLicenseInfo } from '@/lib/license-client';
 
 const NAV_GROUPS = [
   {
@@ -49,6 +50,7 @@ const NAV_GROUPS = [
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
   if (!session?.user) redirect('/login');
+  const license = await getLicenseInfo().catch(() => ({ key: '', valid: true, plan: '', reason: '', checkedAt: '', currentPeriodEnd: null }));
 
   const roleLabel = ROLE_LABELS[session.user.role as keyof typeof ROLE_LABELS] ?? session.user.role;
 
@@ -141,7 +143,17 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </div>
         </aside>
 
-        <main className="ml-64 min-h-screen">{children}</main>
+        <main className="ml-64 min-h-screen">
+          {!license.valid && (
+            <div className="border-b border-amber-200 bg-amber-50 px-8 py-2 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-200">
+              {license.key
+                ? 'Licenza non attiva: aggiornamenti e supporto sospesi. '
+                : 'Aggiornamenti non attivi: inserisci la licenza per ricevere update e patch di sicurezza. '}
+              <Link href="/admin/settings/site" className="font-medium underline underline-offset-2">Gestisci licenza</Link>
+            </div>
+          )}
+          {children}
+        </main>
       </div>
       </ThemeProvider>
     </AuthProvider>

@@ -14,7 +14,7 @@ import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Save, Loader2, RotateCcw, Palette, Type, Layout, MousePointerClick, Code2, Image as ImageIcon, Wrench, Globe, Plug, Sparkles, Shield, Mail } from 'lucide-react';
+import { Key, Save, Loader2, RotateCcw, Palette, Type, Layout, MousePointerClick, Code2, Image as ImageIcon, Wrench, Globe, Plug, Sparkles, Shield, Mail } from 'lucide-react';
 import { MediaField } from '@/components/editor/MediaField';
 import { FontPicker } from '@/components/admin/FontPicker';
 
@@ -302,6 +302,29 @@ export function SiteSettingsForm({ initial }: { initial: SiteSettings }) {
         {/* ===== INTEGRATIONS ===== */}
         <TabsContent value="integrations">
           <div className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2"><Key className="h-4 w-4 text-primary" /> Licenza Element Node</CardTitle>
+                <CardDescription>
+                  La licenza attiva aggiornamenti gestiti, patch di sicurezza e supporto.{' '}
+                  <a href="https://elementnode.cloud/it/pricing" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">Acquista o gestisci →</a>
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4 max-w-2xl">
+                <Field label="Chiave di licenza" help="Formato enl_XXXX-XXXX-XXXX-XXXX — la ricevi via email dopo l'acquisto. La validazione avviene automaticamente entro qualche minuto dal salvataggio.">
+                  <Input value={data.integrations.licenseKey ?? ''} onChange={(e) => updateIntegrations('licenseKey', e.target.value.trim())} placeholder="enl_XXXX-XXXX-XXXX-XXXX" />
+                </Field>
+                {data.integrations.licenseCache?.checkedAt ? (
+                  <p className="text-xs text-muted-foreground">
+                    Stato: {data.integrations.licenseCache.valid
+                      ? `✓ attiva (${data.integrations.licenseCache.plan})`
+                      : `non attiva${data.integrations.licenseCache.reason ? ` — ${data.integrations.licenseCache.reason}` : ''}`}
+                    {' · '}ultimo controllo {new Date(data.integrations.licenseCache.checkedAt).toLocaleString('it-IT')}
+                  </p>
+                ) : null}
+              </CardContent>
+            </Card>
+
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2"><Sparkles className="h-4 w-4 text-primary" /> AI Anthropic (Claude)</CardTitle>
