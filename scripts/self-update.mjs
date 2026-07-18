@@ -44,8 +44,11 @@ function run(cmd, args, opts = {}) {
   const out = execFileSync(cmd, args, {
     cwd: ROOT,
     env: {
-      ...process.env,
-      PATH: `${dirname(process.execPath)}:${process.env.PATH || ''}`,
+      // env minimale: ereditare quello del server Next in esecuzione rompe `next build`
+      PATH: `${dirname(process.execPath)}:${process.env.PATH || '/usr/local/bin:/usr/bin:/bin'}`,
+      HOME: process.env.HOME || ROOT,
+      USER: process.env.USER || '',
+      LANG: process.env.LANG || 'en_US.UTF-8',
       NODE_OPTIONS: '--max-old-space-size=2048',
     },
     stdio: ['ignore', 'pipe', 'pipe'],
@@ -82,6 +85,8 @@ async function main() {
   rmSync(srcDir, { recursive: true, force: true });
   mkdirSync(srcDir, { recursive: true });
   run('tar', ['xzf', tarFile, '-C', srcDir, '--strip-components=1']);
+  // file di deploy specifici dell'installazione: non vanno mai sovrascritti dal repo
+  for (const skip of ['.htaccess', 'app.js', '.env']) rmSync(join(srcDir, skip), { force: true });
   execSync(`cp -a "${srcDir}/." "${ROOT}/"`, { cwd: ROOT });
   log('sorgenti aggiornati');
   const toVersion = (() => {
