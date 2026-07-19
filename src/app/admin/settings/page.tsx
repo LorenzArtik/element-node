@@ -73,7 +73,7 @@ export default async function SettingsPage() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              {aiOk ? `Modello: ${process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6'}` : 'Aggiungi ANTHROPIC_API_KEY al file .env o in Site Settings → API'}
+              {aiOk ? `Modello: ${process.env.ANTHROPIC_MODEL || 'claude-sonnet-5'}` : 'Aggiungi ANTHROPIC_API_KEY al file .env o in Site Settings → API'}
             </p>
           </CardContent>
         </Card>

@@ -341,8 +341,15 @@ export function SiteSettingsForm({ initial, defaultTab }: { initial: SiteSetting
                 <Field label="ANTHROPIC_API_KEY">
                   <Input type="password" value={data.integrations.anthropicApiKey} onChange={(e) => updateIntegrations('anthropicApiKey', e.target.value)} placeholder="sk-ant-..." />
                 </Field>
-                <Field label="Modello (lascia vuoto per default)" help="es. claude-sonnet-4-6, claude-opus-4-7">
-                  <Input value={data.integrations.anthropicModel} onChange={(e) => updateIntegrations('anthropicModel', e.target.value)} placeholder="claude-sonnet-4-6" />
+                <Field label="Modello (lascia vuoto per default: claude-sonnet-5)" help="claude-sonnet-5 = qualità/prezzo consigliato · claude-opus-4-8 = massima qualità · claude-haiku-4-5 = il più economico">
+                  <>
+                    <Input list="anthropic-models" value={data.integrations.anthropicModel} onChange={(e) => updateIntegrations('anthropicModel', e.target.value)} placeholder="claude-sonnet-5" />
+                    <datalist id="anthropic-models">
+                      <option value="claude-sonnet-5" />
+                      <option value="claude-opus-4-8" />
+                      <option value="claude-haiku-4-5" />
+                    </datalist>
+                  </>
                 </Field>
               </CardContent>
             </Card>

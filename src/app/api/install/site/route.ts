@@ -10,7 +10,7 @@ const Schema = z.object({
   tagline: z.string().max(200).optional().default(''),
   primaryColor: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional().default('#92003b'),
   anthropicKey: z.string().optional().default(''),
-  anthropicModel: z.string().optional().default('claude-sonnet-4-6'),
+  anthropicModel: z.string().optional().default('claude-sonnet-5'),
 });
 
 export async function POST(req: Request) {

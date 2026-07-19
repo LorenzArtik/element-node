@@ -25,12 +25,12 @@ export async function getAiModel(): Promise<string> {
     const s = await getSiteSettings();
     if (s.integrations.anthropicModel) return s.integrations.anthropicModel;
   } catch {}
-  return process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6';
+  return process.env.ANTHROPIC_MODEL || 'claude-sonnet-5';
 }
 
 // Backwards-compat: tools che importavano AI_MODEL come constante.
 // Ora va usato `await getAiModel()`.
-export const AI_MODEL = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6';
+export const AI_MODEL = process.env.ANTHROPIC_MODEL || 'claude-sonnet-5';
 
 export const SYSTEM_PROMPT_EDITOR = `Sei l'assistente AI integrato in Element Node, un CMS visuale moderno.
 Il tuo compito è generare o modificare strutture di pagina rappresentate da JSON.

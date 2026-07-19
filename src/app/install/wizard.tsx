@@ -259,7 +259,7 @@ function StepAi({ onDone, onBack, setBusy, setError }: {
     if (anthropicKey) {
       await fetch('/api/install/site', {
         method: 'POST', headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ name: 'site', anthropicKey, anthropicModel: 'claude-sonnet-4-6' }),
+        body: JSON.stringify({ name: 'site', anthropicKey, anthropicModel: 'claude-sonnet-5' }),
       });
     }
     const r = await fetch('/api/install/finalize', { method: 'POST' });
