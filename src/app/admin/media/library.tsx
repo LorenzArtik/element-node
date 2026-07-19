@@ -33,6 +33,14 @@ interface MediaItem {
 type FilterKind = 'all' | 'image' | 'svg' | 'video' | 'audio' | 'document';
 type ViewMode = 'grid' | 'list';
 
+/** Miniatura via optimizer di Next (webp ridimensionato, cache su disco).
+ *  SVG/GIF ed esterne restano dirette. */
+function thumbUrl(url: string, mime: string, w: number): string {
+  if (!mime.startsWith('image/') || mime === 'image/svg+xml' || mime === 'image/gif') return url;
+  if (!url.startsWith('/')) return url;
+  return `/_next/image?url=${encodeURIComponent(url)}&w=${w}&q=60`;
+}
+
 function iconFor(mime: string) {
   if (mime.startsWith('image/svg')) return ImageIcon;
   if (mime.startsWith('image/')) return ImageIcon;
@@ -282,7 +290,7 @@ export function MediaLibrary({ initialItems }: { initialItems: MediaItem[] }) {
                       >
                         {m.mime.startsWith('image/') ? (
                           // eslint-disable-next-line @next/next/no-img-element
-                          <img src={m.url} alt={m.alt ?? m.filename} className="w-full h-full object-cover" />
+                          <img src={thumbUrl(m.url, m.mime, 96)} alt={m.alt ?? m.filename} loading="lazy" decoding="async" className="w-full h-full object-cover" />
                         ) : (
                           <Icon className="h-5 w-5 text-muted-foreground" />
                         )}
@@ -390,7 +398,7 @@ function MediaCard({
         <div className="aspect-square bg-muted flex items-center justify-center overflow-hidden">
           {media.mime.startsWith('image/') ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={media.url} alt={media.alt ?? media.filename} className="w-full h-full object-cover" />
+            <img src={thumbUrl(media.url, media.mime, 384)} alt={media.alt ?? media.filename} loading="lazy" decoding="async" className="w-full h-full object-cover" />
           ) : (
             <Icon className="h-12 w-12 text-muted-foreground" />
           )}
@@ -458,7 +466,7 @@ function MediaDetailDrawer({
           <div className="bg-muted rounded-lg overflow-hidden flex items-center justify-center min-h-[300px]">
             {media.mime.startsWith('image/') ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={media.url} alt={media.alt ?? media.filename} className="max-w-full max-h-[500px]" />
+              <img src={thumbUrl(media.url, media.mime, 1280)} alt={media.alt ?? media.filename} decoding="async" className="max-w-full max-h-[500px]" />
             ) : (
               <Icon className="h-24 w-24 text-muted-foreground" />
             )}
