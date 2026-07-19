@@ -1,6 +1,6 @@
 {
   "name": "element-node",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "private": true,
   "description": "Element Node — Modern visual CMS built with Next.js + MySQL, with AI-powered content generation",
   "scripts": {

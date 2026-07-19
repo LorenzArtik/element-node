@@ -1,6 +1,7 @@
 'use client';
 
 import { UpdaterCard } from '@/components/admin/UpdaterCard';
+import { SkillCard } from '@/components/admin/SkillCard';
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
@@ -328,6 +329,8 @@ export function SiteSettingsForm({ initial, defaultTab }: { initial: SiteSetting
             </Card>
 
             <UpdaterCard />
+
+            <SkillCard />
 
             <Card>
               <CardHeader>
