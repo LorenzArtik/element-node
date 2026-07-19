@@ -10,7 +10,7 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MediaField } from './MediaField';
-import { Search, X, CheckCircle2, AlertTriangle, XCircle, Sparkles } from 'lucide-react';
+import { Search, X, CheckCircle2, AlertTriangle, XCircle, Sparkles, Loader2, WandSparkles } from 'lucide-react';
 import { analyzeSeo, type SeoAnalysis } from '@/lib/seo';
 
 export interface SeoMeta {
@@ -37,6 +37,36 @@ export function SeoPanel({
 }) {
   const title = useEditor((s) => s.pageTitle);
   const content = useEditor((s) => s.content);
+  const [aiBusy, setAiBusy] = useState(false);
+  const [aiError, setAiError] = useState('');
+  const [aiDone, setAiDone] = useState(false);
+
+  async function optimizeWithAi() {
+    setAiBusy(true);
+    setAiError('');
+    setAiDone(false);
+    try {
+      const res = await fetch('/api/ai/seo', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ title, slug, content, focusKeyword: meta.focusKeyword || undefined }),
+      });
+      const j = await res.json();
+      if (!res.ok) throw new Error(j.error || `HTTP ${res.status}`);
+      onChange({
+        ...meta,
+        seoTitle: j.seoTitle || meta.seoTitle,
+        seoDesc: j.seoDesc || meta.seoDesc,
+        focusKeyword: meta.focusKeyword || j.focusKeyword || '',
+      });
+      setAiDone(true);
+      setTimeout(() => setAiDone(false), 4000);
+    } catch (e) {
+      setAiError(e instanceof Error ? e.message : 'Errore sconosciuto');
+    } finally {
+      setAiBusy(false);
+    }
+  }
 
   const analysis: SeoAnalysis = useMemo(() => analyzeSeo({
     title,
@@ -82,6 +112,32 @@ export function SeoPanel({
             </TabsList>
 
             <TabsContent value="meta" className="space-y-3 pt-3">
+              <div className="space-y-1.5">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  className="w-full"
+                  disabled={aiBusy}
+                  onClick={optimizeWithAi}
+                >
+                  {aiBusy ? (
+                    <><Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> Analizzo la pagina…</>
+                  ) : aiDone ? (
+                    <><CheckCircle2 className="h-3.5 w-3.5 mr-1.5 text-emerald-500" /> Fatto — rivedi e salva</>
+                  ) : (
+                    <><WandSparkles className="h-3.5 w-3.5 mr-1.5" /> Ottimizza con AI</>
+                  )}
+                </Button>
+                <p className="text-[10px] text-muted-foreground">
+                  Genera title, description e keyword dal contenuto della pagina. Poi rivedi e salva.
+                </p>
+                {aiError && (
+                  <div className="text-[11px] text-red-600 border border-red-200 bg-red-50 rounded-md px-2.5 py-1.5">
+                    {aiError}
+                  </div>
+                )}
+              </div>
               <div className="space-y-1.5">
                 <Label className="text-xs">Focus keyword</Label>
                 <Input value={meta.focusKeyword} onChange={(e) => set('focusKeyword', e.target.value)} placeholder="es. cms next.js" />

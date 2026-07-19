@@ -5,9 +5,9 @@ import { WIDGETS, type WidgetType } from './widgets-schema';
  * di nuovi widget nell'editor — i contenuti esistenti restano sempre
  * modificabili e renderizzati).
  *
- * free      → widget base + theme (32)
- * essential → base + 9 widget Pro (41)
- * full      → tutti i 49 (Advanced, Expert, Agency e licenze legacy)
+ * free      → widget base + theme (33)
+ * essential → base + 5 widget Pro (38)
+ * full      → tutti i 51 (Advanced, Expert, Agency e licenze legacy)
  */
 export type LicenseTier = 'free' | 'essential' | 'full';
 
