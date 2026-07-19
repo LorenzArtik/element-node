@@ -16,11 +16,7 @@ const ESSENTIAL_PRO_WIDGETS: WidgetType[] = [
   'posts-grid',
   'contact-form',
   'gallery',
-  'countdown',
-  'price-table',
-  'call-to-action',
   'social-icons',
-  'share-buttons',
 ];
 
 const FULL_PLANS = ['ADVANCED', 'EXPERT', 'AGENCY', 'LICENSE', 'MANAGED'];
