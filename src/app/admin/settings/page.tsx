@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { prisma } from '@/lib/db';
+import { getSiteSettings } from '@/lib/site-settings';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Sparkles, Database, Lock, Zap, Palette, ChevronRight, Key } from 'lucide-react';
@@ -8,7 +9,9 @@ export const dynamic = 'force-dynamic';
 
 export default async function SettingsPage() {
   const userCount = await prisma.user.count();
-  const aiOk = !!process.env.ANTHROPIC_API_KEY;
+  const site = await getSiteSettings().catch(() => null);
+  const aiOk = !!process.env.ANTHROPIC_API_KEY || !!site?.integrations.anthropicApiKey;
+  const aiModel = site?.integrations.anthropicModel || process.env.ANTHROPIC_MODEL || 'claude-sonnet-5';
 
   return (
     <div className="p-8 space-y-6 max-w-5xl">
@@ -73,7 +76,7 @@ export default async function SettingsPage() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              {aiOk ? `Modello: ${process.env.ANTHROPIC_MODEL || 'claude-sonnet-5'}` : 'Aggiungi ANTHROPIC_API_KEY al file .env o in Site Settings → API'}
+              {aiOk ? `Modello: ${aiModel}` : 'Aggiungi ANTHROPIC_API_KEY al file .env o in Site Settings → Integrazioni'}
             </p>
           </CardContent>
         </Card>

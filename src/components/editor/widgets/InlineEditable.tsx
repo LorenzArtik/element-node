@@ -79,10 +79,20 @@ export function InlineEditable({
     el.contentEditable = 'true';
   }
 
+  function handleMouseDown(e: React.MouseEvent) {
+    // Click singolo = editing immediato (come Elementor): attiviamo il
+    // contentEditable PRIMA che il browser processi il click, così il caret
+    // finisce naturalmente nel punto cliccato. La selezione del widget
+    // avviene comunque (il click risale al wrapper).
+    const el = e.currentTarget as HTMLElement;
+    if (el.contentEditable !== 'true') el.contentEditable = 'true';
+  }
+
   return (
     <Tag
       ref={ref as React.Ref<HTMLElement>}
       onClick={onClick}
+      onMouseDown={handleMouseDown}
       onDoubleClick={handleDoubleClick}
       onBlur={handleBlur}
       onFocus={handleFocus}

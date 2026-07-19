@@ -115,6 +115,10 @@ export default function EditorShell({ pageId, title, slug, status, content, enti
         e.preventDefault();
         save();
       }
+      // Mentre si scrive (inline editing, input, textarea) i tasti restano al
+      // campo: undo/redo/stili globali non devono scattare.
+      const ae = document.activeElement as HTMLElement | null;
+      if (ae && (ae.isContentEditable || ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA')) return;
       if ((e.metaKey || e.ctrlKey) && e.key === 'z' && !e.shiftKey) {
         e.preventDefault();
         useEditor.getState().undo();
