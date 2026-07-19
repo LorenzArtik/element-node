@@ -350,8 +350,10 @@ export function AIChat({ onClose }: { onClose: () => void }) {
         ))}
         {loading && (
           <div className="flex justify-start">
-            <div className="bg-muted rounded-2xl px-3 py-2 text-sm flex items-center gap-2">
-              <Loader2 className="h-3 w-3 animate-spin" /> Sto pensando...
+            <div className="bg-muted rounded-2xl px-4 py-3">
+              <span className="en-ai-thinking" aria-label="Generazione in corso">
+                <span /><span /><span />
+              </span>
             </div>
           </div>
         )}
