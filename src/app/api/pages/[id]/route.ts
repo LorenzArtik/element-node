@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/db';
+import { materializeInlineForms } from '@/lib/materialize-forms';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -40,6 +41,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   // Save revision before overwriting content
   if (parsed.data.content) {
+    const pageRow = await prisma.page.findUnique({ where: { id }, select: { title: true } });
+    await materializeInlineForms(parsed.data.content as never, (parsed.data as { title?: string }).title ?? pageRow?.title ?? 'Pagina');
     const previous = await prisma.page.findUnique({ where: { id } });
     if (previous) {
       await prisma.revision.create({

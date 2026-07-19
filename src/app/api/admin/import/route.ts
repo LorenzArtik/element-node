@@ -8,6 +8,7 @@ import { updateSiteSettings } from '@/lib/site-settings';
 import { invalidatePostTypeCache } from '@/lib/post-types';
 import { invalidateThemeBlocksCache } from '@/lib/theme-blocks';
 import { invalidatePopupsCache } from '@/lib/popups';
+import { materializeInlineForms } from '@/lib/materialize-forms';
 import { revalidateContent, CACHE_TAGS, invalidateAll } from '@/lib/cache';
 import { logAudit } from '@/lib/audit';
 
@@ -190,6 +191,9 @@ export async function POST(req: NextRequest) {
       for (const p of blueprint.pages) {
         try {
           const existing = await prisma.page.findUnique({ where: { slug: p.slug } });
+          if (!options.dryRun && p.content) {
+            await materializeInlineForms(p.content as never, p.title);
+          }
           if (p.isHomepage && !options.dryRun) {
             await prisma.page.updateMany({ where: { isHomepage: true, slug: { not: p.slug } }, data: { isHomepage: false } });
           }
