@@ -79,17 +79,22 @@ Regole:
   try {
     const client = await getAnthropic();
     const model = await getAiModel();
+    // max_tokens generoso: i modelli recenti ragionano prima di rispondere e il
+    // budget deve coprire anche quello, non solo il JSON finale.
     const response = await client.messages.create({
       model,
-      max_tokens: 400,
+      max_tokens: 2000,
       system,
       messages: [{ role: 'user', content: user }],
     });
-    const textBlock = response.content.find((b) => b.type === 'text');
-    if (!textBlock || textBlock.type !== 'text') {
+    const text = response.content
+      .filter((b): b is Extract<typeof b, { type: 'text' }> => b.type === 'text')
+      .map((b) => b.text)
+      .join('');
+    if (!text.trim()) {
       return NextResponse.json({ error: 'Risposta AI vuota' }, { status: 500 });
     }
-    const cleaned = textBlock.text.trim().replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/i, '');
+    const cleaned = text.trim().replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/i, '');
     const json = JSON.parse(cleaned) as { seoTitle?: string; seoDesc?: string; focusKeyword?: string };
     return NextResponse.json({
       seoTitle: (json.seoTitle || '').slice(0, 70),
