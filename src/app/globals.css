@@ -178,3 +178,7 @@
   0%, 60%, 100% { transform: translateY(0) scale(0.85); opacity: 0.45; }
   30% { transform: translateY(-4px) scale(1); opacity: 1; }
 }
+
+/* Nell'editor i link NON navigano e il cursore non cambia: il click seleziona
+   il widget, come su Elementor. (I controlli dell'editor sono <button>.) */
+.editor-canvas a { pointer-events: none !important; cursor: default !important; }

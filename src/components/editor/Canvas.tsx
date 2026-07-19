@@ -51,7 +51,13 @@ export function Canvas() {
   return (
     <div className="flex-1 overflow-hidden">
       <ScrollArea className="h-full">
-        <div className="min-h-full flex justify-center py-6 px-6 editor-canvas">
+        <div
+          className="min-h-full flex justify-center py-6 px-6 editor-canvas"
+          onClickCapture={(e) => {
+            // I link renderizzati dai widget non devono mai navigare nell'editor.
+            if ((e.target as HTMLElement).closest('a')) e.preventDefault();
+          }}
+        >
           <div
             className="bg-white shadow-2xl transition-all duration-300 min-h-[80vh]"
             style={{ width: DEVICE_WIDTH[device], maxWidth: '100%' }}
