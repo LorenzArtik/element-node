@@ -1,0 +1,322 @@
+{
+  "version": "1.0",
+  "generator": "element-node-builder skill — example-blueprint",
+  "site": {
+    "name": "Studio Dentistico Sorriso",
+    "tagline": "Il tuo sorriso, la nostra passione",
+    "theme": {
+      "colors": {
+        "primary": "#0d9488",
+        "secondary": "#f59e0b",
+        "accent": "#f97316",
+        "background": "#ffffff",
+        "foreground": "#0f172a",
+        "muted": "#64748b"
+      },
+      "typography": {
+        "fontHeading": "Playfair Display",
+        "fontBody": "Inter",
+        "baseSize": "16px"
+      }
+    },
+    "customCss": ".btn-pill{border-radius:9999px!important;text-transform:uppercase;letter-spacing:.06em}"
+  },
+
+  "themeBlocks": [
+    {
+      "kind": "HEADER",
+      "name": "Header principale",
+      "status": "PUBLISHED",
+      "content": {
+        "sections": [
+          {
+            "id": "s_hdr_1",
+            "type": "section",
+            "settings": {
+              "sticky": true,
+              "background": "#ffffff",
+              "boxShadow": "0 2px 15px rgba(0,0,0,0.08)",
+              "paddingTop": 16, "paddingBottom": 16,
+              "zIndex": 100
+            },
+            "columns": [
+              {
+                "id": "c_hdr_1", "type": "column", "width": 30,
+                "settings": { "verticalAlign": "center", "padding": "0 20px" },
+                "elements": [
+                  { "id": "e_hdr_logo", "type": "site-logo",
+                    "settings": { "variant": "auto", "maxHeight": 48, "link": "/", "align": "left" } }
+                ]
+              },
+              {
+                "id": "c_hdr_2", "type": "column", "width": 50,
+                "settings": { "verticalAlign": "center", "padding": "0 20px", "textAlign": "center" },
+                "elements": [
+                  { "id": "e_hdr_nav", "type": "nav-menu",
+                    "settings": {
+                      "align": "center", "gap": 24, "color": "#0f172a",
+                      "items": [
+                        { "label": "Home", "url": "/" },
+                        { "label": "Servizi", "url": "/servizi" },
+                        { "label": "Team", "url": "/team" },
+                        { "label": "Contatti", "url": "/contatti" }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "c_hdr_3", "type": "column", "width": 20,
+                "settings": { "verticalAlign": "center", "padding": "0 20px", "textAlign": "right" },
+                "elements": [
+                  { "id": "e_hdr_cta", "type": "button",
+                    "settings": { "text": "Prenota visita", "url": "/contatti", "style": "primary", "size": "md", "align": "right" } }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "kind": "FOOTER",
+      "name": "Footer principale",
+      "status": "PUBLISHED",
+      "content": {
+        "sections": [
+          {
+            "id": "s_ftr_1", "type": "section",
+            "settings": { "background": "#0f172a", "color": "#e2e8f0", "paddingTop": 64, "paddingBottom": 32 },
+            "columns": [
+              {
+                "id": "c_ftr_1", "type": "column", "width": 33,
+                "settings": { "padding": "0 20px" },
+                "elements": [
+                  { "id": "e_ftr_title1", "type": "heading",
+                    "settings": { "text": "Studio Sorriso", "tag": "h4", "color": "#ffffff", "size": "20px", "weight": "700" } },
+                  { "id": "e_ftr_txt1", "type": "text",
+                    "settings": { "html": "<p>Via Roma 12, 80100 Napoli</p><p>P.IVA 01234567890</p>", "color": "#cbd5e1" } }
+                ]
+              },
+              {
+                "id": "c_ftr_2", "type": "column", "width": 33,
+                "settings": { "padding": "0 20px" },
+                "elements": [
+                  { "id": "e_ftr_title2", "type": "heading",
+                    "settings": { "text": "Contatti", "tag": "h4", "color": "#ffffff", "size": "20px", "weight": "700" } },
+                  { "id": "e_ftr_iconlist", "type": "icon-list",
+                    "settings": {
+                      "align": "left", "iconColor": "#0d9488", "spacing": 12,
+                      "items": [
+                        { "icon": "Phone", "text": "081 555 1234", "link": "tel:+390815551234" },
+                        { "icon": "Mail", "text": "info@studiosorriso.it", "link": "mailto:info@studiosorriso.it" },
+                        { "icon": "Clock", "text": "Lun-Ven 9:00-19:00", "link": "" }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "c_ftr_3", "type": "column", "width": 34,
+                "settings": { "padding": "0 20px" },
+                "elements": [
+                  { "id": "e_ftr_title3", "type": "heading",
+                    "settings": { "text": "Seguici", "tag": "h4", "color": "#ffffff", "size": "20px", "weight": "700" } },
+                  { "id": "e_ftr_social", "type": "social-icons",
+                    "settings": {
+                      "align": "left", "size": 32, "gap": 12, "color": "#ffffff",
+                      "items": [
+                        { "network": "facebook", "url": "https://facebook.com/studiosorriso" },
+                        { "network": "instagram", "url": "https://instagram.com/studiosorriso" }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "c_ftr_copy", "type": "column", "width": 100,
+                "settings": { "padding": "32px 20px 0", "textAlign": "center" },
+                "elements": [
+                  { "id": "e_ftr_divider", "type": "divider", "settings": { "color": "#1e293b", "weight": 1, "style": "solid" } },
+                  { "id": "e_ftr_copyright", "type": "text",
+                    "settings": { "html": "<p>&copy; 2026 Studio Dentistico Sorriso — Tutti i diritti riservati</p>", "color": "#94a3b8", "size": "14px", "align": "center" } }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+
+  "pages": [
+    {
+      "slug": "home",
+      "title": "Home",
+      "isHomepage": true,
+      "status": "PUBLISHED",
+      "seoTitle": "Studio Dentistico Sorriso — Cure dentali a Napoli",
+      "seoDesc": "Studio dentistico moderno a Napoli. Implantologia, ortodonzia invisibile, sbiancamento. Prima visita gratuita.",
+      "content": {
+        "sections": [
+          {
+            "id": "s_hero", "type": "section",
+            "settings": {
+              "minHeight": "85vh", "paddingTop": 120, "paddingBottom": 120,
+              "background": {
+                "type": "image",
+                "image": "https://images.unsplash.com/photo-dental-clinic.jpg",
+                "overlay": "rgba(15,23,42,0.55)",
+                "size": "cover", "position": "center"
+              },
+              "color": "#ffffff", "contentAlign": "center", "textAlign": "center",
+              "anchor": "home"
+            },
+            "columns": [
+              {
+                "id": "c_hero_1", "type": "column", "width": 100,
+                "settings": { "padding": "20px", "verticalAlign": "center", "textAlign": "center" },
+                "elements": [
+                  { "id": "e_hero_h", "type": "heading",
+                    "settings": { "text": "Il tuo sorriso, la nostra passione", "tag": "h1",
+                      "align": "center", "color": "#ffffff", "size": "64px", "weight": "700" } },
+                  { "id": "e_hero_sub", "type": "text",
+                    "settings": { "html": "<p>Cure dentali moderne con tecnologia all'avanguardia. Prima visita gratuita.</p>",
+                      "color": "rgba(255,255,255,0.9)", "size": "20px", "align": "center" } },
+                  { "id": "e_hero_spacer", "type": "spacer", "settings": { "height": 24 } },
+                  { "id": "e_hero_cta", "type": "button",
+                    "settings": { "text": "Prenota visita gratuita", "url": "/contatti",
+                      "style": "primary", "size": "lg", "align": "center" } }
+                ]
+              }
+            ]
+          },
+
+          {
+            "id": "s_servizi", "type": "section",
+            "settings": { "paddingTop": 96, "paddingBottom": 96, "background": "#ffffff", "anchor": "servizi" },
+            "columns": [
+              {
+                "id": "c_serv_title", "type": "column", "width": 100,
+                "settings": { "padding": "0 20px", "textAlign": "center" },
+                "elements": [
+                  { "id": "e_serv_h", "type": "heading",
+                    "settings": { "text": "I nostri servizi", "tag": "h2", "align": "center", "size": "40px", "weight": "700" } },
+                  { "id": "e_serv_sub", "type": "text",
+                    "settings": { "html": "<p>Soluzioni complete per la salute del tuo sorriso.</p>", "align": "center", "size": "18px", "color": "#64748b" } },
+                  { "id": "e_serv_spacer", "type": "spacer", "settings": { "height": 40 } }
+                ]
+              },
+              {
+                "id": "c_serv1", "type": "column", "width": 33,
+                "settings": { "padding": "24px", "background": "#f8fafc", "textAlign": "center" },
+                "elements": [
+                  { "id": "e_serv1_box", "type": "icon-box",
+                    "settings": { "icon": "Smile", "iconSize": 56, "iconColor": "#0d9488",
+                      "title": "Ortodonzia invisibile",
+                      "text": "Allineatori trasparenti per un sorriso perfetto senza apparecchio fisso.",
+                      "align": "center" } }
+                ]
+              },
+              {
+                "id": "c_serv2", "type": "column", "width": 33,
+                "settings": { "padding": "24px", "background": "#f8fafc", "textAlign": "center" },
+                "elements": [
+                  { "id": "e_serv2_box", "type": "icon-box",
+                    "settings": { "icon": "Sparkles", "iconSize": 56, "iconColor": "#0d9488",
+                      "title": "Sbiancamento professionale",
+                      "text": "Tecnologia LED per un risultato visibile già dalla prima seduta.",
+                      "align": "center" } }
+                ]
+              },
+              {
+                "id": "c_serv3", "type": "column", "width": 34,
+                "settings": { "padding": "24px", "background": "#f8fafc", "textAlign": "center" },
+                "elements": [
+                  { "id": "e_serv3_box", "type": "icon-box",
+                    "settings": { "icon": "Wrench", "iconSize": 56, "iconColor": "#0d9488",
+                      "title": "Implantologia",
+                      "text": "Impianti di ultima generazione con carico immediato.",
+                      "align": "center" } }
+                ]
+              }
+            ]
+          },
+
+          {
+            "id": "s_stats", "type": "section",
+            "settings": { "paddingTop": 64, "paddingBottom": 64, "background": "#0d9488", "color": "#ffffff", "textAlign": "center" },
+            "columns": [
+              { "id": "c_st1", "type": "column", "width": 25, "settings": { "textAlign": "center" },
+                "elements": [{ "id": "e_st1", "type": "counter",
+                  "settings": { "from": 0, "to": 2500, "duration": 2000, "suffix": "+", "label": "Pazienti felici", "size": "48px", "color": "#ffffff" } }] },
+              { "id": "c_st2", "type": "column", "width": 25, "settings": { "textAlign": "center" },
+                "elements": [{ "id": "e_st2", "type": "counter",
+                  "settings": { "from": 0, "to": 15, "duration": 2000, "suffix": " anni", "label": "Di esperienza", "size": "48px", "color": "#ffffff" } }] },
+              { "id": "c_st3", "type": "column", "width": 25, "settings": { "textAlign": "center" },
+                "elements": [{ "id": "e_st3", "type": "counter",
+                  "settings": { "from": 0, "to": 8, "duration": 2000, "suffix": "", "label": "Specialisti", "size": "48px", "color": "#ffffff" } }] },
+              { "id": "c_st4", "type": "column", "width": 25, "settings": { "textAlign": "center" },
+                "elements": [{ "id": "e_st4", "type": "counter",
+                  "settings": { "from": 0, "to": 4.9, "duration": 2000, "suffix": "/5", "label": "Recensioni Google", "size": "48px", "color": "#ffffff" } }] }
+            ]
+          },
+
+          {
+            "id": "s_testimonial", "type": "section",
+            "settings": { "paddingTop": 96, "paddingBottom": 96, "background": "#f8fafc" },
+            "columns": [
+              {
+                "id": "c_test_1", "type": "column", "width": 100,
+                "settings": { "padding": "0 20px", "textAlign": "center" },
+                "elements": [
+                  { "id": "e_test_h", "type": "heading",
+                    "settings": { "text": "Cosa dicono i nostri pazienti", "tag": "h2", "align": "center", "size": "36px", "weight": "700" } },
+                  { "id": "e_test_spacer", "type": "spacer", "settings": { "height": 40 } },
+                  { "id": "e_test_carousel", "type": "testimonial-carousel",
+                    "settings": {
+                      "slidesPerView": 1, "autoplay": true, "autoplayMs": 6000, "showDots": true, "showArrows": false,
+                      "items": [
+                        { "text": "Studio impeccabile, personale gentile e competente. Risultati visibili in pochi mesi.", "author": "Anna F.", "role": "Paziente ortodonzia", "rating": 5 },
+                        { "text": "Dopo anni di problemi finalmente ho trovato chi sa come trattarmi. Consigliatissimo.", "author": "Marco P.", "role": "Paziente implantologia", "rating": 5 },
+                        { "text": "Sbiancamento perfetto, ambiente accogliente. Prezzi onesti.", "author": "Giulia R.", "role": "Paziente estetica", "rating": 5 }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+
+          {
+            "id": "s_cta", "type": "section",
+            "settings": { "paddingTop": 80, "paddingBottom": 80, "background": "#ffffff" },
+            "columns": [
+              {
+                "id": "c_cta_1", "type": "column", "width": 100,
+                "settings": { "padding": "0 20px" },
+                "elements": [
+                  { "id": "e_cta", "type": "call-to-action",
+                    "settings": {
+                      "title": "Prenota la tua prima visita gratuita",
+                      "text": "Valutazione completa + piano di trattamento personalizzato.",
+                      "ctaText": "Prenota ora",
+                      "ctaUrl": "/contatti",
+                      "background": "linear-gradient(135deg,#0d9488 0%,#0f766e 100%)",
+                      "color": "#ffffff",
+                      "align": "center"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+
+  "redirects": [],
+  "popups": [],
+  "forms": []
+}

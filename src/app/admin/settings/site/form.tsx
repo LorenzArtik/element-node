@@ -330,7 +330,7 @@ export function SiteSettingsForm({ initial, defaultTab }: { initial: SiteSetting
 
             <UpdaterCard />
 
-            <SkillCard />
+            <SkillCard licenseKey={data.integrations.licenseKey ?? ''} />
 
             <Card>
               <CardHeader>
