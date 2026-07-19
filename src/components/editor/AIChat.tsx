@@ -129,7 +129,10 @@ export function AIChat({ onClose }: { onClose: () => void }) {
     setLoading(true);
 
     try {
-      const ctxKind = selected?.kind ?? 'page';
+      // La colonna non è un context dell'API: la trattiamo come sezione,
+      // indicando al modello quale colonna è selezionata.
+      const ctxKind = selected?.kind === 'column' ? 'section' : (selected?.kind ?? 'page');
+      let promptForApi = text;
       let current: unknown = content;
       if (selected?.kind === 'element') {
         current = content.sections
@@ -138,6 +141,9 @@ export function AIChat({ onClose }: { onClose: () => void }) {
           ?.elements.find((e) => e.id === selected.elementId);
       } else if (selected?.kind === 'section') {
         current = content.sections.find((s) => s.id === selected.sectionId);
+      } else if (selected?.kind === 'column') {
+        current = content.sections.find((s) => s.id === selected.sectionId);
+        promptForApi = `${text}\n\n[L'utente ha selezionato la colonna con id "${selected.columnId}" di questa sezione: applica la modifica a QUELLA colonna, lasciando invariato il resto della sezione.]`;
       }
 
       // Layout context: snapshot ridotto della pagina (per non sforare token)
@@ -159,7 +165,7 @@ export function AIChat({ onClose }: { onClose: () => void }) {
       const res = await fetch('/api/ai/generate', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ prompt: text, context: ctxKind, current, pageLayout, images }),
+        body: JSON.stringify({ prompt: promptForApi, context: ctxKind, current, pageLayout, images }),
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
@@ -172,7 +178,7 @@ export function AIChat({ onClose }: { onClose: () => void }) {
 
       if (data.kind === 'section') {
         const newSection = data.result as SectionNode;
-        if (selected?.kind === 'section') {
+        if (selected?.kind === 'section' || selected?.kind === 'column') {
           // Sostituisci la sezione selezionata in-place (mantenendo lo stesso id e posizione)
           replaceSection(selected.sectionId, newSection);
           setMessages((m) => [...m, { role: 'assistant', text: 'Sezione aggiornata.', ts: Date.now() }]);
