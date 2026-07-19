@@ -102,8 +102,12 @@ async function main() {
   try {
     execFileSync(process.execPath, ['-e', "require('sharp')"], { cwd: ROOT, stdio: 'ignore' });
   } catch {
-    log('sharp non caricabile: reinstallo con --force');
-    run(npm, ['install', 'sharp', '--force', '--no-audit', '--no-fund']);
+    // npm non aggiunge i binari di piattaforma a un albero esistente nemmeno
+    // con --force: va chiesto il pacchetto esplicito (--no-save: niente
+    // modifiche a package.json).
+    const plat = `@img/sharp-${process.platform}-${process.arch}`;
+    log(`sharp non caricabile: installo ${plat}`);
+    run(npm, ['install', plat, '--no-save', '--no-audit', '--no-fund']);
   }
 
   // 4a. backup automatico del database (mysqldump) prima di toccare lo schema
