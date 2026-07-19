@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { useEditor } from '@/lib/editor-store';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Sparkles, X, Send, Loader2, Wand2, Image as ImageIcon, Paperclip } from 'lucide-react';
+import { Sparkles, X, Send, Loader2, Wand2, Image as ImageIcon, Paperclip, KeyRound, ExternalLink, RefreshCw } from 'lucide-react';
 import type { SectionNode, ElementNode, PageContent } from '@/lib/widgets-schema';
 
 type Message = { role: 'user' | 'assistant'; text: string; ts: number; images?: string[] };
@@ -51,6 +51,25 @@ export function AIChat({ onClose }: { onClose: () => void }) {
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Gate: la chat funziona solo con una chiave Anthropic configurata.
+  const [aiConfigured, setAiConfigured] = useState<boolean | null>(null);
+  const [checkingKey, setCheckingKey] = useState(false);
+  const checkAiStatus = async () => {
+    setCheckingKey(true);
+    try {
+      const res = await fetch('/api/ai/status');
+      const j = await res.json();
+      setAiConfigured(res.ok ? Boolean(j.configured) : true);
+    } catch {
+      setAiConfigured(true); // in dubbio non blocchiamo: l'errore emergerà dalla chiamata
+    } finally {
+      setCheckingKey(false);
+    }
+  };
+  useEffect(() => {
+    checkAiStatus();
+  }, []);
 
   async function handleFiles(files: FileList | File[]) {
     const list = Array.from(files).filter((f) => f.type.startsWith('image/'));
@@ -214,7 +233,64 @@ export function AIChat({ onClose }: { onClose: () => void }) {
         <Button variant="ghost" size="icon" onClick={onClose}><X className="h-4 w-4" /></Button>
       </div>
 
-      {targetLabel && (
+      {aiConfigured === false && (
+        <div className="flex-1 overflow-y-auto p-5">
+          <div className="border rounded-xl p-5 bg-muted/30 space-y-4">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-lg bg-amber-100 flex items-center justify-center shrink-0">
+                <KeyRound className="h-4 w-4 text-amber-700" />
+              </div>
+              <div className="font-semibold text-sm">Configura la chiave API per usare l&apos;AI</div>
+            </div>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              L&apos;assistente usa Claude con la <b>tua</b> API key Anthropic: paghi solo l&apos;uso
+              effettivo (tipicamente pochi euro al mese), senza abbonamenti aggiuntivi.
+            </p>
+            <ol className="space-y-3 text-xs leading-relaxed">
+              <li className="flex gap-2.5">
+                <span className="w-5 h-5 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center shrink-0">1</span>
+                <span>
+                  Genera la chiave su{' '}
+                  <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2 inline-flex items-center gap-0.5">
+                    console.anthropic.com <ExternalLink className="h-3 w-3" />
+                  </a>
+                  {' '}(API Keys → Create key; serve un metodo di pagamento attivo).
+                </span>
+              </li>
+              <li className="flex gap-2.5">
+                <span className="w-5 h-5 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center shrink-0">2</span>
+                <span>
+                  Incollala in{' '}
+                  <a href="/admin/settings/site?tab=integrations" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">
+                    Impostazioni → Integrazioni
+                  </a>
+                  , card &quot;AI Anthropic (Claude)&quot;, e salva.
+                </span>
+              </li>
+              <li className="flex gap-2.5">
+                <span className="w-5 h-5 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center shrink-0">3</span>
+                <span>Torna qui e premi &quot;Ricontrolla&quot;: la chat si sblocca subito.</span>
+              </li>
+            </ol>
+            <div className="flex items-center gap-2 pt-1">
+              <Button size="sm" onClick={checkAiStatus} disabled={checkingKey}>
+                {checkingKey ? <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5 mr-1.5" />}
+                Ricontrolla
+              </Button>
+              <a
+                href="https://elementnode.cloud/it/docs#ai"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-muted-foreground underline underline-offset-2"
+              >
+                Guida completa
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {aiConfigured !== false && targetLabel && (
         <div className="px-3 py-2 border-b bg-primary/10 text-xs flex items-center gap-2">
           <Sparkles className="h-3.5 w-3.5 text-primary shrink-0" />
           <span className="flex-1">Modificherà <b>{targetLabel}</b></span>
@@ -227,6 +303,7 @@ export function AIChat({ onClose }: { onClose: () => void }) {
           </button>
         </div>
       )}
+      {aiConfigured !== false && (
       <div
         className={`flex-1 overflow-y-auto p-3 space-y-3 relative transition-all ${dragOver ? 'ring-2 ring-[#92003b] ring-inset bg-[#92003b]/5' : ''}`}
         onDragOver={onDragOver}
@@ -266,8 +343,9 @@ export function AIChat({ onClose }: { onClose: () => void }) {
         )}
         <div ref={endRef} />
       </div>
+      )}
 
-      {messages.length <= 1 && refImages.length === 0 && (
+      {aiConfigured !== false && messages.length <= 1 && refImages.length === 0 && (
         <div className="px-3 pb-2 space-y-1.5">
           <div className="text-xs text-muted-foreground flex items-center gap-1.5"><Wand2 className="h-3 w-3" /> Idee veloci</div>
           {QUICK_PROMPTS.map((p) => (
@@ -282,6 +360,7 @@ export function AIChat({ onClose }: { onClose: () => void }) {
         </div>
       )}
 
+      {aiConfigured !== false && (
       <div className="border-t p-3 space-y-2">
         {/* Reference images preview */}
         {refImages.length > 0 && (
@@ -342,6 +421,7 @@ export function AIChat({ onClose }: { onClose: () => void }) {
           </Button>
         </div>
       </div>
+      )}
     </aside>
   );
 }
