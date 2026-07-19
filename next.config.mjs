@@ -1,6 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
+  // I binari nativi di sharp (@img/*) non vengono tracciati automaticamente:
+  // senza, l'optimizer immagini serve gli originali interi.
+  outputFileTracingIncludes: {
+    '*': ['./node_modules/sharp/**/*', './node_modules/@img/**/*'],
+  },
   // Build production: salta TS strict + ESLint (i runtime check restano)
   typescript: { ignoreBuildErrors: true },
   eslint: { ignoreDuringBuilds: true },

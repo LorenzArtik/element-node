@@ -97,6 +97,14 @@ async function main() {
   // 3. dipendenze
   setState({ step: 'install' });
   run(npm, ['install', '--no-audit', '--no-fund']);
+  // npm salta gli optional deps di piattaforma se node_modules esiste già:
+  // senza @img/sharp-*-* l'optimizer immagini non funziona.
+  try {
+    execFileSync(process.execPath, ['-e', "require('sharp')"], { cwd: ROOT, stdio: 'ignore' });
+  } catch {
+    log('sharp non caricabile: reinstallo con --force');
+    run(npm, ['install', 'sharp', '--force', '--no-audit', '--no-fund']);
+  }
 
   // 4a. backup automatico del database (mysqldump) prima di toccare lo schema
   setState({ step: 'backup' });
