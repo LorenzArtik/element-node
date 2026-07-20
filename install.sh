@@ -26,12 +26,21 @@ npm install --no-audit --no-fund
 if [ ! -f .env ]; then
   echo ""
   echo "→ Configurazione database MySQL/MariaDB"
+  # Modalità non-interattiva (per agenti AI / provisioning): esporta
+  # DB_NAME, DB_USER, DB_PASS, SITE_URL (opzionali DB_HOST, DB_PORT)
+  # prima di lanciare l'installer e le domande vengono saltate.
+  if [ -n "${DB_NAME:-}" ] && [ -n "${DB_USER:-}" ] && [ -n "${DB_PASS:-}" ] && [ -n "${SITE_URL:-}" ]; then
+    DB_HOST=${DB_HOST:-127.0.0.1}
+    DB_PORT=${DB_PORT:-3306}
+    echo "  ✓ configurazione da variabili d'ambiente (non-interattiva)"
+  else
   read -rp "  Host [127.0.0.1]: " DB_HOST; DB_HOST=${DB_HOST:-127.0.0.1}
   read -rp "  Porta [3306]: " DB_PORT; DB_PORT=${DB_PORT:-3306}
   read -rp "  Nome database: " DB_NAME
   read -rp "  Utente: " DB_USER
   read -rsp "  Password: " DB_PASS; echo ""
   read -rp "  URL pubblico del sito (es. https://miosito.it): " SITE_URL
+  fi
   AUTH_SECRET=$(node -e 'console.log(require("crypto").randomBytes(32).toString("base64"))')
   cat > .env <<ENV
 DATABASE_URL="mysql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}"
