@@ -2,6 +2,8 @@
 
 import type { PageContent } from '@/lib/widgets-schema';
 import { renderWidget } from '@/components/editor/widgets/render';
+import { isWidgetLocked, type LicenseTier } from '@/lib/license-features';
+import type { WidgetType } from '@/lib/widgets-schema';
 import type { CSSProperties } from 'react';
 
 type BgObj = {
@@ -91,7 +93,7 @@ function RevealObserver() {
   );
 }
 
-export function PageRenderer({ content }: { content: PageContent }) {
+export function PageRenderer({ content, tier = 'full' }: { content: PageContent; tier?: LicenseTier }) {
   return (
     <div className="en-frontend">
       <style>{`
@@ -189,9 +191,11 @@ export function PageRenderer({ content }: { content: PageContent }) {
                 }
                 return (
                   <div key={col.id} className={`en-col${(c as Record<string, unknown>).hideOnMobile ? ' en-hide-mobile' : ''}${(c as Record<string, unknown>).hideOnDesktop ? ' en-hide-desktop' : ''}`} style={colStyle}>
-                    {col.elements.map((el) => (
-                      <div key={el.id}>{renderWidget(el)}</div>
-                    ))}
+                    {col.elements.map((el) => {
+                      // Widget fuori piano: visibili nell'editor, MAI sul sito pubblico
+                      if (isWidgetLocked(el.type as WidgetType, tier)) return null;
+                      return <div key={el.id}>{renderWidget(el)}</div>;
+                    })}
                   </div>
                 );
               })}

@@ -6,9 +6,11 @@ import { useEditor } from '@/lib/editor-store';
 import type { ColumnNode, ElementNode, SectionNode } from '@/lib/widgets-schema';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { renderWidget } from './widgets/render';
+import { isWidgetLocked, requiredPlanFor } from '@/lib/license-features';
+import { useLicenseTier } from '@/lib/use-license-tier';
 import { WIDGETS } from '@/lib/widgets-schema';
 import * as LucideIcons from 'lucide-react';
-import { Copy, Trash2, GripVertical, Plus, Columns, ClipboardCopy, Clipboard, Sparkles, Settings2, ChevronUp, ChevronDown, Edit3, ColumnsIcon, ArrowUp, ArrowDown, RotateCcw } from 'lucide-react';
+import { Copy, Trash2, GripVertical, Plus, Columns, ClipboardCopy, Clipboard, Sparkles, Settings2, ChevronUp, ChevronDown, Edit3, ColumnsIcon, ArrowUp, ArrowDown, RotateCcw , Lock } from 'lucide-react';
 import {
   ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger, ContextMenuSeparator, ContextMenuLabel,
 } from '@/components/ui/context-menu';
@@ -408,6 +410,9 @@ function ElementView({ sectionId, columnId, element, index }: { sectionId: strin
   const styleClipboard = useEditor((s) => s.styleClipboard);
   const device = useEditor((s) => s.device);
 
+  const tier = useLicenseTier();
+  const lockedForPlan = isWidgetLocked(element.type, tier);
+
   const hideOn = (element.settings._hideOn as string[]) ?? [];
   if (hideOn.includes(device)) return null;
 
@@ -458,6 +463,15 @@ function ElementView({ sectionId, columnId, element, index }: { sectionId: strin
             </button>
           </div>
 
+          {lockedForPlan && (
+            <div
+              className="absolute -top-2.5 right-2 z-20 flex items-center gap-1 rounded bg-amber-500 px-1.5 py-1 text-[10px] font-semibold text-white shadow"
+              title={`Questo widget richiede il piano ${requiredPlanFor(element.type)}: nell'editor resta modificabile, ma NON viene mostrato sul sito pubblico finché non aggiorni il piano.`}
+            >
+              <Lock className="h-3 w-3" />
+              Non visibile sul sito — richiede {requiredPlanFor(element.type)}
+            </div>
+          )}
           {renderWidget(element, {
             editable: true,
             onUpdate: (patch) => updateElementSettings(sectionId, columnId, element.id, patch),

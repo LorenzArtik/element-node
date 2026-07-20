@@ -1,3 +1,4 @@
+import { tierForPlan, type LicenseTier } from './license-features';
 import { prisma } from './db';
 import { getSiteSettings } from './site-settings';
 import { revalidateContent, CACHE_TAGS } from './cache';
@@ -73,4 +74,14 @@ export async function getLicenseInfo(): Promise<LicenseInfo> {
   }
 
   return { key, valid: next.valid, plan: next.plan, reason: next.reason, checkedAt: next.checkedAt, currentPeriodEnd: next.currentPeriodEnd };
+}
+
+/** Tier corrente per il gate widget (rendering pubblico ed editor). */
+export async function getLicenseTier(): Promise<LicenseTier> {
+  try {
+    const info = await getLicenseInfo();
+    return tierForPlan(info.plan, info.valid);
+  } catch {
+    return 'free';
+  }
 }

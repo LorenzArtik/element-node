@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { X } from 'lucide-react';
 import { PageRenderer } from './PageRenderer';
+import type { LicenseTier } from '@/lib/license-features';
 import type { PageContent } from '@/lib/widgets-schema';
 
 interface PopupItem {
@@ -41,7 +42,7 @@ function markClosed(id: string) {
   try { localStorage.setItem(STORAGE_PREFIX + id, String(Date.now())); } catch {}
 }
 
-export function PopupRunner({ path }: { path: string }) {
+export function PopupRunner({ path, tier = 'full' }: { path: string; tier?: LicenseTier }) {
   const [popups, setPopups] = useState<PopupItem[]>([]);
   const [active, setActive] = useState<PopupItem | null>(null);
 
@@ -200,7 +201,7 @@ function PopupModal({ popup, onClose }: { popup: PopupItem; onClose: () => void 
             <X size={16} />
           </button>
         )}
-        <PageRenderer content={popup.content} />
+        <PageRenderer content={popup.content} tier={tier} />
       </div>
       <style>{`
         @keyframes en-popup-fade { from { opacity: 0 } to { opacity: 1 } }

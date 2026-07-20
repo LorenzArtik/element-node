@@ -3,6 +3,7 @@ import { getSiteSettings } from '@/lib/site-settings';
 import { resolveActiveThemeBlock } from '@/lib/theme-blocks';
 import type { PageContent } from '@/lib/widgets-schema';
 import { PageRenderer } from './PageRenderer';
+import { getLicenseTier } from '@/lib/license-client';
 import { PublicProviderClient } from './PublicProviderClient';
 import { PopupRunner } from './PopupRunner';
 import { CookieBanner, type CookieBannerSettings } from './CookieBanner';
@@ -32,6 +33,7 @@ export async function PublicShell({ content, page, path, post }: Props) {
 
   // Pagine con chrome proprio (landing): settings.hideHeader / hideFooter
   const ps = (page.settings ?? {}) as { hideHeader?: boolean; hideFooter?: boolean };
+  const tier = await getLicenseTier();
   const [header, footer] = await Promise.all([
     ps.hideHeader ? null : resolveActiveThemeBlock('HEADER', ctx),
     ps.hideFooter ? null : resolveActiveThemeBlock('FOOTER', ctx),
@@ -41,18 +43,18 @@ export async function PublicShell({ content, page, path, post }: Props) {
     <PublicProviderClient site={site} page={page} post={post}>
       {header && (
         <header className="en-site-header">
-          <PageRenderer content={header.content} />
+          <PageRenderer content={header.content} tier={tier} />
         </header>
       )}
       <main>
-        <PageRenderer content={content} />
+        <PageRenderer content={content} tier={tier} />
       </main>
       {footer && (
         <footer className="en-site-footer">
-          <PageRenderer content={footer.content} />
+          <PageRenderer content={footer.content} tier={tier} />
         </footer>
       )}
-      <PopupRunner path={path} />
+      <PopupRunner path={path} tier={tier} />
       {(site.integrations as { cookieBanner?: CookieBannerSettings }).cookieBanner?.enabled && (
         <CookieBanner settings={(site.integrations as { cookieBanner: CookieBannerSettings }).cookieBanner} path={path} />
       )}
