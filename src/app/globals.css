@@ -182,3 +182,8 @@
 /* Nell'editor i link NON navigano e il cursore non cambia: il click seleziona
    il widget, come su Elementor. (I controlli dell'editor sono <button>.) */
 .editor-canvas a { pointer-events: none !important; cursor: default !important; }
+
+/* Radix ScrollArea: il figlio del viewport è display:table e si dimensiona
+   sul contenuto intrinseco — nei pannelli stretti (proprietà, SEO, chat AI)
+   il contenuto sforava e veniva tagliato. I nostri scroll sono verticali. */
+[data-radix-scroll-area-viewport] > div { display: block !important; }
