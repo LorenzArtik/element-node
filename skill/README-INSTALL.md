@@ -8,6 +8,9 @@ pubblico https://github.com/LorenzArtik/element-node. Con una licenza attiva
 la scarichi sempre impacchettata e aggiornata dal pannello del CMS
 (Impostazioni → API) o dall'area clienti di elementnode.cloud.
 
+> Vuoi partire da zero (server compreso) con un solo prompt al tuo agente?
+> Il template completo è su https://elementnode.cloud/it/docs#prompt
+
 ## Installazione rapida (consigliata)
 
 ```bash

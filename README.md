@@ -16,6 +16,11 @@ aggiornamenti gestiti, patch di sicurezza e supporto (Impostazioni → Licenza n
 
 CMS visuale moderno costruito con **Next.js 15 + MySQL/Prisma** che replica l'editor di **Elementor PRO** con un'interfaccia molto più moderna di WordPress, **AI integrata (Claude di Anthropic)** per generare e modificare contenuti via prompt, e deploy diretto su **Plesk**.
 
+**Setup con un prompt (Claude Code / coding agent):** l'intero percorso —
+server, CMS, skill e primo sito — si fa incollando un solo prompt al tuo
+agente. Il template completo e sempre aggiornato è qui:
+https://elementnode.cloud/it/docs#prompt
+
 ## Highlights
 
 - Editor 3-pannelli (widget · canvas · proprietà) **identico a Elementor**
