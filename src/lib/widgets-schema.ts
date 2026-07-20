@@ -104,6 +104,10 @@ export interface WidgetField {
     | 'url'
     | 'slider'
     | 'dimension'
+    | 'spacing'
+    | 'border-style'
+    | 'shadow-style'
+    | 'background-style'
     | 'list';
   options?: { value: string; label: string }[];
   min?: number;
@@ -483,11 +487,11 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
         { value: 'space-around', label: 'Spazio attorno' },
       ] },
       { key: 'wrap', label: 'A capo se stretto (riga)', control: 'switch' },
-      { key: 'background', label: 'Sfondo (colore/gradient)', control: 'text', placeholder: 'es. #111827 o linear-gradient(...)' },
-      { key: 'borderRadius', label: 'Border radius', control: 'text', placeholder: 'es. 18px' },
-      { key: 'padding', label: 'Padding', control: 'text', placeholder: 'es. 26px' },
-      { key: 'border', label: 'Bordo', control: 'text', placeholder: 'es. 1px solid #e5e7eb' },
-      { key: 'boxShadow', label: 'Ombra', control: 'text', placeholder: 'es. 0 2px 12px rgba(0,0,0,0.08)' },
+      { key: 'background', label: 'Sfondo', control: 'background-style', placeholder: 'es. #111827 o linear-gradient(...)' },
+      { key: 'borderRadius', label: 'Border radius', control: 'spacing', placeholder: 'es. 18px' },
+      { key: 'padding', label: 'Padding', control: 'spacing', placeholder: 'es. 26px' },
+      { key: 'border', label: 'Bordo', control: 'border-style', placeholder: 'es. 1px solid #e5e7eb' },
+      { key: 'boxShadow', label: 'Ombra', control: 'shadow-style', placeholder: 'es. 0 2px 12px rgba(0,0,0,0.08)' },
       { key: 'minHeight', label: 'Altezza minima', control: 'text', placeholder: 'es. 200px' },
       { key: 'sticky', label: 'Fisso allo scroll (sidebar)', control: 'switch' },
       { key: 'stickyTop', label: 'Offset sticky', control: 'text', placeholder: '96px' },

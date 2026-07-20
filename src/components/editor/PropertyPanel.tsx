@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { RichTextField } from './RichTextField';
 import { MediaField } from './MediaField';
 import { DimensionsField, SliderWithUnit } from './DimensionsField';
+import { BorderField, ShadowField, BackgroundField } from './StyleFields';
 import { Settings, Layers, Trash2, Plus, Monitor, Tablet, Smartphone, ChevronDown, Copy, ClipboardPaste, RotateCcw } from 'lucide-react';
 import { WIDGET_STYLE_SECTIONS, type StyleControlGroup } from '@/lib/widget-styles';
 import { FontPicker } from '@/components/admin/FontPicker';
@@ -828,6 +829,34 @@ function RenderField({
         </Field>
       );
     }
+    case 'spacing':
+      return (
+        <Field label={field.label}>
+          <DimensionsField
+            value={(value as string) ?? ''}
+            onChange={onChange}
+            labels={field.key.toLowerCase().includes('radius') ? ['TL', 'TR', 'BR', 'BL'] : undefined}
+          />
+        </Field>
+      );
+    case 'border-style':
+      return (
+        <Field label={field.label}>
+          <BorderField value={(value as string) ?? ''} onChange={(v) => onChange(v)} />
+        </Field>
+      );
+    case 'shadow-style':
+      return (
+        <Field label={field.label}>
+          <ShadowField value={(value as string) ?? ''} onChange={(v) => onChange(v)} />
+        </Field>
+      );
+    case 'background-style':
+      return (
+        <Field label={field.label}>
+          <BackgroundField value={(value as string) ?? ''} onChange={(v) => onChange(v)} />
+        </Field>
+      );
     case 'form-picker':
       return (
         <Field label={field.label} help={field.help}>
