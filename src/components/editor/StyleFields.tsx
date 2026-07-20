@@ -201,12 +201,33 @@ export function ShadowField({ value, onChange }: { value: string; onChange: (v: 
 
 interface Grad { angle: number; from: string; to: string }
 
+/** Split sulle virgole di primo livello (ignora quelle dentro rgba()/hsl()). */
+function splitTop(s: string): string[] {
+  const out: string[] = [];
+  let depth = 0;
+  let cur = '';
+  for (const ch of s) {
+    if (ch === '(') depth++;
+    if (ch === ')') depth--;
+    if (ch === ',' && depth === 0) {
+      out.push(cur);
+      cur = '';
+    } else cur += ch;
+  }
+  out.push(cur);
+  return out.map((x) => x.trim()).filter(Boolean);
+}
+
 function parseGradient(v: string): Grad | null {
-  const m = (v || '').match(/^linear-gradient\(\s*(-?\d+)deg\s*,\s*(.+?)\s+[\d.]+%?\s*,\s*(.+?)\s+[\d.]+%?\s*\)$/);
-  if (m) return { angle: parseInt(m[1]), from: m[2].trim(), to: m[3].trim() };
-  const m2 = (v || '').match(/^linear-gradient\(\s*(-?\d+)deg\s*,\s*([^,]+)\s*,\s*([^,]+)\s*\)$/);
-  if (m2) return { angle: parseInt(m2[1]), from: m2[2].trim(), to: m2[3].trim() };
-  return null;
+  const m = (v || '').trim().match(/^linear-gradient\((.+)\)$/s);
+  if (!m) return null;
+  const parts = splitTop(m[1]);
+  if (parts.length < 3) return null;
+  const am = parts[0].match(/^(-?\d+(?:\.\d+)?)deg$/);
+  if (!am) return null;
+  const stripStop = (s: string) => s.replace(/\s+[\d.]+%$/, '').trim();
+  // multi-stop: prendiamo primo e ultimo colore (i controlli gestiscono 2 stop)
+  return { angle: Math.round(parseFloat(am[1])), from: stripStop(parts[1]), to: stripStop(parts[parts.length - 1]) };
 }
 
 export function BackgroundField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
