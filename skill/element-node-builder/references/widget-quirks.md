@@ -552,7 +552,7 @@ In dubbio: usa il pattern "html widget con style inline" invece di customCss —
 
 ---
 
-## 12. Scoperte empiriche clone smartagency.cloud (2026-07-16)
+## 12. Scoperte empiriche — clone di un sito aziendale reale (2026-07-16)
 
 ### ⚠️ `data-anchor` viene PERSO alla hydration React
 Il SSR emette `data-anchor` solo su alcune sezioni e la hydration client lo rimuove/omette. **Qualsiasi customCss basato su `section[data-anchor=...]` smette di funzionare dopo la hydration.** Usare invece:
@@ -626,7 +626,7 @@ Con header sticky via customCss servono anche le regole scroll del target, altri
 `npm run build` RIGENERA `.next/standalone` cancellando gli uploads se vivono lì. In produzione:
 `UPLOAD_DIR` assoluto verso `<vhost>/public/uploads` + alias nginx su quel path. Mai dentro standalone.
 
-## 14. Lezioni empiriche restyle I Praticelli (2026-07-18/19)
+## 14. Lezioni empiriche — restyle completo di un sito reale (2026-07-18/19)
 
 ### Campi che tradiscono (errori silenziosi)
 1. **html widget: il campo è `code`, NON `html`** — con la chiave sbagliata l'SSR sembra ok

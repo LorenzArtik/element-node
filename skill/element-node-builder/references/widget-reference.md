@@ -630,7 +630,7 @@ Editor: i figli si modificano dal pannello del box (campi per tipo + aggiungi/ri
 niente drag&drop annidato nel canvas (limite v1). Button con `btnIcon` e `text:""` = solo icona.
 `image` ora supporta anche `link`.
 
-# ESTENSIONI 2026-07-19 (progetto I Praticelli — native-first round 2)
+# ESTENSIONI 2026-07-19 (round 2 — native-first, da un restyle reale)
 
 ## Nuovi widget
 
