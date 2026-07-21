@@ -13,6 +13,8 @@ const updateSchema = z.object({
   content: z.unknown().optional(),
   settings: z.unknown().optional(),
   status: z.enum(['DRAFT', 'PUBLISHED', 'PRIVATE', 'TRASH']).optional(),
+  isHomepage: z.boolean().optional(),
+  password: z.string().nullable().optional(),
   seoTitle: z.string().nullable().optional(),
   seoDesc: z.string().nullable().optional(),
   ogImage: z.string().nullable().optional(),

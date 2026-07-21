@@ -51,6 +51,7 @@ interface Props {
     featured?: string | null;
     excerpt?: string | null;
     publishedAt?: string | null;
+      settings?: Record<string, unknown>;
   };
 }
 
@@ -278,6 +279,7 @@ export default function EditorShell({ pageId, title, slug, status, content, enti
               status,
               isHomepage: pageMeta?.isHomepage,
               password: pageMeta?.password,
+              settings: pageMeta?.settings,
               featured: pageMeta?.featured,
               excerpt: pageMeta?.excerpt,
               publishedAt: pageMeta?.publishedAt,

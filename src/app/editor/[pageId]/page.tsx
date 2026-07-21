@@ -26,6 +26,11 @@ export default async function EditorPage({ params }: { params: Promise<{ pageId:
         seoDesc: page.seoDesc ?? '',
         ogImage: page.ogImage ?? '',
       }}
+      pageMeta={{
+        isHomepage: page.isHomepage,
+        password: page.password,
+        settings: (page.settings as Record<string, unknown>) ?? {},
+      }}
     />
   );
 }

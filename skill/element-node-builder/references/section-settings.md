@@ -135,3 +135,16 @@ Le colonne usano `flex: 0 0 width%`. Larghezze tipiche per riempire 100%:
 | 6 | `[16, 16, 17, 17, 17, 17]` |
 
 Mescolare colonne `100` e colonne più strette su una stessa sezione = righe multiple (le 100 vanno a capo).
+
+## Impostazioni PAGINA (page.settings nel blueprint)
+
+Oltre alle sezioni, la pagina ha un oggetto `settings` proprio:
+
+| Campo | Effetto |
+|---|---|
+| `hideHeader: true` | La pagina renderizza SENZA l'header del tema (landing con chrome proprio) |
+| `hideFooter: true` | La pagina renderizza senza il footer del tema |
+
+Dal pannello: Impostazioni pagina → "Nascondi header/footer" (v1.8.2+).
+Nel blueprint: `{ "title": "Landing", "slug": "landing", "settings": { "hideHeader": true, "hideFooter": true }, "content": {...} }`
+Alternativa per-tema: condizioni del theme block con `exclude: [{type:'page-slug', slug:'landing'}]`.

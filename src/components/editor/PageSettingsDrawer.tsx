@@ -28,6 +28,7 @@ interface Props {
     status: string;
     isHomepage?: boolean;
     password?: string | null;
+    settings?: Record<string, unknown> | null;
     featured?: string | null;
     excerpt?: string | null;
     publishedAt?: string | null;
@@ -40,6 +41,8 @@ export function PageSettingsDrawer({ open, onOpenChange, entityKind, entityId, i
   const [status, setStatus] = useState(initial.status);
   const [isHomepage, setIsHomepage] = useState(!!initial.isHomepage);
   const [password, setPassword] = useState(initial.password ?? '');
+  const [hideHeader, setHideHeader] = useState(!!(initial.settings as { hideHeader?: boolean } | null)?.hideHeader);
+  const [hideFooter, setHideFooter] = useState(!!(initial.settings as { hideFooter?: boolean } | null)?.hideFooter);
   const [featured, setFeatured] = useState(initial.featured ?? '');
   const [excerpt, setExcerpt] = useState(initial.excerpt ?? '');
   const [publishedAt, setPublishedAt] = useState(initial.publishedAt ?? '');
@@ -62,6 +65,7 @@ export function PageSettingsDrawer({ open, onOpenChange, entityKind, entityId, i
       if (isPage) {
         payload.isHomepage = isHomepage;
         payload.password = password || null;
+        payload.settings = { ...(initial.settings ?? {}), hideHeader, hideFooter };
       }
       if (isPost) {
         payload.featured = featured || null;
@@ -148,6 +152,7 @@ export function PageSettingsDrawer({ open, onOpenChange, entityKind, entityId, i
               </Select>
             </div>
             {isPage && (
+              <>
               <div className="flex items-center justify-between p-3 border rounded-lg">
                 <div>
                   <Label>Imposta come homepage</Label>
@@ -155,6 +160,22 @@ export function PageSettingsDrawer({ open, onOpenChange, entityKind, entityId, i
                 </div>
                 <Switch checked={isHomepage} onCheckedChange={setIsHomepage} />
               </div>
+
+              <div className="flex items-center justify-between p-3 border rounded-lg">
+                <div>
+                  <Label className="text-xs">Nascondi header</Label>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">La pagina esce senza l'header del tema (landing con chrome proprio)</p>
+                </div>
+                <Switch checked={hideHeader} onCheckedChange={setHideHeader} />
+              </div>
+              <div className="flex items-center justify-between p-3 border rounded-lg">
+                <div>
+                  <Label className="text-xs">Nascondi footer</Label>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">La pagina esce senza il footer del tema</p>
+                </div>
+                <Switch checked={hideFooter} onCheckedChange={setHideFooter} />
+              </div>
+              </>
             )}
             {isPost && (
               <div className="space-y-1.5">
