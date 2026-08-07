@@ -34,7 +34,7 @@ Requirements: Node.js ≥ 20, MySQL/MariaDB. The installer clones the repo, inst
 | [MCP server](mcp/) | Cursor, Windsurf, any MCP client | Pages, theme, media, full Site Blueprint import/export, always-fresh widget docs |
 | REST API | Anything else | Bearer API keys with scopes (`site.import`, `site.export`, …) |
 
-Real production numbers: a 24-page corporate site migrated from WordPress in ~24 hours · a bilingual site in 3 days · a React SPA cloned at 95/100 automated visual fidelity. See [showcase](https://elementnode.cloud/en/showcase).
+Real production numbers (agent build time, human review on top): a 24-page WordPress migration in **~1 hour** · a complete bilingual site in **half a day** · a React SPA cloned at **95/100** automated visual fidelity in ~2 hours. See [showcase](https://elementnode.cloud/en/showcase).
 
 ## What's in the box
 
