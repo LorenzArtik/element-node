@@ -703,3 +703,35 @@ Con mode ≠ public: **noindex automatico** (meta robots globale) + **robots.txt
 LockScreen brandizzata (password → cookie firmato 7gg) o pagina manutenzione. Gli admin loggati
 bypassano sempre. Per i siti in costruzione attivare SUBITO password mode (evita indicizzazione
 dello staging). PATCH sempre con GET+merge dell'oggetto integrations completo.
+
+# ESTENSIONI 2026-08 (v1.7.0–v1.8.2)
+
+## ⚠️ Enforcement licenza sul rendering pubblico (v1.7.0) — LEGGERE PRIMA DI COSTRUIRE
+Dal v1.7.0 i widget fuori dal piano licenza del sito NON vengono renderizzati sul sito
+pubblico (in editor restano visibili con badge ambra "Non visibile sul sito — richiede <piano>").
+L'import via API NON è più un bypass: il blueprint importa, ma le sezioni con widget "pro"
+su un piano che non li include spariscono dal pubblico SENZA errori.
+**Prima di costruire: verificare il tier del sito** con `GET /api/admin/license-tier`
+(valori: 'free' | 'essential' | 'full'; legacy/interne = full). Su tier free/essential
+usare SOLO widget sbloccati (free = 33 widget basic+general; essential aggiunge 5 pro:
+hero, posts-grid, contact-form, gallery, social-icons). Se il design richiede widget pro
+non disponibili, segnalarlo invece di produrre pagine mutilate in silenzio.
+
+## Controlli stile Elementor-like nel pannello (v1.8.0–v1.8.1)
+Nuovi tipi di control nello schema: `spacing` (4 lati+link+unità; se la key contiene
+"radius" le label diventano angoli), `border-style` (stile+spessore+colore),
+`shadow-style` (preset Nessuna/Leggera/Media/Forte/Personalizzata + X/Y/blur/spread/
+colore/inset), `background-style` (tab Nessuno/Colore/Gradiente 2 stop+angolo+anteprima).
+Applicati ai campi del box (`background`, `borderRadius`, `padding`, `border`, `boxShadow`)
+e agli stessi pattern su altri widget.
+**Per i blueprint NON CAMBIA NULLA: la serializzazione resta la stessa stringa CSS di
+prima** (es. `"padding": "26px"`, `"border": "1px solid #e5e7eb"`,
+`"boxShadow": "0 2px 12px rgba(0,0,0,0.08)"`, `"background": "linear-gradient(...)"`).
+Valori CSS non parsabili dai control finiscono in modalità "manuale" senza perdita.
+Il parser gradient regge rgba() e multi-stop (usa primo+ultimo colore nella UI).
+
+## Nascondi header/footer per pagina (v1.8.2)
+`page.settings.hideHeader` / `hideFooter` (boolean) — ora anche con toggle UI nel
+PageSettingsDrawer. Dettagli e alternativa per-tema (conditions exclude page-slug):
+vedi section-settings.md. FIX incluso: il PATCH /api/pages/[id] ora salva davvero
+isHomepage e password (prima lo zod li scartava in silenzio).
