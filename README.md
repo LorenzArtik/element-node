@@ -6,6 +6,14 @@ Element Node is an open-source visual CMS built on **Next.js 15 + Prisma/MySQL**
 
 > 🇮🇹 Documentazione in italiano: [elementnode.cloud/it/docs](https://elementnode.cloud/it/docs)
 
+![Element Node visual editor](docs/media/editor.png)
+
+<details>
+<summary>The same page, published (built end-to-end by an AI agent via the official skill)</summary>
+
+![Demo site built by an AI agent](docs/media/demo-site.png)
+</details>
+
 ## Quickstart
 
 ```bash
