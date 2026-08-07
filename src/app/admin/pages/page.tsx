@@ -7,6 +7,7 @@ import { Plus, Edit3, Eye, Search, ChevronLeft, ChevronRight } from 'lucide-reac
 import { formatDate } from '@/lib/utils';
 import { DeletePageButton } from './delete-button';
 import { DuplicateButton } from '@/components/admin/DuplicateButton';
+import { AiFirstRun } from '@/components/admin/AiFirstRun';
 
 export const dynamic = 'force-dynamic';
 
@@ -63,10 +64,16 @@ export default async function PagesPage({ searchParams }: { searchParams: Promis
             <div className="text-right">Azioni</div>
           </div>
           {pages.length === 0 ? (
-            <div className="text-center py-16">
-              <p className="text-muted-foreground mb-4">Non hai ancora pagine.</p>
-              <Button asChild><Link href="/admin/pages/new">Crea la prima</Link></Button>
-            </div>
+            q ? (
+              <div className="text-center py-16">
+                <p className="text-muted-foreground mb-4">Nessuna pagina trovata per «{q}».</p>
+                <Button asChild><Link href="/admin/pages">Mostra tutte</Link></Button>
+              </div>
+            ) : (
+              <div className="py-12 px-6">
+                <AiFirstRun />
+              </div>
+            )
           ) : (
             pages.map((p) => (
               <div key={p.id} className="grid grid-cols-[1fr_120px_120px_180px_120px] gap-4 items-center px-6 py-4 hover:bg-muted/40 transition-colors">
