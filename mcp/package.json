@@ -1,0 +1,17 @@
+{
+  "name": "element-node-mcp",
+  "version": "0.1.0",
+  "description": "Official MCP server for Element Node CMS — lets AI agents (Claude Code, Cursor, Windsurf…) build and manage Element Node sites via the REST API.",
+  "type": "module",
+  "bin": { "element-node-mcp": "index.mjs" },
+  "main": "index.mjs",
+  "files": ["index.mjs", "README.md"],
+  "engines": { "node": ">=18.17" },
+  "keywords": ["mcp", "modelcontextprotocol", "cms", "element-node", "ai-agents", "claude"],
+  "license": "MIT",
+  "repository": { "type": "git", "url": "https://github.com/LorenzArtik/element-node.git", "directory": "mcp" },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "zod": "^3.23.8"
+  }
+}
