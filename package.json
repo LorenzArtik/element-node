@@ -1,5 +1,6 @@
 {
   "name": "element-node",
+  "license": "AGPL-3.0-only",
   "version": "1.9.0",
   "private": true,
   "description": "Element Node — Modern visual CMS built with Next.js + MySQL, with AI-powered content generation",

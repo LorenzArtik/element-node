@@ -63,4 +63,7 @@ Next.js 15 (App Router, standalone output) · Prisma + MySQL · NextAuth v5 · T
 
 ## License
 
-The CMS core is open source — the definitive license file is being finalized. Managed updates, priority support and the white-label agency tier are commercial: [elementnode.cloud/en/pricing](https://elementnode.cloud/en/pricing).
+- **CMS core: [AGPL-3.0](LICENSE)** — free to use, self-host and modify. Building and running your own sites (or client sites) carries no obligations; the AGPL kicks in only if you modify the CMS and offer it to others as a service.
+- **[Claude Code skill](skill/) and [MCP server](mcp/): MIT** — integrate freely.
+
+Managed updates, security patches, priority support and the white-label agency tier are commercial: [elementnode.cloud/en/pricing](https://elementnode.cloud/en/pricing). For commercial licensing outside AGPL terms, get in touch.
