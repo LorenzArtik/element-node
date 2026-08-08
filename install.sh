@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Element Node CMS — installer
-# Uso: bash <(curl -fsSL https://raw.githubusercontent.com/LorenzArtik/element-node/main/install.sh)
+# Uso: bash <(curl -fsSL https://elementnode.cloud/install.sh)
 set -euo pipefail
 
 REPO="https://github.com/LorenzArtik/element-node.git"

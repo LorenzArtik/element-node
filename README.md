@@ -17,7 +17,7 @@ Element Node is an open-source visual CMS built on **Next.js 15 + Prisma/MySQL**
 ## Quickstart
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/LorenzArtik/element-node/main/install.sh)
+bash <(curl -fsSL https://elementnode.cloud/install.sh)
 ```
 
 Requirements: Node.js ≥ 20, MySQL/MariaDB. The installer clones the repo, installs dependencies, creates `.env` and the DB schema, builds, and leaves you at the `/install` wizard (admin user, site, AI).
