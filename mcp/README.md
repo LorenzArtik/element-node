@@ -19,10 +19,7 @@ Lets any MCP-capable AI agent — Claude Code, Cursor, Windsurf, Zed… — buil
 
 Requirements: Node ≥ 18.17, an Element Node install, an API key (CMS → Settings → API, scopes `site.import`+`site.export`) and an admin account.
 
-```bash
-git clone https://github.com/LorenzArtik/element-node.git
-cd element-node/mcp && npm install
-```
+No install needed — the server is on npm ([`element-node-mcp`](https://www.npmjs.com/package/element-node-mcp)) and runs via `npx`.
 
 ### Claude Code
 
@@ -32,7 +29,7 @@ claude mcp add element-node \
   -e ELEMENT_NODE_API_KEY=en_live_... \
   -e ELEMENT_NODE_EMAIL=admin@your-site.com \
   -e ELEMENT_NODE_PASSWORD=... \
-  -- node /path/to/element-node/mcp/index.mjs
+  -- npx -y element-node-mcp
 ```
 
 ### Cursor / Windsurf / generic (mcp.json)
@@ -41,8 +38,8 @@ claude mcp add element-node \
 {
   "mcpServers": {
     "element-node": {
-      "command": "node",
-      "args": ["/path/to/element-node/mcp/index.mjs"],
+      "command": "npx",
+      "args": ["-y", "element-node-mcp"],
       "env": {
         "ELEMENT_NODE_URL": "https://your-site.com",
         "ELEMENT_NODE_API_KEY": "en_live_...",
