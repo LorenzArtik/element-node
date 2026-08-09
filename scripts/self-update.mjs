@@ -143,6 +143,23 @@ async function main() {
   run(npx, ['prisma', 'db', 'push', '--skip-generate']);
   run(npx, ['prisma', 'generate']);
 
+  // 4b. salvaguardia uploads: il server standalone gira con CWD .next/standalone,
+  // quindi UPLOAD_DIR relativo scrive in .next/standalone/public/uploads — che la
+  // build sta per ricreare da zero. Merge nella public/ persistente PRIMA della
+  // build; lo swap (step 6) li riporta nel nuovo standalone. (-n: mai sovrascrivere)
+  setState({ step: 'preserve-uploads' });
+  try {
+    const liveUploads = join(ROOT, '.next', 'standalone', 'public', 'uploads');
+    const persistentUploads = join(ROOT, 'public', 'uploads');
+    if (existsSync(liveUploads)) {
+      mkdirSync(persistentUploads, { recursive: true });
+      execSync(`cp -an "${liveUploads}/." "${persistentUploads}/"`, { cwd: ROOT });
+      log('uploads del runtime preservati in public/uploads');
+    }
+  } catch (e) {
+    log(`salvaguardia uploads non riuscita (proseguo comunque): ${e?.message || e}`);
+  }
+
   // 5. build (la versione in esecuzione continua a servire da .next/standalone)
   setState({ step: 'build' });
   run(npm, ['run', 'build']);
