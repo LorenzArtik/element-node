@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/db';
 import { lockExists } from '@/lib/install-status';
+import { themeSchema, integrationsSchema } from '@/lib/theme';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,19 +26,26 @@ export async function POST(req: Request) {
   const { name, tagline, primaryColor, anthropicKey, anthropicModel } = parsed.data;
 
   const existing = await prisma.site.findFirst().catch(() => null);
-  const baseTheme = {
+  // Theme e integrations DEVONO passare dagli schemi: getSiteSettings() li valida
+  // con safeParse e una shape non conforme fa cadere tutto sui default (chiave
+  // AI e colore del wizard persi silenziosamente).
+  const baseTheme = themeSchema.parse({
     colors: {
       primary: primaryColor,
-      secondary: '#1f2937',
-      accent: '#0ea5e9',
-      text: '#111827',
-      background: '#ffffff',
+      primaryHover: darken(primaryColor),
     },
-    typography: { headingFont: 'Inter', bodyFont: 'Inter' },
-  };
-  const integrations = {
-    ...(anthropicKey ? { anthropic: { apiKey: anthropicKey, model: anthropicModel } } : {}),
-  };
+    typography: { scale: {} },
+    layout: {},
+    radius: {},
+    buttons: {},
+    forms: { focusColor: primaryColor },
+  });
+  const integrations = integrationsSchema.parse({
+    recaptcha: {},
+    smtp: {},
+    brevo: {},
+    ...(anthropicKey ? { anthropicApiKey: anthropicKey, anthropicModel } : {}),
+  });
 
   if (existing) {
     await prisma.site.update({
@@ -50,4 +58,13 @@ export async function POST(req: Request) {
     });
   }
   return NextResponse.json({ ok: true });
+}
+
+/** Scurisce un colore hex #rrggbb (per l'hover derivato dal primary del wizard). */
+function darken(hex: string, factor = 0.82): string {
+  const n = parseInt(hex.slice(1), 16);
+  const r = Math.round(((n >> 16) & 255) * factor);
+  const g = Math.round(((n >> 8) & 255) * factor);
+  const b = Math.round((n & 255) * factor);
+  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
 }
