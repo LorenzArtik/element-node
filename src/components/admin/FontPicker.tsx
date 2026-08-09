@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Check, ChevronsUpDown, Search } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@radix-ui/react-popover';
+import { t } from '@/lib/admin-i18n';
 
 const POPULAR_FONTS = [
   'Inter', 'Roboto', 'Open Sans', 'Lato', 'Montserrat', 'Poppins', 'Source Sans 3', 'Raleway',
@@ -69,7 +70,7 @@ export function FontPicker({ value, onChange, label }: { value: string; onChange
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between px-3 py-2 border rounded-md bg-card text-sm hover:border-primary transition-colors"
       >
-        <span style={{ fontFamily: value || 'inherit' }} className="truncate">{primaryFamily || 'Seleziona font...'}</span>
+        <span style={{ fontFamily: value || 'inherit' }} className="truncate">{primaryFamily || t('Seleziona font...', 'Select font...')}</span>
         <ChevronsUpDown className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
       </button>
 
@@ -83,7 +84,7 @@ export function FontPicker({ value, onChange, label }: { value: string; onChange
                 <Input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Cerca font Google..."
+                  placeholder={t('Cerca font Google...', 'Search Google Fonts...')}
                   className="pl-8 h-8"
                   autoFocus
                 />
@@ -105,11 +106,11 @@ export function FontPicker({ value, onChange, label }: { value: string; onChange
                 );
               })}
               {filtered.length === 0 && (
-                <div className="p-6 text-center text-xs text-muted-foreground">Nessun font trovato</div>
+                <div className="p-6 text-center text-xs text-muted-foreground">{t('Nessun font trovato', 'No fonts found')}</div>
               )}
             </div>
             <div className="p-2 border-t text-[10px] text-muted-foreground">
-              Powered by Google Fonts (caricati on-demand)
+              {t('Powered by Google Fonts (caricati on-demand)', 'Powered by Google Fonts (loaded on demand)')}
             </div>
           </div>
         </>

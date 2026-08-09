@@ -5,8 +5,14 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sparkles, Loader2 } from 'lucide-react';
+import { t } from '@/lib/admin-i18n';
 
-const STEP_LABELS = ['Leggo il brief…', 'Progetto le sezioni…', 'Scrivo i contenuti…', 'Creo la pagina…'];
+const STEP_LABELS = [
+  t('Leggo il brief…', 'Reading the brief…'),
+  t('Progetto le sezioni…', 'Designing the sections…'),
+  t('Scrivo i contenuti…', 'Writing the content…'),
+  t('Creo la pagina…', 'Creating the page…'),
+];
 
 /**
  * First-run: quando il sito non ha ancora pagine, l'utente descrive la sua
@@ -35,7 +41,7 @@ export function AiFirstRun() {
 
   async function generate() {
     if (brief.trim().length < 20) {
-      setError('Racconta qualcosa in più (almeno un paio di frasi): settore, cosa offri, a chi ti rivolgi.');
+      setError(t('Racconta qualcosa in più (almeno un paio di frasi): settore, cosa offri, a chi ti rivolgi.', 'Tell us a bit more (at least a couple of sentences): your industry, what you offer, who you serve.'));
       return;
     }
     setError('');
@@ -49,8 +55,8 @@ export function AiFirstRun() {
         body: JSON.stringify({ prompt, context: 'page' }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || `Errore ${res.status}`);
-      if (data.kind !== 'page' || !data.result?.sections) throw new Error('La risposta AI non è una pagina valida. Riprova.');
+      if (!res.ok) throw new Error(data.error || t(`Errore ${res.status}`, `Error ${res.status}`));
+      if (data.kind !== 'page' || !data.result?.sections) throw new Error(t('La risposta AI non è una pagina valida. Riprova.', 'The AI response is not a valid page. Try again.'));
 
       const created = await fetch('/api/pages', {
         method: 'POST',
@@ -58,18 +64,18 @@ export function AiFirstRun() {
         body: JSON.stringify({ title: 'Home', isHomepage: true }),
       });
       const page = await created.json();
-      if (!created.ok) throw new Error(page.error || 'Creazione pagina fallita');
+      if (!created.ok) throw new Error(page.error || t('Creazione pagina fallita', 'Page creation failed'));
 
       const patched = await fetch(`/api/pages/${page.id}`, {
         method: 'PATCH',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ content: data.result }),
       });
-      if (!patched.ok) throw new Error('Salvataggio contenuto fallito');
+      if (!patched.ok) throw new Error(t('Salvataggio contenuto fallito', 'Failed to save content'));
 
       router.push(`/editor/${page.id}`);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Errore sconosciuto');
+      setError(e instanceof Error ? e.message : t('Errore sconosciuto', 'Unknown error'));
       setBusy(false);
     }
   }
@@ -79,19 +85,19 @@ export function AiFirstRun() {
       <div className="rounded-2xl border bg-card p-6 shadow-sm">
         <div className="flex items-center gap-2 mb-1.5">
           <Sparkles className="h-5 w-5 text-primary" />
-          <h3 className="font-semibold text-lg">Fai costruire la homepage all&apos;AI</h3>
+          <h3 className="font-semibold text-lg">{t('Fai costruire la homepage all\'AI', 'Let AI build your homepage')}</h3>
         </div>
         <p className="text-sm text-muted-foreground mb-4">
-          Descrivi la tua attività: l&apos;AI progetta le sezioni e scrive i contenuti. Poi rifinisci tutto nell&apos;editor visuale.
+          {t('Descrivi la tua attività: l\'AI progetta le sezioni e scrive i contenuti. Poi rifinisci tutto nell\'editor visuale.', 'Describe your business: the AI designs the sections and writes the content. Then refine everything in the visual editor.')}
         </p>
 
         {aiReady === false && (
           <div className="rounded-xl border border-amber-300 bg-amber-50 dark:bg-amber-950/30 p-4 text-sm mb-4">
-            Per usare l&apos;AI serve una chiave Anthropic:{' '}
+            {t('Per usare l\'AI serve una chiave Anthropic:', 'To use AI you need an Anthropic key:')}{' '}
             <ol className="list-decimal ml-5 mt-2 space-y-1">
-              <li>Creala su <span className="font-mono text-xs">console.anthropic.com/settings/keys</span></li>
-              <li>Incollala in <Link className="underline font-medium" href="/admin/settings?tab=integrations">Impostazioni → Integrazioni</Link></li>
-              <li>Torna qui e ricarica</li>
+              <li>{t('Creala su', 'Create it at')} <span className="font-mono text-xs">console.anthropic.com/settings/keys</span></li>
+              <li>{t('Incollala in', 'Paste it into')} <Link className="underline font-medium" href="/admin/settings?tab=integrations">{t('Impostazioni → Integrazioni', 'Settings → Integrations')}</Link></li>
+              <li>{t('Torna qui e ricarica', 'Come back here and reload')}</li>
             </ol>
           </div>
         )}
@@ -101,7 +107,7 @@ export function AiFirstRun() {
           onChange={(e) => setBrief(e.target.value)}
           disabled={busy || aiReady === false}
           rows={4}
-          placeholder="Es. Siamo una torrefazione artigianale di Verona, vendiamo caffè specialty online e ai bar della zona. Tono caldo e diretto, clienti sia privati che locali."
+          placeholder={t('Es. Siamo una torrefazione artigianale di Verona, vendiamo caffè specialty online e ai bar della zona. Tono caldo e diretto, clienti sia privati che locali.', 'E.g. We\'re an artisan coffee roastery in Verona, selling specialty coffee online and to local cafés. Warm, direct tone, serving both consumers and businesses.')}
           className="w-full rounded-xl border bg-background px-3.5 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/30 resize-none"
         />
         {error && <p className="text-sm text-destructive mt-2">{error}</p>}
@@ -116,15 +122,15 @@ export function AiFirstRun() {
             ) : (
               <>
                 <Sparkles className="h-4 w-4 mr-2" />
-                Genera la homepage
+                {t('Genera la homepage', 'Generate the homepage')}
               </>
             )}
           </Button>
-          {aiReady === null && <span className="text-xs text-muted-foreground">Verifico la configurazione AI…</span>}
+          {aiReady === null && <span className="text-xs text-muted-foreground">{t('Verifico la configurazione AI…', 'Checking AI configuration…')}</span>}
         </div>
       </div>
       <p className="text-center text-sm text-muted-foreground mt-4">
-        Preferisci partire da zero? <Link className="underline" href="/admin/pages/new">Crea una pagina vuota</Link>
+        {t('Preferisci partire da zero?', 'Prefer to start from scratch?')} <Link className="underline" href="/admin/pages/new">{t('Crea una pagina vuota', 'Create a blank page')}</Link>
       </p>
     </div>
   );

@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Sparkles, Loader2 } from 'lucide-react';
 import { executeRecaptcha } from '@/lib/recaptcha-client';
+import { t } from '@/lib/admin-i18n';
 
 function LoginForm() {
   const router = useRouter();
@@ -25,15 +26,15 @@ function LoginForm() {
       const recaptchaToken = await executeRecaptcha('login');
       const res = await signIn('credentials', { email, password, recaptchaToken, redirect: false });
       if (res?.error || !res?.ok) {
-        toast.error('Credenziali non valide');
+        toast.error(t('Credenziali non valide', 'Invalid credentials'));
         setLoading(false);
         return;
       }
-      toast.success('Benvenuto!');
+      toast.success(t('Benvenuto!', 'Welcome!'));
       // Hard redirect: evita ClientFetchError causato da getSession dopo signIn
       window.location.href = from;
     } catch (err) {
-      toast.error('Errore login', { description: (err as Error).message });
+      toast.error(t('Errore login', 'Login error'), { description: (err as Error).message });
       setLoading(false);
     }
   }
@@ -49,7 +50,7 @@ function LoginForm() {
         <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
       </div>
       <Button type="submit" className="w-full" disabled={loading} size="lg">
-        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Accedi'}
+        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : t('Accedi', 'Sign in')}
       </Button>
     </form>
   );
@@ -85,30 +86,29 @@ export default function LoginPage() {
         </div>
         <div className="space-y-6">
           <h1 className="text-5xl font-bold leading-tight">
-            Costruisci pagine come un<br />designer professionista.
+            {t('Costruisci pagine come un', 'Build pages like a')}<br />{t('designer professionista.', 'professional designer.')}
           </h1>
           <p className="text-lg opacity-90 max-w-md">
-            Drag & drop, widget pro, AI integrata per generare contenuti con un prompt.
-            Plug-in per il tuo Plesk in 5 minuti.
+            {t('Drag & drop, widget pro, AI integrata per generare contenuti con un prompt. Sul tuo server in 5 minuti.', 'Drag & drop, pro widgets, built-in AI that generates content from a prompt. On your own server in 5 minutes.')}
           </p>
         </div>
-        <div className="text-sm opacity-70">© Element Node — tutti i diritti riservati</div>
+        <div className="text-sm opacity-70">© Element Node — {t('tutti i diritti riservati', 'all rights reserved')}</div>
       </div>
       <div className="flex items-center justify-center p-8">
         <div className="w-full max-w-md space-y-6">
           <div>
-            <h2 className="text-3xl font-bold">Accedi</h2>
-            <p className="text-muted-foreground mt-1">Usa le credenziali admin per entrare nel CMS</p>
+            <h2 className="text-3xl font-bold">{t('Accedi', 'Sign in')}</h2>
+            <p className="text-muted-foreground mt-1">{t('Usa le credenziali admin per entrare nel CMS', 'Use your admin credentials to enter the CMS')}</p>
           </div>
           <Suspense>
             <LoginForm />
           </Suspense>
           <div className="text-sm text-center space-y-1">
-            <a href="/forgot-password" className="text-primary hover:underline">Password dimenticata?</a>
+            <a href="/forgot-password" className="text-primary hover:underline">{t('Password dimenticata?', 'Forgot password?')}</a>
           </div>
-          <p className="text-xs text-muted-foreground text-center">
-            Default seed: <code className="font-mono">admin@example.com</code> / <code className="font-mono">admin1234</code>
-          </p>
+          {process.env.NEXT_PUBLIC_LOGIN_HINT && (
+            <p className="text-xs text-muted-foreground text-center">{process.env.NEXT_PUBLIC_LOGIN_HINT}</p>
+          )}
         </div>
       </div>
     </div>

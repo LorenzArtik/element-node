@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { FileText, Image as ImageIcon, Newspaper, Plus, Sparkles, TrendingUp, Activity, Users, Inbox, MessageSquare } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
+import { t } from '@/lib/admin-i18n';
 import { HealthWidget } from './health-widget';
 
 export const dynamic = 'force-dynamic';
@@ -21,12 +22,12 @@ export default async function DashboardPage() {
   ]);
 
   const stats = [
-    { label: 'Pagine', value: pageCount, icon: FileText, color: 'from-blue-500 to-cyan-500' },
-    { label: 'Articoli', value: postCount, icon: Newspaper, color: 'from-violet-500 to-fuchsia-500' },
+    { label: t('Pagine', 'Pages'), value: pageCount, icon: FileText, color: 'from-blue-500 to-cyan-500' },
+    { label: t('Articoli', 'Posts'), value: postCount, icon: Newspaper, color: 'from-violet-500 to-fuchsia-500' },
     { label: 'Media', value: mediaCount, icon: ImageIcon, color: 'from-emerald-500 to-teal-500' },
-    { label: 'Utenti', value: userCount, icon: Users, color: 'from-orange-500 to-amber-500' },
-    { label: 'Form', value: formCount, icon: Inbox, color: 'from-pink-500 to-rose-500' },
-    { label: 'Popup', value: popupCount, icon: MessageSquare, color: 'from-indigo-500 to-purple-500' },
+    { label: t('Utenti', 'Users'), value: userCount, icon: Users, color: 'from-orange-500 to-amber-500' },
+    { label: t('Form', 'Forms'), value: formCount, icon: Inbox, color: 'from-pink-500 to-rose-500' },
+    { label: t('Popup', 'Popups'), value: popupCount, icon: MessageSquare, color: 'from-indigo-500 to-purple-500' },
   ];
 
   return (
@@ -34,10 +35,10 @@ export default async function DashboardPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-muted-foreground">Panoramica del tuo sito</p>
+          <p className="text-muted-foreground">{t('Panoramica del tuo sito', 'Overview of your site')}</p>
         </div>
         <Button asChild size="lg">
-          <Link href="/admin/pages/new"><Plus className="h-4 w-4" /> Nuova pagina</Link>
+          <Link href="/admin/pages/new"><Plus className="h-4 w-4" /> {t('Nuova pagina', 'New page')}</Link>
         </Button>
       </div>
 
@@ -61,15 +62,15 @@ export default async function DashboardPage() {
       <div className="grid gap-6 md:grid-cols-3">
         <Card className="md:col-span-2">
           <CardHeader>
-            <CardTitle>Ultime modifiche</CardTitle>
-            <CardDescription>Le 5 pagine modificate più di recente</CardDescription>
+            <CardTitle>{t('Ultime modifiche', 'Recent changes')}</CardTitle>
+            <CardDescription>{t('Le 5 pagine modificate più di recente', 'The 5 most recently edited pages')}</CardDescription>
           </CardHeader>
           <CardContent>
             {recentPages.length === 0 ? (
               <div className="text-center py-12 text-muted-foreground">
                 <FileText className="h-10 w-10 mx-auto mb-2 opacity-30" />
-                <p>Nessuna pagina ancora.</p>
-                <Button asChild className="mt-4"><Link href="/admin/pages/new">Crea la prima</Link></Button>
+                <p>{t('Nessuna pagina ancora.', 'No pages yet.')}</p>
+                <Button asChild className="mt-4"><Link href="/admin/pages/new">{t('Crea la prima', 'Create the first one')}</Link></Button>
               </div>
             ) : (
               <div className="space-y-1">
@@ -95,10 +96,10 @@ export default async function DashboardPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2"><Sparkles className="h-4 w-4 text-primary" /> AI Assistant</CardTitle>
-              <CardDescription>Genera contenuti via prompt</CardDescription>
+              <CardDescription>{t('Genera contenuti via prompt', 'Generate content via prompt')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-2 text-sm">
-              <p>Nel pannello editor, clicca <b>AI</b> per generare sezioni, scrivere copy, tradurre.</p>
+              <p>{t('Nel pannello editor, clicca', 'In the editor panel, click')} <b>AI</b> {t('per generare sezioni, scrivere copy, tradurre.', 'to generate sections, write copy, translate.')}</p>
               <div className="flex items-center gap-2 text-xs pt-2 border-t">
                 <TrendingUp className="h-3 w-3 text-emerald-500" />
                 Powered by Claude (Anthropic)

@@ -7,17 +7,21 @@ import { Plus, Edit3, Settings2, MessageSquare } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { CreatePopupButton } from './create-button';
 import { DeletePopupButton } from './delete-button';
+import { t } from '@/lib/admin-i18n';
 
 export const dynamic = 'force-dynamic';
 
 export default async function PopupsPage() {
   const popups = await prisma.popup.findMany({ orderBy: [{ priority: 'desc' }, { updatedAt: 'desc' }] });
+  // Pre-computed: inside popups.map a local `t` (trigger) shadows the i18n helper.
+  const priorityLabel = t('Priorità', 'Priority');
+  const settingsLabel = t('Impostazioni', 'Settings');
   return (
     <div className="p-8 space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Popup</h1>
-          <p className="text-muted-foreground">Crea popup con trigger e regole di visualizzazione</p>
+          <p className="text-muted-foreground">{t('Crea popup con trigger e regole di visualizzazione', 'Create popups with triggers and display rules')}</p>
         </div>
         <CreatePopupButton />
       </div>
@@ -25,17 +29,17 @@ export default async function PopupsPage() {
       {popups.length === 0 ? (
         <Card className="p-16 text-center">
           <MessageSquare className="h-12 w-12 mx-auto mb-3 text-muted-foreground" />
-          <p className="text-muted-foreground">Nessun popup. Creane uno per attivare modali, banner newsletter, exit-intent.</p>
+          <p className="text-muted-foreground">{t('Nessun popup. Creane uno per attivare modali, banner newsletter, exit-intent.', 'No popups. Create one to enable modals, newsletter banners, exit-intent.')}</p>
         </Card>
       ) : (
         <Card>
           <div className="divide-y">
             <div className="grid grid-cols-[1fr_auto_auto_auto_auto] gap-4 px-6 py-3 text-xs font-medium uppercase text-muted-foreground bg-muted/40">
-              <div>Nome</div>
+              <div>{t('Nome', 'Name')}</div>
               <div>Trigger</div>
-              <div>Stato</div>
-              <div>Aggiornato</div>
-              <div className="text-right">Azioni</div>
+              <div>{t('Stato', 'Status')}</div>
+              <div>{t('Aggiornato', 'Updated')}</div>
+              <div className="text-right">{t('Azioni', 'Actions')}</div>
             </div>
             {popups.map((p) => {
               const t = p.trigger as { type: string };
@@ -43,13 +47,13 @@ export default async function PopupsPage() {
                 <div key={p.id} className="grid grid-cols-[1fr_auto_auto_auto_auto] gap-4 items-center px-6 py-4 hover:bg-muted/40">
                   <div>
                     <div className="font-medium">{p.name}</div>
-                    <div className="text-xs text-muted-foreground">Priorità {p.priority}</div>
+                    <div className="text-xs text-muted-foreground">{priorityLabel} {p.priority}</div>
                   </div>
                   <Badge variant="outline">{t.type}</Badge>
                   <Badge variant={p.status === 'PUBLISHED' ? 'success' : 'outline'}>{p.status}</Badge>
                   <div className="text-sm text-muted-foreground">{formatDate(p.updatedAt)}</div>
                   <div className="flex gap-1">
-                    <Button asChild variant="ghost" size="icon" title="Impostazioni">
+                    <Button asChild variant="ghost" size="icon" title={settingsLabel}>
                       <Link href={`/admin/popups/${p.id}/settings`}><Settings2 className="h-4 w-4" /></Link>
                     </Button>
                     <Button asChild variant="ghost" size="icon" title="Editor">

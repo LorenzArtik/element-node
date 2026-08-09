@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Download, Edit3 } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { SubmissionRowActions } from './row-actions';
+import { t } from '@/lib/admin-i18n';
 
 export const dynamic = 'force-dynamic';
 
@@ -38,10 +39,10 @@ export default async function SubmissionsPage({ params, searchParams }: {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Submission</h1>
-          <p className="text-muted-foreground">{total} totali · {subs.length} mostrate</p>
+          <p className="text-muted-foreground">{t(`${total} totali · ${subs.length} mostrate`, `${total} total · ${subs.length} shown`)}</p>
         </div>
         <Button asChild variant="outline">
-          <a href={`/api/forms/${id}/submissions?format=csv`}><Download className="h-4 w-4" /> Esporta CSV</a>
+          <a href={`/api/forms/${id}/submissions?format=csv`}><Download className="h-4 w-4" /> {t('Esporta CSV', 'Export CSV')}</a>
         </Button>
       </div>
 
@@ -52,7 +53,7 @@ export default async function SubmissionsPage({ params, searchParams }: {
             href={`/admin/forms/${id}/submissions${s ? `?status=${s}` : ''}`}
             className={`px-4 py-2 text-sm transition-colors ${(sp.status ?? '') === s ? 'border-b-2 border-primary text-primary' : 'text-muted-foreground hover:text-foreground'}`}
           >
-            {s || 'Tutte'}
+            {s || t('Tutte', 'All')}
           </Link>
         ))}
       </div>
@@ -60,14 +61,14 @@ export default async function SubmissionsPage({ params, searchParams }: {
       <Card>
         <div className="divide-y">
           <div className="grid grid-cols-[140px_1fr_120px_120px_140px] gap-4 px-6 py-3 text-xs font-medium uppercase text-muted-foreground bg-muted/40">
-            <div>Data</div>
-            <div>Dati</div>
+            <div>{t('Data', 'Date')}</div>
+            <div>{t('Dati', 'Data')}</div>
             <div>IP</div>
-            <div>Stato</div>
-            <div className="text-right">Azioni</div>
+            <div>{t('Stato', 'Status')}</div>
+            <div className="text-right">{t('Azioni', 'Actions')}</div>
           </div>
           {subs.length === 0 ? (
-            <div className="p-12 text-center text-muted-foreground">Nessuna submission.</div>
+            <div className="p-12 text-center text-muted-foreground">{t('Nessuna submission.', 'No submissions.')}</div>
           ) : (
             subs.map((s) => {
               const data = s.data as Record<string, unknown>;

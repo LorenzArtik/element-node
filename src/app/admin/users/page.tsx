@@ -10,6 +10,7 @@ import { formatDate } from '@/lib/utils';
 import { ROLE_LABELS, can } from '@/lib/permissions';
 import { CreateUserButton } from './create-button';
 import { DeleteUserButton } from './delete-button';
+import { t } from '@/lib/admin-i18n';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,8 +28,8 @@ export default async function UsersPage() {
     <div className="p-8 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Utenti</h1>
-          <p className="text-muted-foreground">{users.length} utenti totali</p>
+          <h1 className="text-3xl font-bold tracking-tight">{t('Utenti', 'Users')}</h1>
+          <p className="text-muted-foreground">{t(`${users.length} utenti totali`, `${users.length} total users`)}</p>
         </div>
         <CreateUserButton />
       </div>
@@ -36,11 +37,11 @@ export default async function UsersPage() {
       <Card>
         <div className="divide-y">
           <div className="grid grid-cols-[2fr_1fr_1fr_1fr_auto] gap-4 px-6 py-3 text-xs font-medium uppercase text-muted-foreground bg-muted/40">
-            <div>Utente</div>
-            <div>Ruolo</div>
-            <div>Stato</div>
-            <div>Ultimo accesso</div>
-            <div className="text-right">Azioni</div>
+            <div>{t('Utente', 'User')}</div>
+            <div>{t('Ruolo', 'Role')}</div>
+            <div>{t('Stato', 'Status')}</div>
+            <div>{t('Ultimo accesso', 'Last login')}</div>
+            <div className="text-right">{t('Azioni', 'Actions')}</div>
           </div>
           {users.map((u) => (
             <div key={u.id} className="grid grid-cols-[2fr_1fr_1fr_1fr_auto] gap-4 items-center px-6 py-4 hover:bg-muted/40">
@@ -61,20 +62,20 @@ export default async function UsersPage() {
               <Badge variant={u.role === 'ADMIN' ? 'default' : 'outline'}>{ROLE_LABELS[u.role as keyof typeof ROLE_LABELS]}</Badge>
               <div className="flex gap-1.5 flex-wrap">
                 {u.locked ? (
-                  <Badge variant="destructive">Bloccato</Badge>
+                  <Badge variant="destructive">{t('Bloccato', 'Locked')}</Badge>
                 ) : u.lastLoginAt ? (
-                  <Badge variant="success">Attivo</Badge>
+                  <Badge variant="success">{t('Attivo', 'Active')}</Badge>
                 ) : u.verifiedAt ? (
-                  <Badge variant="outline">Verificato</Badge>
+                  <Badge variant="outline">{t('Verificato', 'Verified')}</Badge>
                 ) : (
-                  <Badge variant="outline">In attesa</Badge>
+                  <Badge variant="outline">{t('In attesa', 'Pending')}</Badge>
                 )}
               </div>
               <div className="text-sm text-muted-foreground">
                 {u.lastLoginAt ? formatDate(u.lastLoginAt) : '—'}
               </div>
               <div className="flex justify-end gap-1">
-                <Button asChild variant="ghost" size="icon" title="Modifica">
+                <Button asChild variant="ghost" size="icon" title={t('Modifica', 'Edit')}>
                   <Link href={`/admin/users/${u.id}`}><Edit3 className="h-4 w-4" /></Link>
                 </Button>
                 {u.id !== session.user.id && <DeleteUserButton id={u.id} email={u.email} />}

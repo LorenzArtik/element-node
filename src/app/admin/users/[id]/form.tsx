@@ -14,6 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MediaField } from '@/components/editor/MediaField';
 import { ROLE_LABELS } from '@/lib/permissions';
+import { t } from '@/lib/admin-i18n';
 
 interface InitialState {
   email: string;
@@ -49,10 +50,10 @@ export function UserEditForm({ id, initial, canChangeRole }: { id: string; initi
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        toast.error('Errore', { description: err?.error?.message });
+        toast.error(t('Errore', 'Error'), { description: err?.error?.message });
         return;
       }
-      toast.success('Salvato');
+      toast.success(t('Salvato', 'Saved'));
       setNewPassword('');
       router.refresh();
     });
@@ -61,17 +62,17 @@ export function UserEditForm({ id, initial, canChangeRole }: { id: string; initi
   return (
     <>
       <Button asChild variant="ghost" size="sm">
-        <Link href="/admin/users"><ArrowLeft className="h-4 w-4" /> Utenti</Link>
+        <Link href="/admin/users"><ArrowLeft className="h-4 w-4" /> {t('Utenti', 'Users')}</Link>
       </Button>
 
       <Card>
-        <CardHeader><CardTitle>Profilo</CardTitle></CardHeader>
+        <CardHeader><CardTitle>{t('Profilo', 'Profile')}</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5"><Label>Email</Label><Input value={initial.email} disabled /></div>
-            <div className="space-y-1.5"><Label>Nome</Label><Input value={name} onChange={(e) => setName(e.target.value)} /></div>
+            <div className="space-y-1.5"><Label>{t('Nome', 'Name')}</Label><Input value={name} onChange={(e) => setName(e.target.value)} /></div>
             <div className="space-y-1.5">
-              <Label>Ruolo</Label>
+              <Label>{t('Ruolo', 'Role')}</Label>
               <Select value={role} onValueChange={setRole} disabled={!canChangeRole}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
@@ -79,7 +80,7 @@ export function UserEditForm({ id, initial, canChangeRole }: { id: string; initi
                 </SelectContent>
               </Select>
             </div>
-            <div className="space-y-1.5"><Label>Slug pubblico</Label><Input value={slug} onChange={(e) => setSlug(e.target.value)} placeholder="es. mario-rossi" /></div>
+            <div className="space-y-1.5"><Label>{t('Slug pubblico', 'Public slug')}</Label><Input value={slug} onChange={(e) => setSlug(e.target.value)} placeholder={t('es. mario-rossi', 'e.g. john-smith')} /></div>
           </div>
           <div className="space-y-1.5"><Label>Bio</Label><Textarea rows={4} value={bio} onChange={(e) => setBio(e.target.value)} /></div>
           <div className="space-y-1.5"><Label>Avatar</Label><MediaField value={avatarUrl} onChange={setAvatarUrl} /></div>
@@ -99,15 +100,15 @@ export function UserEditForm({ id, initial, canChangeRole }: { id: string; initi
       </Card>
 
       <Card>
-        <CardHeader><CardTitle>Sicurezza</CardTitle><CardDescription>Reset password e blocco account</CardDescription></CardHeader>
+        <CardHeader><CardTitle>{t('Sicurezza', 'Security')}</CardTitle><CardDescription>{t('Reset password e blocco account', 'Password reset and account lock')}</CardDescription></CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-1.5">
-            <Label>Nuova password</Label>
-            <Input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Lascia vuoto per non cambiare" />
+            <Label>{t('Nuova password', 'New password')}</Label>
+            <Input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder={t('Lascia vuoto per non cambiare', 'Leave empty to keep unchanged')} />
           </div>
           {canChangeRole && (
             <div className="flex items-center justify-between p-3 border rounded-lg">
-              <div><Label>Blocca account</Label><p className="text-xs text-muted-foreground mt-0.5">Impedisce login</p></div>
+              <div><Label>{t('Blocca account', 'Lock account')}</Label><p className="text-xs text-muted-foreground mt-0.5">{t('Impedisce login', 'Prevents login')}</p></div>
               <Switch checked={locked} onCheckedChange={setLocked} />
             </div>
           )}
@@ -116,7 +117,7 @@ export function UserEditForm({ id, initial, canChangeRole }: { id: string; initi
 
       <div className="sticky bottom-0 -mx-8 -mb-8 px-8 py-3 bg-card border-t flex justify-end z-20">
         <Button onClick={save} disabled={pending} size="lg">
-          {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />} Salva
+          {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />} {t('Salva', 'Save')}
         </Button>
       </div>
     </>

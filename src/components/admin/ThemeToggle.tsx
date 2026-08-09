@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
 import { Sun, Moon, Monitor } from 'lucide-react';
+import { t } from '@/lib/admin-i18n';
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
@@ -11,9 +12,9 @@ export function ThemeToggle() {
   if (!mounted) return <div className="h-7 flex" />;
 
   const opts: { value: string; icon: typeof Sun; label: string }[] = [
-    { value: 'light', icon: Sun, label: 'Chiaro' },
-    { value: 'dark', icon: Moon, label: 'Scuro' },
-    { value: 'system', icon: Monitor, label: 'Sistema' },
+    { value: 'light', icon: Sun, label: t('Chiaro', 'Light') },
+    { value: 'dark', icon: Moon, label: t('Scuro', 'Dark') },
+    { value: 'system', icon: Monitor, label: t('Sistema', 'System') },
   ];
 
   return (

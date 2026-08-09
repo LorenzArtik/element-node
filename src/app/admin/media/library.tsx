@@ -14,6 +14,7 @@ import {
   X, Download, ExternalLink, Check, Square, CheckSquare, Filter,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { t } from '@/lib/admin-i18n';
 
 interface MediaItem {
   id: string;
@@ -106,7 +107,7 @@ export function MediaLibrary({ initialItems }: { initialItems: MediaItem[] }) {
 
   async function bulkDelete() {
     if (selected.size === 0) return;
-    if (!confirm(`Cancellare ${selected.size} file? L'azione è irreversibile.`)) return;
+    if (!confirm(t(`Cancellare ${selected.size} file? L'azione è irreversibile.`, `Delete ${selected.size} files? This action is irreversible.`))) return;
     const ids = [...selected];
     startTransition(async () => {
       let okCount = 0, errCount = 0, inUseCount = 0;
@@ -116,9 +117,9 @@ export function MediaLibrary({ initialItems }: { initialItems: MediaItem[] }) {
         else if (r.status === 409) inUseCount++;
         else errCount++;
       }
-      if (okCount) toast.success(`${okCount} file cancellati`);
-      if (inUseCount) toast.warning(`${inUseCount} file in uso (usa "forza" dal dettaglio per cancellarli)`);
-      if (errCount) toast.error(`${errCount} errori`);
+      if (okCount) toast.success(t(`${okCount} file cancellati`, `${okCount} files deleted`));
+      if (inUseCount) toast.warning(t(`${inUseCount} file in uso (usa "forza" dal dettaglio per cancellarli)`, `${inUseCount} files in use (use "force" from the detail view to delete them)`));
+      if (errCount) toast.error(t(`${errCount} errori`, `${errCount} errors`));
       setSelected(new Set());
       refresh();
     });
@@ -127,17 +128,17 @@ export function MediaLibrary({ initialItems }: { initialItems: MediaItem[] }) {
   async function deleteOne(id: string, force = false) {
     const r = await fetch(`/api/media/${id}${force ? '?force=1' : ''}`, { method: 'DELETE' });
     if (r.ok) {
-      toast.success('File cancellato');
+      toast.success(t('File cancellato', 'File deleted'));
       setItems((p) => p.filter((m) => m.id !== id));
       setDetail(null);
       return true;
     }
     if (r.status === 409) {
       const data = await r.json();
-      if (confirm(`${data.message}\nForzare la cancellazione?`)) return deleteOne(id, true);
+      if (confirm(t(`${data.message}\nForzare la cancellazione?`, `${data.message}\nForce deletion?`))) return deleteOne(id, true);
       return false;
     }
-    toast.error('Errore cancellazione');
+    toast.error(t('Errore cancellazione', 'Delete error'));
     return false;
   }
 
@@ -151,24 +152,24 @@ export function MediaLibrary({ initialItems }: { initialItems: MediaItem[] }) {
       const updated = await r.json();
       setItems((p) => p.map((m) => (m.id === id ? { ...m, ...updated } : m)));
       if (detail?.id === id) setDetail({ ...detail, ...updated });
-      toast.success('Aggiornato');
+      toast.success(t('Aggiornato', 'Updated'));
       return true;
     }
-    toast.error('Errore salvataggio');
+    toast.error(t('Errore salvataggio', 'Save error'));
     return false;
   }
 
   function copyUrl(url: string) {
     navigator.clipboard?.writeText(window.location.origin + url);
-    toast.success('URL copiato');
+    toast.success(t('URL copiato', 'URL copied'));
   }
 
   return (
     <div className="p-8 space-y-6">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Libreria Media</h1>
-          <p className="text-muted-foreground text-sm">{filtered.length} di {items.length} file</p>
+          <h1 className="text-3xl font-bold tracking-tight">{t('Libreria Media', 'Media Library')}</h1>
+          <p className="text-muted-foreground text-sm">{t(`${filtered.length} di ${items.length} file`, `${filtered.length} of ${items.length} files`)}</p>
         </div>
         <MediaUploader />
       </div>
@@ -177,18 +178,18 @@ export function MediaLibrary({ initialItems }: { initialItems: MediaItem[] }) {
       <Card className="p-3">
         <div className="flex items-center gap-2 flex-wrap">
           <div className="flex items-center gap-1 flex-wrap">
-            <FilterBtn label="Tutti" count={counts.all} active={filterKind === 'all'} onClick={() => setFilterKind('all')} />
-            <FilterBtn label="Immagini" count={counts.image} active={filterKind === 'image'} onClick={() => setFilterKind('image')} />
+            <FilterBtn label={t('Tutti', 'All')} count={counts.all} active={filterKind === 'all'} onClick={() => setFilterKind('all')} />
+            <FilterBtn label={t('Immagini', 'Images')} count={counts.image} active={filterKind === 'image'} onClick={() => setFilterKind('image')} />
             <FilterBtn label="SVG" count={counts.svg} active={filterKind === 'svg'} onClick={() => setFilterKind('svg')} />
             <FilterBtn label="Video" count={counts.video} active={filterKind === 'video'} onClick={() => setFilterKind('video')} />
-            <FilterBtn label="Documenti" count={counts.document} active={filterKind === 'document'} onClick={() => setFilterKind('document')} />
+            <FilterBtn label={t('Documenti', 'Documents')} count={counts.document} active={filterKind === 'document'} onClick={() => setFilterKind('document')} />
           </div>
 
           <div className="relative flex-1 min-w-[200px] max-w-[400px] ml-auto">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Cerca per nome o alt…"
+              placeholder={t('Cerca per nome o alt…', 'Search by name or alt…')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="pl-8 h-9"
@@ -201,7 +202,7 @@ export function MediaLibrary({ initialItems }: { initialItems: MediaItem[] }) {
               size="sm"
               className="h-8 px-2"
               onClick={() => setView('grid')}
-              title="Vista griglia"
+              title={t('Vista griglia', 'Grid view')}
             >
               <Grid3x3 className="h-4 w-4" />
             </Button>
@@ -210,7 +211,7 @@ export function MediaLibrary({ initialItems }: { initialItems: MediaItem[] }) {
               size="sm"
               className="h-8 px-2"
               onClick={() => setView('list')}
-              title="Vista lista"
+              title={t('Vista lista', 'List view')}
             >
               <List className="h-4 w-4" />
             </Button>
@@ -220,12 +221,12 @@ export function MediaLibrary({ initialItems }: { initialItems: MediaItem[] }) {
         {/* Bulk actions */}
         {selected.size > 0 && (
           <div className="mt-3 pt-3 border-t flex items-center gap-2 flex-wrap">
-            <div className="text-sm font-medium">{selected.size} selezionati</div>
+            <div className="text-sm font-medium">{t(`${selected.size} selezionati`, `${selected.size} selected`)}</div>
             <Button variant="ghost" size="sm" onClick={selectAll} className="h-8 text-xs">
-              {selected.size === filtered.length ? 'Deseleziona tutti' : 'Seleziona tutti'}
+              {selected.size === filtered.length ? t('Deseleziona tutti', 'Deselect all') : t('Seleziona tutti', 'Select all')}
             </Button>
             <Button variant="destructive" size="sm" onClick={bulkDelete} className="h-8 text-xs ml-auto">
-              <Trash2 className="h-3.5 w-3.5 mr-1" /> Cancella {selected.size}
+              <Trash2 className="h-3.5 w-3.5 mr-1" /> {t('Cancella', 'Delete')} {selected.size}
             </Button>
           </div>
         )}
@@ -235,7 +236,7 @@ export function MediaLibrary({ initialItems }: { initialItems: MediaItem[] }) {
       {filtered.length === 0 ? (
         <Card className="p-16 text-center">
           <ImageIcon className="h-12 w-12 mx-auto mb-3 text-muted-foreground" />
-          <p className="text-muted-foreground">{items.length === 0 ? 'Nessun media caricato' : 'Nessun risultato per i filtri attivi'}</p>
+          <p className="text-muted-foreground">{items.length === 0 ? t('Nessun media caricato', 'No media uploaded') : t('Nessun risultato per i filtri attivi', 'No results for the active filters')}</p>
         </Card>
       ) : view === 'grid' ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
@@ -263,13 +264,13 @@ export function MediaLibrary({ initialItems }: { initialItems: MediaItem[] }) {
                       <Square className="h-4 w-4 text-muted-foreground" />}
                   </button>
                 </th>
-                <th className="w-12 p-2 text-left">Anteprima</th>
-                <th className="p-2 text-left">Nome file</th>
-                <th className="p-2 text-left hidden md:table-cell">Tipo</th>
-                <th className="p-2 text-left hidden md:table-cell">Dimensioni</th>
-                <th className="p-2 text-left hidden lg:table-cell">Peso</th>
-                <th className="p-2 text-left hidden lg:table-cell">Caricato</th>
-                <th className="w-32 p-2 text-right">Azioni</th>
+                <th className="w-12 p-2 text-left">{t('Anteprima', 'Preview')}</th>
+                <th className="p-2 text-left">{t('Nome file', 'File name')}</th>
+                <th className="p-2 text-left hidden md:table-cell">{t('Tipo', 'Type')}</th>
+                <th className="p-2 text-left hidden md:table-cell">{t('Dimensioni', 'Dimensions')}</th>
+                <th className="p-2 text-left hidden lg:table-cell">{t('Peso', 'Size')}</th>
+                <th className="p-2 text-left hidden lg:table-cell">{t('Caricato', 'Uploaded')}</th>
+                <th className="w-32 p-2 text-right">{t('Azioni', 'Actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -310,13 +311,13 @@ export function MediaLibrary({ initialItems }: { initialItems: MediaItem[] }) {
                     <td className="p-2 text-muted-foreground hidden lg:table-cell text-xs">{formatDate(m.createdAt)}</td>
                     <td className="p-2 text-right">
                       <div className="inline-flex items-center gap-1">
-                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => copyUrl(m.url)} title="Copia URL">
+                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => copyUrl(m.url)} title={t('Copia URL', 'Copy URL')}>
                           <CopyIcon className="h-3.5 w-3.5" />
                         </Button>
-                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => setDetail(m)} title="Modifica">
+                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => setDetail(m)} title={t('Modifica', 'Edit')}>
                           <Pencil className="h-3.5 w-3.5" />
                         </Button>
-                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-destructive hover:bg-destructive/10" onClick={() => deleteOne(m.id)} title="Elimina">
+                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-destructive hover:bg-destructive/10" onClick={() => deleteOne(m.id)} title={t('Elimina', 'Delete')}>
                           <Trash2 className="h-3.5 w-3.5" />
                         </Button>
                       </div>
@@ -371,7 +372,7 @@ function MediaCard({
         className={`absolute top-2 left-2 z-10 w-6 h-6 rounded-md flex items-center justify-center transition ${
           isSelected ? 'bg-primary text-primary-foreground' : 'bg-white/90 backdrop-blur opacity-0 group-hover:opacity-100 border'
         }`}
-        title={isSelected ? 'Deseleziona' : 'Seleziona'}
+        title={isSelected ? t('Deseleziona', 'Deselect') : t('Seleziona', 'Select')}
       >
         {isSelected ? <Check className="h-3.5 w-3.5" /> : <Square className="h-3.5 w-3.5" />}
       </button>
@@ -381,14 +382,14 @@ function MediaCard({
         <button
           onClick={(e) => { e.stopPropagation(); onCopyUrl(); }}
           className="w-7 h-7 rounded-md bg-white/90 backdrop-blur border hover:bg-white flex items-center justify-center"
-          title="Copia URL"
+          title={t('Copia URL', 'Copy URL')}
         >
           <CopyIcon className="h-3.5 w-3.5" />
         </button>
         <button
           onClick={(e) => { e.stopPropagation(); onDelete(); }}
           className="w-7 h-7 rounded-md bg-white/90 backdrop-blur border hover:bg-red-50 text-destructive flex items-center justify-center"
-          title="Elimina"
+          title={t('Elimina', 'Delete')}
         >
           <Trash2 className="h-3.5 w-3.5" />
         </button>
@@ -455,7 +456,7 @@ function MediaDetailDrawer({
     >
       <div className="bg-card w-full max-w-2xl h-full overflow-y-auto shadow-2xl animate-in slide-in-from-right">
         <div className="sticky top-0 bg-card border-b p-4 flex items-center justify-between gap-2 z-10">
-          <h3 className="font-semibold truncate">Dettaglio media</h3>
+          <h3 className="font-semibold truncate">{t('Dettaglio media', 'Media details')}</h3>
           <button onClick={onClose} className="p-1.5 hover:bg-muted rounded-md">
             <X className="h-4 w-4" />
           </button>
@@ -474,23 +475,23 @@ function MediaDetailDrawer({
 
           {/* Metadata */}
           <div className="grid grid-cols-2 gap-3 text-sm">
-            <Meta label="Tipo" value={media.mime} />
-            <Meta label="Peso" value={formatBytes(media.size)} />
-            <Meta label="Dimensioni" value={media.width && media.height ? `${media.width} × ${media.height} px` : '—'} />
-            <Meta label="Caricato" value={formatDate(media.createdAt)} />
+            <Meta label={t('Tipo', 'Type')} value={media.mime} />
+            <Meta label={t('Peso', 'Size')} value={formatBytes(media.size)} />
+            <Meta label={t('Dimensioni', 'Dimensions')} value={media.width && media.height ? `${media.width} × ${media.height} px` : '—'} />
+            <Meta label={t('Caricato', 'Uploaded')} value={formatDate(media.createdAt)} />
           </div>
 
           {/* URL */}
           <div>
-            <Label className="text-xs">URL pubblico</Label>
+            <Label className="text-xs">{t('URL pubblico', 'Public URL')}</Label>
             <div className="flex gap-2 mt-1">
               <Input value={media.url} readOnly className="font-mono text-xs" />
               <Button variant="outline" size="sm" onClick={onCopyUrl}>
-                <CopyIcon className="h-3.5 w-3.5 mr-1" /> Copia
+                <CopyIcon className="h-3.5 w-3.5 mr-1" /> {t('Copia', 'Copy')}
               </Button>
               <Button variant="outline" size="sm" asChild>
                 <a href={media.url} target="_blank" rel="noreferrer">
-                  <ExternalLink className="h-3.5 w-3.5 mr-1" /> Apri
+                  <ExternalLink className="h-3.5 w-3.5 mr-1" /> {t('Apri', 'Open')}
                 </a>
               </Button>
             </div>
@@ -498,7 +499,7 @@ function MediaDetailDrawer({
 
           {/* Edit filename */}
           <div>
-            <Label htmlFor="filename" className="text-xs">Nome file</Label>
+            <Label htmlFor="filename" className="text-xs">{t('Nome file', 'File name')}</Label>
             <Input
               id="filename"
               value={filename}
@@ -506,18 +507,18 @@ function MediaDetailDrawer({
               onBlur={save}
               className="mt-1"
             />
-            <p className="text-[11px] text-muted-foreground mt-1">Solo informativo: l&apos;URL del file non cambia (per evitare link rotti).</p>
+            <p className="text-[11px] text-muted-foreground mt-1">{t("Solo informativo: l'URL del file non cambia (per evitare link rotti).", 'Informational only: the file URL does not change (to avoid broken links).')}</p>
           </div>
 
           {/* Edit alt */}
           <div>
-            <Label htmlFor="alt" className="text-xs">Testo alternativo (alt)</Label>
+            <Label htmlFor="alt" className="text-xs">{t('Testo alternativo (alt)', 'Alternative text (alt)')}</Label>
             <Textarea
               id="alt"
               value={alt}
               onChange={(e) => setAlt(e.target.value)}
               onBlur={save}
-              placeholder="Descrizione per accessibilità e SEO"
+              placeholder={t('Descrizione per accessibilità e SEO', 'Description for accessibility and SEO')}
               className="mt-1"
               rows={2}
             />
@@ -525,11 +526,11 @@ function MediaDetailDrawer({
 
           {/* Used in */}
           <div>
-            <Label className="text-xs">Usato in</Label>
+            <Label className="text-xs">{t('Usato in', 'Used in')}</Label>
             {loadingUsedIn ? (
-              <div className="text-xs text-muted-foreground mt-1">Ricerca riferimenti…</div>
+              <div className="text-xs text-muted-foreground mt-1">{t('Ricerca riferimenti…', 'Searching references…')}</div>
             ) : usedIn.length === 0 ? (
-              <div className="text-xs text-muted-foreground mt-1">Non riferito in nessuna pagina, theme block o post.</div>
+              <div className="text-xs text-muted-foreground mt-1">{t('Non riferito in nessuna pagina, theme block o post.', 'Not referenced in any page, theme block or post.')}</div>
             ) : (
               <ul className="mt-1 text-sm space-y-1">
                 {usedIn.map((u, i) => (
@@ -545,11 +546,11 @@ function MediaDetailDrawer({
           {/* Actions */}
           <div className="border-t pt-4 flex items-center gap-2 flex-wrap">
             <Button variant="default" size="sm" onClick={save}>
-              <Check className="h-3.5 w-3.5 mr-1" /> Salva modifiche
+              <Check className="h-3.5 w-3.5 mr-1" /> {t('Salva modifiche', 'Save changes')}
             </Button>
             <Button variant="outline" size="sm" asChild>
               <a href={media.url} download={media.filename}>
-                <Download className="h-3.5 w-3.5 mr-1" /> Scarica
+                <Download className="h-3.5 w-3.5 mr-1" /> {t('Scarica', 'Download')}
               </a>
             </Button>
             <Button
@@ -557,12 +558,12 @@ function MediaDetailDrawer({
               size="sm"
               className="ml-auto"
               onClick={async () => {
-                if (confirm(`Cancellare "${media.filename}"?`)) {
+                if (confirm(t(`Cancellare "${media.filename}"?`, `Delete "${media.filename}"?`))) {
                   await onDelete();
                 }
               }}
             >
-              <Trash2 className="h-3.5 w-3.5 mr-1" /> Elimina file
+              <Trash2 className="h-3.5 w-3.5 mr-1" /> {t('Elimina file', 'Delete file')}
             </Button>
           </div>
         </div>

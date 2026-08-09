@@ -3,6 +3,7 @@ import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/db';
 import { conditionsSchema } from '@/lib/theme-blocks';
 import { ThemeBlockSettingsForm } from './form';
+import { t } from '@/lib/admin-i18n';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,8 +17,8 @@ export default async function ThemeBlockSettingsPage({ params }: { params: Promi
   return (
     <div className="p-8 space-y-6 max-w-4xl mx-auto">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Impostazioni: {row.name}</h1>
-        <p className="text-muted-foreground">{row.kind} · Priorità {row.priority} · {row.status}</p>
+        <h1 className="text-3xl font-bold tracking-tight">{t('Impostazioni:', 'Settings:')} {row.name}</h1>
+        <p className="text-muted-foreground">{row.kind} · {t('Priorità', 'Priority')} {row.priority} · {row.status}</p>
       </div>
       <ThemeBlockSettingsForm
         id={row.id}

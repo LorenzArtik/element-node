@@ -3,6 +3,7 @@ import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/db';
 import { UserEditForm } from '../users/[id]/form';
 import { ROLE_LABELS } from '@/lib/permissions';
+import { t } from '@/lib/admin-i18n';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,7 +15,7 @@ export default async function ProfilePage() {
   return (
     <div className="p-8 space-y-6 max-w-3xl mx-auto">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Il mio profilo</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{t('Il mio profilo', 'My profile')}</h1>
         <p className="text-muted-foreground">{ROLE_LABELS[user.role]}</p>
       </div>
       <UserEditForm

@@ -8,6 +8,7 @@ import { formatDate } from '@/lib/utils';
 import { DeletePageButton } from './delete-button';
 import { DuplicateButton } from '@/components/admin/DuplicateButton';
 import { AiFirstRun } from '@/components/admin/AiFirstRun';
+import { t } from '@/lib/admin-i18n';
 
 export const dynamic = 'force-dynamic';
 
@@ -36,11 +37,11 @@ export default async function PagesPage({ searchParams }: { searchParams: Promis
     <div className="p-8 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Pagine</h1>
-          <p className="text-muted-foreground">{total} pagine totali</p>
+          <h1 className="text-3xl font-bold tracking-tight">{t('Pagine', 'Pages')}</h1>
+          <p className="text-muted-foreground">{t(`${total} pagine totali`, `${total} total pages`)}</p>
         </div>
         <Button asChild size="lg">
-          <Link href="/admin/pages/new"><Plus className="h-4 w-4" /> Nuova pagina</Link>
+          <Link href="/admin/pages/new"><Plus className="h-4 w-4" /> {t('Nuova pagina', 'New page')}</Link>
         </Button>
       </div>
 
@@ -49,7 +50,7 @@ export default async function PagesPage({ searchParams }: { searchParams: Promis
         <input
           name="q"
           defaultValue={q}
-          placeholder="Cerca per titolo o slug…"
+          placeholder={t('Cerca per titolo o slug…', 'Search by title or slug…')}
           className="h-10 w-full rounded-md border border-input bg-background pl-9 pr-3 text-sm"
         />
       </form>
@@ -57,17 +58,17 @@ export default async function PagesPage({ searchParams }: { searchParams: Promis
       <Card>
         <div className="divide-y">
           <div className="grid grid-cols-[1fr_120px_120px_180px_120px] gap-4 px-6 py-3 text-xs font-medium uppercase text-muted-foreground bg-muted/40">
-            <div>Titolo</div>
-            <div>Stato</div>
-            <div>Autore</div>
-            <div>Aggiornata</div>
-            <div className="text-right">Azioni</div>
+            <div>{t('Titolo', 'Title')}</div>
+            <div>{t('Stato', 'Status')}</div>
+            <div>{t('Autore', 'Author')}</div>
+            <div>{t('Aggiornata', 'Updated')}</div>
+            <div className="text-right">{t('Azioni', 'Actions')}</div>
           </div>
           {pages.length === 0 ? (
             q ? (
               <div className="text-center py-16">
-                <p className="text-muted-foreground mb-4">Nessuna pagina trovata per «{q}».</p>
-                <Button asChild><Link href="/admin/pages">Mostra tutte</Link></Button>
+                <p className="text-muted-foreground mb-4">{t(`Nessuna pagina trovata per «${q}».`, `No pages found for “${q}”.`)}</p>
+                <Button asChild><Link href="/admin/pages">{t('Mostra tutte', 'Show all')}</Link></Button>
               </div>
             ) : (
               <div className="py-12 px-6">
@@ -88,10 +89,10 @@ export default async function PagesPage({ searchParams }: { searchParams: Promis
                 <div className="text-sm">{p.author.name ?? p.author.email}</div>
                 <div className="text-sm text-muted-foreground">{formatDate(p.updatedAt)}</div>
                 <div className="flex items-center justify-end gap-1">
-                  <Button asChild variant="ghost" size="icon" title="Modifica nell'editor">
+                  <Button asChild variant="ghost" size="icon" title={t("Modifica nell'editor", 'Edit in editor')}>
                     <Link href={`/editor/${p.id}`}><Edit3 className="h-4 w-4" /></Link>
                   </Button>
-                  <Button asChild variant="ghost" size="icon" title="Anteprima">
+                  <Button asChild variant="ghost" size="icon" title={t('Anteprima', 'Preview')}>
                     <Link href={`/${p.slug === 'home' ? '' : p.slug}`} target="_blank"><Eye className="h-4 w-4" /></Link>
                   </Button>
                   <DuplicateButton endpoint={`/api/pages/${p.id}`} redirectTo="editor" />
@@ -105,13 +106,13 @@ export default async function PagesPage({ searchParams }: { searchParams: Promis
 
       {totalPages > 1 && (
         <div className="flex items-center justify-between text-sm">
-          <span className="text-muted-foreground">Pagina {pageNum} di {totalPages}</span>
+          <span className="text-muted-foreground">{t(`Pagina ${pageNum} di ${totalPages}`, `Page ${pageNum} of ${totalPages}`)}</span>
           <div className="flex items-center gap-2">
             <Button asChild variant="outline" size="sm" disabled={pageNum <= 1}>
-              <Link href={pageUrl(Math.max(1, pageNum - 1))} aria-disabled={pageNum <= 1}><ChevronLeft className="h-4 w-4" /> Precedente</Link>
+              <Link href={pageUrl(Math.max(1, pageNum - 1))} aria-disabled={pageNum <= 1}><ChevronLeft className="h-4 w-4" /> {t('Precedente', 'Previous')}</Link>
             </Button>
             <Button asChild variant="outline" size="sm" disabled={pageNum >= totalPages}>
-              <Link href={pageUrl(Math.min(totalPages, pageNum + 1))} aria-disabled={pageNum >= totalPages}>Successiva <ChevronRight className="h-4 w-4" /></Link>
+              <Link href={pageUrl(Math.min(totalPages, pageNum + 1))} aria-disabled={pageNum >= totalPages}>{t('Successiva', 'Next')} <ChevronRight className="h-4 w-4" /></Link>
             </Button>
           </div>
         </div>

@@ -6,6 +6,7 @@ import { Fragment, useEffect, useRef, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { useRenderContext } from '@/components/public/render-context';
 import { InlineEditable } from './InlineEditable';
+import { t } from '@/lib/admin-i18n';
 
 export interface RenderOpts {
   /** Se true, abilita edit inline su heading/text/button */
@@ -183,7 +184,7 @@ function renderWidgetInner(el: ElementNode, opts: RenderOpts = {}): React.ReactN
             html
             multiline
             style={style}
-            placeholder="Inserisci il testo..."
+            placeholder={t('Inserisci il testo...', 'Enter text...')}
           />
         );
       }
@@ -266,7 +267,7 @@ function renderWidgetInner(el: ElementNode, opts: RenderOpts = {}): React.ReactN
       if (!s.src) {
         return (
           <div style={{ background: '#f3f4f6', padding: '40px', textAlign: 'center', color: '#9ca3af', borderRadius: 8 }}>
-            🖼️ Nessuna immagine
+            🖼️ {t('Nessuna immagine', 'No image')}
           </div>
         );
       }
@@ -309,7 +310,7 @@ function renderWidgetInner(el: ElementNode, opts: RenderOpts = {}): React.ReactN
     }
 
     case 'video': {
-      if (!s.src) return <div style={{ aspectRatio: '16/9', background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>📹 Inserisci URL</div>;
+      if (!s.src) return <div style={{ aspectRatio: '16/9', background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>📹 {t('Inserisci URL', 'Enter URL')}</div>;
       const url = s.src as string;
       const type = (s.type as string) || 'youtube';
       if (type === 'youtube') {
@@ -765,7 +766,7 @@ function HeroSlider({ settings }: { settings: Record<string, unknown> }) {
   }, [emblaApi, settings.autoplay, settings.autoplayMs]);
 
   if (slides.length === 0) {
-    return <div style={{ padding: 40, textAlign: 'center', color: 'var(--en-color-text-muted)', background: 'var(--en-color-surface)' }}>Aggiungi slide al hero slider</div>;
+    return <div style={{ padding: 40, textAlign: 'center', color: 'var(--en-color-text-muted)', background: 'var(--en-color-surface)' }}>{t('Aggiungi slide al hero slider', 'Add slides to the hero slider')}</div>;
   }
 
   return (
@@ -1028,7 +1029,7 @@ function LottieWidget({ settings }: { settings: Record<string, unknown> }) {
   // Usa dotlottie web component (caricato da CDN). Funziona senza dipendenze NPM pesanti.
   const src = (settings.src as string) || '';
   if (!src) {
-    return <div style={{ padding: 20, textAlign: 'center', color: 'var(--en-color-text-muted)', background: 'var(--en-color-surface)' }}>Inserisci URL Lottie JSON</div>;
+    return <div style={{ padding: 20, textAlign: 'center', color: 'var(--en-color-text-muted)', background: 'var(--en-color-surface)' }}>{t('Inserisci URL Lottie JSON', 'Enter Lottie JSON URL')}</div>;
   }
   return (
     <>
@@ -1126,7 +1127,7 @@ function EmblaCarousel<T extends CarouselItem>({
   }, [emblaApi, autoplay, autoplayMs]);
 
   if (items.length === 0) {
-    return <div style={{ padding: 20, color: 'var(--en-color-text-muted)', textAlign: 'center' }}>Nessuna slide</div>;
+    return <div style={{ padding: 20, color: 'var(--en-color-text-muted)', textAlign: 'center' }}>{t('Nessuna slide', 'No slides')}</div>;
   }
 
   const slideStyle: React.CSSProperties = {
@@ -1183,7 +1184,7 @@ function PostContentWidget({ settings }: { settings: Record<string, unknown> }) 
   if (!post) {
     return (
       <div style={{ padding: 16, background: 'var(--en-color-surface)', borderRadius: 8, color: 'var(--en-color-text-muted)' }}>
-        <em>Contenuto post (visibile sul singolo post)</em>
+        <em>{t('Contenuto post (visibile sul singolo post)', 'Post content (visible on the single post)')}</em>
       </div>
     );
   }
@@ -1191,7 +1192,7 @@ function PostContentWidget({ settings }: { settings: Record<string, unknown> }) 
   if (post.contentHtml) {
     return <div style={{ fontSize: size, lineHeight: 'var(--en-line-height,1.6)' }} dangerouslySetInnerHTML={{ __html: post.contentHtml }} />;
   }
-  return <div style={{ fontSize: size, color: 'var(--en-color-text-muted)' }}><em>(Contenuto vuoto)</em></div>;
+  return <div style={{ fontSize: size, color: 'var(--en-color-text-muted)' }}><em>{t('(Contenuto vuoto)', '(Empty content)')}</em></div>;
 }
 
 function PostExcerptWidget({ settings }: { settings: Record<string, unknown> }) {
@@ -1204,7 +1205,7 @@ function PostExcerptWidget({ settings }: { settings: Record<string, unknown> }) 
       lineHeight: (settings.lineHeight as string) || '1.6',
       margin: 0,
     }}>
-      {text || (ctx?.post ? '' : 'Estratto del post')}
+      {text || (ctx?.post ? '' : t('Estratto del post', 'Post excerpt'))}
     </p>
   );
 }
@@ -1232,7 +1233,7 @@ function FeaturedImageWidget({ settings }: { settings: Record<string, unknown> }
 function PostMetaWidget({ settings }: { settings: Record<string, unknown> }) {
   const ctx = useRenderContext();
   const post = ctx?.post;
-  if (!post) return <span style={{ color: 'var(--en-color-text-muted)' }}>Meta post</span>;
+  if (!post) return <span style={{ color: 'var(--en-color-text-muted)' }}>{t('Meta post', 'Post meta')}</span>;
 
   const parts: React.ReactNode[] = [];
   if (settings.showDate && post.publishedAt) {
@@ -1267,7 +1268,7 @@ function PostMetaWidget({ settings }: { settings: Record<string, unknown> }) {
 function AuthorBoxWidget({ settings }: { settings: Record<string, unknown> }) {
   const ctx = useRenderContext();
   const a = ctx?.post?.author;
-  if (!a) return <div style={{ padding: 16, color: 'var(--en-color-text-muted)' }}>Autore</div>;
+  if (!a) return <div style={{ padding: 16, color: 'var(--en-color-text-muted)' }}>{t('Autore', 'Author')}</div>;
   const layout = (settings.layout as string) || 'card';
   const initials = (a.name ?? a.email).slice(0, 2).toUpperCase();
   const avatar = settings.showAvatar ? (
@@ -1541,7 +1542,7 @@ function Countdown({ settings }: { settings: Record<string, unknown> }) {
     const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
   }, []);
-  if (!due) return <div style={{ padding: 20, color: '#9ca3af', textAlign: 'center', background: '#f9fafb', borderRadius: 8 }}>Imposta una data di scadenza</div>;
+  if (!due) return <div style={{ padding: 20, color: '#9ca3af', textAlign: 'center', background: '#f9fafb', borderRadius: 8 }}>{t('Imposta una data di scadenza', 'Set an end date')}</div>;
   const diff = Math.max(0, new Date(due).getTime() - now);
   const d = Math.floor(diff / 86400000);
   const h = Math.floor((diff % 86400000) / 3600000);
@@ -1934,7 +1935,7 @@ function Gallery({ settings }: { settings: Record<string, unknown> }) {
   const images = (settings.images as { src: string; alt: string }[]) || [];
   const cols = (settings.columns as number) || 3;
   const gap = (settings.gap as number) || 8;
-  if (images.length === 0) return <div style={{ padding: 20, textAlign: 'center', color: '#9ca3af', background: '#f9fafb' }}>Aggiungi immagini alla galleria</div>;
+  if (images.length === 0) return <div style={{ padding: 20, textAlign: 'center', color: '#9ca3af', background: '#f9fafb' }}>{t('Aggiungi immagini alla galleria', 'Add images to the gallery')}</div>;
   return (
     <div style={{ display: 'grid', gridTemplateColumns: `repeat(${cols}, 1fr)`, gap }}>
       {images.map((img, i) => (

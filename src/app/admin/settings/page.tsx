@@ -4,6 +4,7 @@ import { getSiteSettings } from '@/lib/site-settings';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Sparkles, Database, Lock, Zap, Palette, ChevronRight, Key } from 'lucide-react';
+import { t } from '@/lib/admin-i18n';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,8 +17,8 @@ export default async function SettingsPage() {
   return (
     <div className="p-8 space-y-6 max-w-5xl">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Impostazioni Sistema</h1>
-        <p className="text-muted-foreground">Stato, sicurezza, configurazione tecnica</p>
+        <h1 className="text-3xl font-bold tracking-tight">{t('Impostazioni Sistema', 'System Settings')}</h1>
+        <p className="text-muted-foreground">{t('Stato, sicurezza, configurazione tecnica', 'Status, security, technical configuration')}</p>
       </div>
 
       {/* Sub-pages */}
@@ -27,7 +28,7 @@ export default async function SettingsPage() {
             <CardHeader className="flex flex-row items-start justify-between">
               <div>
                 <CardTitle className="flex items-center gap-2 text-base"><Palette className="h-4 w-4" /> Site Settings</CardTitle>
-                <p className="text-xs text-muted-foreground mt-1">Brand, colori, font, integrazioni API, scripts</p>
+                <p className="text-xs text-muted-foreground mt-1">{t('Brand, colori, font, integrazioni API, scripts', 'Brand, colors, fonts, API integrations, scripts')}</p>
               </div>
               <ChevronRight className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
@@ -38,7 +39,7 @@ export default async function SettingsPage() {
             <CardHeader className="flex flex-row items-start justify-between">
               <div>
                 <CardTitle className="flex items-center gap-2 text-base"><Zap className="h-4 w-4 text-amber-500" /> Cache & Performance</CardTitle>
-                <p className="text-xs text-muted-foreground mt-1">Cache LRU, immagini, headers HTTP, bundle splitting</p>
+                <p className="text-xs text-muted-foreground mt-1">{t('Cache LRU, immagini, headers HTTP, bundle splitting', 'LRU cache, images, HTTP headers, bundle splitting')}</p>
               </div>
               <ChevronRight className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
@@ -49,7 +50,7 @@ export default async function SettingsPage() {
             <CardHeader className="flex flex-row items-start justify-between">
               <div>
                 <CardTitle className="flex items-center gap-2 text-base"><Key className="h-4 w-4 text-amber-500" /> API Keys</CardTitle>
-                <p className="text-xs text-muted-foreground mt-1">Token per accesso programmatico (Claude Code, script, automazioni)</p>
+                <p className="text-xs text-muted-foreground mt-1">{t('Token per accesso programmatico (Claude Code, script, automazioni)', 'Tokens for programmatic access (Claude Code, scripts, automations)')}</p>
               </div>
               <ChevronRight className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
@@ -62,28 +63,28 @@ export default async function SettingsPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="flex items-center gap-2 text-base"><Database className="h-4 w-4" /> Database</CardTitle>
-            <Badge variant="success">Connesso</Badge>
+            <Badge variant="success">{t('Connesso', 'Connected')}</Badge>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground">{userCount} utenti registrati</p>
+            <p className="text-sm text-muted-foreground">{t(`${userCount} utenti registrati`, `${userCount} registered users`)}</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="flex items-center gap-2 text-base"><Sparkles className="h-4 w-4" /> AI Anthropic</CardTitle>
-            <Badge variant={aiOk ? 'success' : 'destructive'}>{aiOk ? 'Attiva' : 'Non configurata'}</Badge>
+            <Badge variant={aiOk ? 'success' : 'destructive'}>{aiOk ? t('Attiva', 'Active') : t('Non configurata', 'Not configured')}</Badge>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              {aiOk ? `Modello: ${aiModel}` : 'Aggiungi ANTHROPIC_API_KEY al file .env o in Site Settings → Integrazioni'}
+              {aiOk ? t(`Modello: ${aiModel}`, `Model: ${aiModel}`) : t('Aggiungi ANTHROPIC_API_KEY al file .env o in Site Settings → Integrazioni', 'Add ANTHROPIC_API_KEY to the .env file or in Site Settings → Integrations')}
             </p>
           </CardContent>
         </Card>
 
         <Card className="md:col-span-2">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base"><Lock className="h-4 w-4" /> Sicurezza</CardTitle>
+            <CardTitle className="flex items-center gap-2 text-base"><Lock className="h-4 w-4" /> {t('Sicurezza', 'Security')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm text-muted-foreground">
             <div>Auth Provider: <code className="text-foreground">credentials</code> (NextAuth v5)</div>

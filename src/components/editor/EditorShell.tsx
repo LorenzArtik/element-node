@@ -23,6 +23,7 @@ import { Sidebar } from './Sidebar';
 import { Canvas } from './Canvas';
 import { Navigator as ENNavigator } from './Navigator';
 import type { SeoMeta } from './SeoPanel';
+import { t } from '@/lib/admin-i18n';
 
 // Lazy-load: AIChat carica @anthropic-ai sdk markdown rendering, SeoPanel carica analyzer
 const AIChat = dynamic(() => import('./AIChat').then(m => ({ default: m.AIChat })), { ssr: false });
@@ -187,10 +188,10 @@ export default function EditorShell({ pageId, title, slug, status, content, enti
       });
       if (!res.ok) throw new Error();
       setDirty(false);
-      toast.success(publish ? 'Pubblicato!' : 'Salvato');
+      toast.success(publish ? t('Pubblicato!', 'Published!') : t('Salvato', 'Saved'));
       router.refresh();
     } catch {
-      toast.error('Errore salvataggio');
+      toast.error(t('Errore salvataggio', 'Save error'));
     } finally {
       setSaving(false);
     }
@@ -312,20 +313,20 @@ function DragPreview({ data }: { data: DragData }) {
         <span className="flex gap-0.5 w-6 h-3.5">
           {Array.from({ length: data.columns }).map((_, i) => <span key={i} className="flex-1 bg-[#92003b]" />)}
         </span>
-        {data.columns} colonn{data.columns === 1 ? 'a' : 'e'}
+        {data.columns} {data.columns === 1 ? t('colonna', 'column') : t('colonne', 'columns')}
       </div>
     );
   }
   if (data.kind === 'element') {
     return (
       <div className="px-3 py-2 rounded-md bg-[#2196f3] text-white text-sm font-medium shadow-2xl pointer-events-none">
-        Spostando widget...
+        {t('Spostando widget...', 'Moving widget...')}
       </div>
     );
   }
   return (
     <div className="px-3 py-2 rounded-md bg-[#92003b] text-white text-sm font-medium shadow-2xl pointer-events-none">
-      Spostando sezione...
+      {t('Spostando sezione...', 'Moving section...')}
     </div>
   );
 }

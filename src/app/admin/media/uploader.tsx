@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Upload, Loader2 } from 'lucide-react';
+import { t } from '@/lib/admin-i18n';
 
 export function MediaUploader() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -22,7 +23,7 @@ export function MediaUploader() {
       if (res.ok) okCount++;
     }
     setLoading(false);
-    toast.success(`${okCount} file caricati`);
+    toast.success(t(`${okCount} file caricati`, `${okCount} files uploaded`));
     router.refresh();
   }
 
@@ -38,7 +39,7 @@ export function MediaUploader() {
       />
       <Button onClick={() => inputRef.current?.click()} disabled={loading} size="lg">
         {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
-        Carica file
+        {t('Carica file', 'Upload files')}
       </Button>
     </>
   );

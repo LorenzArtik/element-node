@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { Trash2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { t } from '@/lib/admin-i18n';
 
 export function DeleteRedirectButton({ id, fromPath }: { id: string; fromPath: string }) {
   const [open, setOpen] = useState(false);
@@ -15,18 +16,18 @@ export function DeleteRedirectButton({ id, fromPath }: { id: string; fromPath: s
     setLoading(true);
     const res = await fetch(`/api/redirects/${id}`, { method: 'DELETE' });
     setLoading(false);
-    if (res.ok) { toast.success('Eliminato'); setOpen(false); router.refresh(); }
-    else toast.error('Errore');
+    if (res.ok) { toast.success(t('Eliminato', 'Deleted')); setOpen(false); router.refresh(); }
+    else toast.error(t('Errore', 'Error'));
   }
   return (
     <>
       <Button variant="ghost" size="icon" onClick={() => setOpen(true)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
-          <DialogHeader><DialogTitle>Eliminare?</DialogTitle><DialogDescription>{fromPath}</DialogDescription></DialogHeader>
+          <DialogHeader><DialogTitle>{t('Eliminare?', 'Delete?')}</DialogTitle><DialogDescription>{fromPath}</DialogDescription></DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setOpen(false)}>Annulla</Button>
-            <Button variant="destructive" onClick={onDelete} disabled={loading}>{loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Elimina'}</Button>
+            <Button variant="outline" onClick={() => setOpen(false)}>{t('Annulla', 'Cancel')}</Button>
+            <Button variant="destructive" onClick={onDelete} disabled={loading}>{loading ? <Loader2 className="h-4 w-4 animate-spin" /> : t('Elimina', 'Delete')}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

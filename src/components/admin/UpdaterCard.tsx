@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { DownloadCloud, RefreshCw, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { t } from '@/lib/admin-i18n';
 
 interface UpdateState {
   status?: 'idle' | 'running' | 'ok' | 'error';
@@ -23,15 +24,15 @@ interface CheckInfo {
 }
 
 const STEP_LABELS: Record<string, string> = {
-  download: 'Scarico la nuova versione…',
-  backup: 'Backup automatico del database…',
-  extract: 'Aggiorno i file…',
-  install: 'Installo le dipendenze…',
-  database: 'Aggiorno lo schema del database…',
-  build: 'Compilo (2-3 minuti)…',
-  swap: 'Attivo la nuova versione…',
-  restart: 'Riavvio…',
-  done: 'Completato',
+  download: t('Scarico la nuova versione…', 'Downloading the new version…'),
+  backup: t('Backup automatico del database…', 'Automatic database backup…'),
+  extract: t('Aggiorno i file…', 'Updating files…'),
+  install: t('Installo le dipendenze…', 'Installing dependencies…'),
+  database: t('Aggiorno lo schema del database…', 'Updating the database schema…'),
+  build: t('Compilo (2-3 minuti)…', 'Building (2-3 minutes)…'),
+  swap: t('Attivo la nuova versione…', 'Activating the new version…'),
+  restart: t('Riavvio…', 'Restarting…'),
+  done: t('Completato', 'Done'),
 };
 
 export function UpdaterCard() {
@@ -87,10 +88,10 @@ export function UpdaterCard() {
         setState({ status: 'running', step: 'download' });
       } else {
         const j = (await res.json().catch(() => ({}))) as { message?: string; error?: { message?: string } };
-        setState({ status: 'error', error: j?.error?.message || j?.message || `Avvio non riuscito (HTTP ${res.status})` });
+        setState({ status: 'error', error: j?.error?.message || j?.message || t(`Avvio non riuscito (HTTP ${res.status})`, `Start failed (HTTP ${res.status})`) });
       }
     } catch {
-      setState({ status: 'error', error: 'Avvio non riuscito: rete non raggiungibile' });
+      setState({ status: 'error', error: t('Avvio non riuscito: rete non raggiungibile', 'Start failed: network unreachable') });
     } finally {
       setStarting(false);
     }
@@ -102,51 +103,51 @@ export function UpdaterCard() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <DownloadCloud className="h-4 w-4 text-primary" /> Aggiornamenti
+          <DownloadCloud className="h-4 w-4 text-primary" /> {t('Aggiornamenti', 'Updates')}
         </CardTitle>
         <CardDescription>
-          Versione installata: <strong>v{check?.current ?? '…'}</strong>
+          {t('Versione installata:', 'Installed version:')} <strong>v{check?.current ?? '…'}</strong>
           {check?.latest && (
             <>
-              {' · '}ultima disponibile: <strong>v{check.latest}</strong>
+              {' · '}{t('ultima disponibile:', 'latest available:')} <strong>v{check.latest}</strong>
             </>
           )}
-          {check && !check.licensed && ' · Richiede una licenza attiva.'}
+          {check && !check.licensed && t(' · Richiede una licenza attiva.', ' · Requires an active license.')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-3 max-w-2xl">
         {busy ? (
           <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/40 px-4 py-3 text-sm">
             <RefreshCw className="h-4 w-4 animate-spin text-primary" />
-            <span>{STEP_LABELS[state.step ?? ''] ?? 'Aggiornamento in corso…'}</span>
+            <span>{STEP_LABELS[state.step ?? ''] ?? t('Aggiornamento in corso…', 'Update in progress…')}</span>
           </div>
         ) : state.status === 'ok' ? (
           <div className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-200">
             <CheckCircle2 className="h-4 w-4" />
             <span>
-              Aggiornato a v{state.toVersion ?? check?.current}
+              {t('Aggiornato a', 'Updated to')} v{state.toVersion ?? check?.current}
               {state.finishedAt ? ` (${new Date(state.finishedAt).toLocaleString('it-IT')})` : ''}
             </span>
             <button type="button" onClick={() => window.location.reload()} className="ml-auto rounded-md border border-emerald-300 px-2.5 py-1 text-xs font-medium hover:bg-emerald-100 dark:hover:bg-emerald-900">
-              Ricarica il pannello
+              {t('Ricarica il pannello', 'Reload the panel')}
             </button>
           </div>
         ) : state.status === 'error' ? (
           <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
-            <p className="flex items-center gap-2 font-medium"><AlertTriangle className="h-4 w-4" /> Aggiornamento non riuscito</p>
+            <p className="flex items-center gap-2 font-medium"><AlertTriangle className="h-4 w-4" /> {t('Aggiornamento non riuscito', 'Update failed')}</p>
             <p className="mt-1">{state.error}</p>
-            <p className="mt-1 text-xs opacity-80">La versione precedente è ancora in esecuzione.</p>
+            <p className="mt-1 text-xs opacity-80">{t('La versione precedente è ancora in esecuzione.', 'The previous version is still running.')}</p>
           </div>
         ) : null}
 
         <div className="flex items-center gap-3">
           <Button onClick={start} disabled={busy || (check ? !check.licensed : false)}>
             <DownloadCloud className="mr-2 h-4 w-4" />
-            {check?.updateAvailable ? `Aggiorna a v${check.latest}` : 'Reinstalla ultima versione'}
+            {check?.updateAvailable ? t(`Aggiorna a v${check.latest}`, `Update to v${check.latest}`) : t('Reinstalla ultima versione', 'Reinstall latest version')}
           </Button>
           {(state.log || busy) && (
             <button type="button" onClick={() => setShowLog((v) => !v)} className="text-xs text-muted-foreground underline underline-offset-2">
-              {showLog ? 'Nascondi log' : 'Mostra log'}
+              {showLog ? t('Nascondi log', 'Hide log') : t('Mostra log', 'Show log')}
             </button>
           )}
         </div>
@@ -157,9 +158,7 @@ export function UpdaterCard() {
           </pre>
         )}
         <p className="text-xs text-muted-foreground">
-          Durante l&rsquo;aggiornamento il sito resta online: la nuova versione viene attivata solo a build riuscita.
-          Prima di toccare il database viene creato un backup automatico in <code>tmp/</code> (ultimi 3 conservati).
-          Si consiglia comunque un backup completo di file e database prima di aggiornare.
+          {t('Durante l\'aggiornamento il sito resta online: la nuova versione viene attivata solo a build riuscita. Prima di toccare il database viene creato un backup automatico in', 'During the update the site stays online: the new version is activated only after a successful build. Before touching the database, an automatic backup is created in')} <code>tmp/</code> {t('(ultimi 3 conservati). Si consiglia comunque un backup completo di file e database prima di aggiornare.', '(last 3 kept). A full backup of files and database before updating is still recommended.')}
         </p>
       </CardContent>
     </Card>

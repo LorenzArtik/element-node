@@ -9,6 +9,7 @@ import { Plus, Edit3, Eye, FileText } from 'lucide-react';
 import { CreatePostButton } from './create-button';
 import { DeletePostButton } from './delete-button';
 import { DuplicateButton } from '@/components/admin/DuplicateButton';
+import { t } from '@/lib/admin-i18n';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,8 +24,8 @@ export default async function PostsListPage({ searchParams }: { searchParams: Pr
     <div className="p-8 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{currentType?.plural ?? 'Contenuti'}</h1>
-          <p className="text-muted-foreground">{data.total} contenuti totali</p>
+          <h1 className="text-3xl font-bold tracking-tight">{currentType?.plural ?? t('Contenuti', 'Content')}</h1>
+          <p className="text-muted-foreground">{t(`${data.total} contenuti totali`, `${data.total} total items`)}</p>
         </div>
         {currentType && <CreatePostButton postTypeSlug={currentType.slug} typeName={currentType.name} />}
       </div>
@@ -48,23 +49,23 @@ export default async function PostsListPage({ searchParams }: { searchParams: Pr
           href="/admin/post-types"
           className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground ml-auto"
         >
-          + Gestisci tipi
+          {t('+ Gestisci tipi', '+ Manage types')}
         </Link>
       </div>
 
       <Card>
         <div className="divide-y">
           <div className="grid grid-cols-[1fr_120px_120px_180px_120px] gap-4 px-6 py-3 text-xs font-medium uppercase text-muted-foreground bg-muted/40">
-            <div>Titolo</div>
-            <div>Stato</div>
-            <div>Autore</div>
-            <div>Aggiornato</div>
-            <div className="text-right">Azioni</div>
+            <div>{t('Titolo', 'Title')}</div>
+            <div>{t('Stato', 'Status')}</div>
+            <div>{t('Autore', 'Author')}</div>
+            <div>{t('Aggiornato', 'Updated')}</div>
+            <div className="text-right">{t('Azioni', 'Actions')}</div>
           </div>
           {data.items.length === 0 ? (
             <div className="p-12 text-center">
               <FileText className="h-10 w-10 mx-auto mb-3 text-muted-foreground" />
-              <p className="text-muted-foreground mb-4">Nessun contenuto.</p>
+              <p className="text-muted-foreground mb-4">{t('Nessun contenuto.', 'No content.')}</p>
               {currentType && <CreatePostButton postTypeSlug={currentType.slug} typeName={currentType.name} />}
             </div>
           ) : (
@@ -78,10 +79,10 @@ export default async function PostsListPage({ searchParams }: { searchParams: Pr
                 <div className="text-sm">{p.author?.name ?? p.author?.email ?? '—'}</div>
                 <div className="text-sm text-muted-foreground">{formatDate(p.updatedAt)}</div>
                 <div className="flex justify-end gap-1">
-                  <Button asChild variant="ghost" size="icon" title="Apri editor">
+                  <Button asChild variant="ghost" size="icon" title={t('Apri editor', 'Open editor')}>
                     <Link href={`/editor/post/${p.id}`}><Edit3 className="h-4 w-4" /></Link>
                   </Button>
-                  <Button asChild variant="ghost" size="icon" title="Anteprima">
+                  <Button asChild variant="ghost" size="icon" title={t('Anteprima', 'Preview')}>
                     <Link href={`/${p.postType.slug}/${p.slug}`} target="_blank"><Eye className="h-4 w-4" /></Link>
                   </Button>
                   <DuplicateButton endpoint={`/api/posts/${p.id}`} redirectTo="editor" />

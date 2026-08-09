@@ -7,16 +7,17 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Sparkles, X, Send, Loader2, Wand2, Image as ImageIcon, Paperclip, KeyRound, ExternalLink, RefreshCw } from 'lucide-react';
 import type { SectionNode, ElementNode, PageContent } from '@/lib/widgets-schema';
+import { t } from '@/lib/admin-i18n';
 
 type Message = { role: 'user' | 'assistant'; text: string; ts: number; images?: string[] };
 
 const QUICK_PROMPTS = [
-  'Crea una sezione hero con titolo, sottotitolo e bottone CTA',
-  'Aggiungi una sezione "Servizi" con 3 box icona',
-  'Genera una sezione testimonianze con 3 recensioni',
-  'Crea un FAQ con 5 domande comuni',
-  'Aggiungi un contact form completo',
-  'Genera una pricing table con 3 piani',
+  t('Crea una sezione hero con titolo, sottotitolo e bottone CTA', 'Create a hero section with title, subtitle and CTA button'),
+  t('Aggiungi una sezione "Servizi" con 3 box icona', 'Add a "Services" section with 3 icon boxes'),
+  t('Genera una sezione testimonianze con 3 recensioni', 'Generate a testimonials section with 3 reviews'),
+  t('Crea un FAQ con 5 domande comuni', 'Create an FAQ with 5 common questions'),
+  t('Aggiungi un contact form completo', 'Add a complete contact form'),
+  t('Genera una pricing table con 3 piani', 'Generate a pricing table with 3 plans'),
 ];
 
 interface RefImage {
@@ -29,7 +30,7 @@ export function AIChat({ onClose }: { onClose: () => void }) {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      text: 'Ciao, dimmi cosa vuoi creare o modificare.',
+      text: t('Ciao, dimmi cosa vuoi creare o modificare.', 'Hi, tell me what you want to create or edit.'),
       ts: Date.now(),
     },
   ]);
@@ -75,7 +76,7 @@ export function AIChat({ onClose }: { onClose: () => void }) {
     const list = Array.from(files).filter((f) => f.type.startsWith('image/'));
     for (const f of list.slice(0, 5 - refImages.length)) {
       if (f.size > 5 * 1024 * 1024) {
-        toast.error(`${f.name}: troppo grande (max 5MB)`);
+        toast.error(t(`${f.name}: troppo grande (max 5MB)`, `${f.name}: too large (max 5MB)`));
         continue;
       }
       const base64 = await new Promise<string>((resolve) => {
@@ -169,7 +170,7 @@ export function AIChat({ onClose }: { onClose: () => void }) {
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err.error ?? 'Errore AI');
+        throw new Error(err.error ?? t('Errore AI', 'AI error'));
       }
       const data = await res.json() as { kind: string; result: unknown };
 
@@ -181,12 +182,12 @@ export function AIChat({ onClose }: { onClose: () => void }) {
         if (selected?.kind === 'section' || selected?.kind === 'column') {
           // Sostituisci la sezione selezionata in-place (mantenendo lo stesso id e posizione)
           replaceSection(selected.sectionId, newSection);
-          setMessages((m) => [...m, { role: 'assistant', text: 'Sezione aggiornata.', ts: Date.now() }]);
-          toast.success('Sezione aggiornata');
+          setMessages((m) => [...m, { role: 'assistant', text: t('Sezione aggiornata.', 'Section updated.'), ts: Date.now() }]);
+          toast.success(t('Sezione aggiornata', 'Section updated'));
         } else {
           appendSection(newSection);
-          setMessages((m) => [...m, { role: 'assistant', text: 'Sezione aggiunta in fondo alla pagina.', ts: Date.now() }]);
-          toast.success('Sezione aggiunta');
+          setMessages((m) => [...m, { role: 'assistant', text: t('Sezione aggiunta in fondo alla pagina.', 'Section added at the bottom of the page.'), ts: Date.now() }]);
+          toast.success(t('Sezione aggiunta', 'Section added'));
           setTimeout(() => {
             const canvas = document.querySelector('.editor-canvas');
             canvas?.scrollIntoView({ behavior: 'smooth', block: 'end' });
@@ -194,23 +195,23 @@ export function AIChat({ onClose }: { onClose: () => void }) {
         }
       } else if (data.kind === 'page') {
         replaceContent(data.result as PageContent);
-        setMessages((m) => [...m, { role: 'assistant', text: 'Pagina rigenerata. Salva per confermare.', ts: Date.now() }]);
-        toast.success('Pagina rigenerata');
+        setMessages((m) => [...m, { role: 'assistant', text: t('Pagina rigenerata. Salva per confermare.', 'Page regenerated. Save to confirm.'), ts: Date.now() }]);
+        toast.success(t('Pagina rigenerata', 'Page regenerated'));
       } else if (data.kind === 'element') {
         if (selected?.kind === 'element') {
           const el = data.result as ElementNode;
           updateElement(selected.sectionId, selected.columnId, selected.elementId, el.settings);
-          setMessages((m) => [...m, { role: 'assistant', text: 'Widget aggiornato.', ts: Date.now() }]);
-          toast.success('Widget aggiornato');
+          setMessages((m) => [...m, { role: 'assistant', text: t('Widget aggiornato.', 'Widget updated.'), ts: Date.now() }]);
+          toast.success(t('Widget aggiornato', 'Widget updated'));
         } else {
-          setMessages((m) => [...m, { role: 'assistant', text: 'Seleziona prima un widget nel canvas (click), poi chiedimi la modifica.', ts: Date.now() }]);
+          setMessages((m) => [...m, { role: 'assistant', text: t('Seleziona prima un widget nel canvas (click), poi chiedimi la modifica.', 'First select a widget on the canvas (click), then ask me for the change.'), ts: Date.now() }]);
         }
       } else {
-        setMessages((m) => [...m, { role: 'assistant', text: 'Risposta AI non interpretabile. Riprova con prompt diverso.', ts: Date.now() }]);
+        setMessages((m) => [...m, { role: 'assistant', text: t('Risposta AI non interpretabile. Riprova con prompt diverso.', 'Could not parse the AI response. Try a different prompt.'), ts: Date.now() }]);
       }
     } catch (err) {
-      toast.error('Errore AI', { description: (err as Error).message });
-      setMessages((m) => [...m, { role: 'assistant', text: 'Errore: ' + (err as Error).message, ts: Date.now() }]);
+      toast.error(t('Errore AI', 'AI error'), { description: (err as Error).message });
+      setMessages((m) => [...m, { role: 'assistant', text: t('Errore: ', 'Error: ') + (err as Error).message, ts: Date.now() }]);
     } finally {
       setLoading(false);
     }
@@ -223,9 +224,9 @@ export function AIChat({ onClose }: { onClose: () => void }) {
       .find((s) => s.id === selected.sectionId)
       ?.columns.find((c) => c.id === selected.columnId)
       ?.elements.find((e) => e.id === selected.elementId);
-    if (el) targetLabel = `widget "${el.type}"`;
-  } else if (selected?.kind === 'section') targetLabel = 'sezione selezionata';
-  else if (selected?.kind === 'column') targetLabel = 'colonna selezionata';
+    if (el) targetLabel = t(`widget "${el.type}"`, `the "${el.type}" widget`);
+  } else if (selected?.kind === 'section') targetLabel = t('sezione selezionata', 'the selected section');
+  else if (selected?.kind === 'column') targetLabel = t('colonna selezionata', 'the selected column');
 
   return (
     <aside className="w-96 bg-card border-l flex flex-col shrink-0">
@@ -246,42 +247,41 @@ export function AIChat({ onClose }: { onClose: () => void }) {
               <div className="w-9 h-9 rounded-lg bg-amber-100 flex items-center justify-center shrink-0">
                 <KeyRound className="h-4 w-4 text-amber-700" />
               </div>
-              <div className="font-semibold text-sm">Configura la chiave API per usare l&apos;AI</div>
+              <div className="font-semibold text-sm">{t("Configura la chiave API per usare l'AI", 'Set up the API key to use the AI')}</div>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              L&apos;assistente usa Claude con la <b>tua</b> API key Anthropic: paghi solo l&apos;uso
-              effettivo (tipicamente pochi euro al mese), senza abbonamenti aggiuntivi.
+              {t("L'assistente usa Claude con la", 'The assistant uses Claude with')} <b>{t('tua', 'your own')}</b> {t("API key Anthropic: paghi solo l'uso effettivo (tipicamente pochi euro al mese), senza abbonamenti aggiuntivi.", 'Anthropic API key: you only pay for actual usage (typically a few euros per month), with no extra subscriptions.')}
             </p>
             <ol className="space-y-3 text-xs leading-relaxed">
               <li className="flex gap-2.5">
                 <span className="w-5 h-5 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center shrink-0">1</span>
                 <span>
-                  Genera la chiave su{' '}
+                  {t('Genera la chiave su', 'Generate your key at')}{' '}
                   <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2 inline-flex items-center gap-0.5">
                     console.anthropic.com <ExternalLink className="h-3 w-3" />
                   </a>
-                  {' '}(API Keys → Create key; serve un metodo di pagamento attivo).
+                  {' '}{t('(API Keys → Create key; serve un metodo di pagamento attivo).', '(API Keys → Create key; an active payment method is required).')}
                 </span>
               </li>
               <li className="flex gap-2.5">
                 <span className="w-5 h-5 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center shrink-0">2</span>
                 <span>
-                  Incollala in{' '}
+                  {t('Incollala in', 'Paste it into')}{' '}
                   <a href="/admin/settings/site?tab=integrations" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">
-                    Impostazioni → Integrazioni
+                    {t('Impostazioni → Integrazioni', 'Settings → Integrations')}
                   </a>
-                  , card &quot;AI Anthropic (Claude)&quot;, e salva.
+                  {t(', card "AI Anthropic (Claude)", e salva.', ', "AI Anthropic (Claude)" card, and save.')}
                 </span>
               </li>
               <li className="flex gap-2.5">
                 <span className="w-5 h-5 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center shrink-0">3</span>
-                <span>Torna qui e premi &quot;Ricontrolla&quot;: la chat si sblocca subito.</span>
+                <span>{t('Torna qui e premi "Ricontrolla": la chat si sblocca subito.', 'Come back here and press "Re-check": the chat unlocks right away.')}</span>
               </li>
             </ol>
             <div className="flex items-center gap-2 pt-1">
               <Button size="sm" onClick={checkAiStatus} disabled={checkingKey}>
                 {checkingKey ? <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5 mr-1.5" />}
-                Ricontrolla
+                {t('Ricontrolla', 'Re-check')}
               </Button>
               <a
                 href="https://elementnode.cloud/it/docs#ai"
@@ -289,7 +289,7 @@ export function AIChat({ onClose }: { onClose: () => void }) {
                 rel="noopener noreferrer"
                 className="text-xs text-muted-foreground underline underline-offset-2"
               >
-                Guida completa
+                {t('Guida completa', 'Full guide')}
               </a>
             </div>
           </div>
@@ -299,7 +299,7 @@ export function AIChat({ onClose }: { onClose: () => void }) {
       {aiConfigured === null && (
         <div className="flex-1 flex items-center justify-center">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Loader2 className="h-4 w-4 animate-spin" /> Verifico la configurazione AI…
+            <Loader2 className="h-4 w-4 animate-spin" /> {t('Verifico la configurazione AI…', 'Checking the AI configuration…')}
           </div>
         </div>
       )}
@@ -307,11 +307,11 @@ export function AIChat({ onClose }: { onClose: () => void }) {
       {aiConfigured === true && targetLabel && (
         <div className="px-3 py-2 border-b bg-primary/10 text-xs flex items-center gap-2">
           <Sparkles className="h-3.5 w-3.5 text-primary shrink-0" />
-          <span className="flex-1">Modificherà <b>{targetLabel}</b></span>
+          <span className="flex-1">{t('Modificherà', 'Will edit')} <b>{targetLabel}</b></span>
           <button
             onClick={() => select(null)}
             className="p-0.5 rounded hover:bg-background/60 transition-colors shrink-0"
-            title="Rimuovi target (lavora sull'intera pagina)"
+            title={t("Rimuovi target (lavora sull'intera pagina)", 'Remove target (work on the whole page)')}
           >
             <X className="h-3.5 w-3.5" />
           </button>
@@ -328,8 +328,8 @@ export function AIChat({ onClose }: { onClose: () => void }) {
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-card/90 pointer-events-none">
             <div className="border-2 border-dashed border-[#92003b] rounded-xl px-8 py-6 text-center">
               <div className="text-3xl mb-2">📎</div>
-              <div className="text-sm font-semibold text-[#92003b]">Rilascia qui per allegare</div>
-              <div className="text-xs text-muted-foreground mt-1">L&apos;immagine sarà inviata come riferimento all&apos;AI</div>
+              <div className="text-sm font-semibold text-[#92003b]">{t('Rilascia qui per allegare', 'Drop here to attach')}</div>
+              <div className="text-xs text-muted-foreground mt-1">{t("L'immagine sarà inviata come riferimento all'AI", 'The image will be sent to the AI as a reference')}</div>
             </div>
           </div>
         )}
@@ -351,7 +351,7 @@ export function AIChat({ onClose }: { onClose: () => void }) {
         {loading && (
           <div className="flex justify-start">
             <div className="bg-muted rounded-2xl px-4 py-3">
-              <span className="en-ai-thinking" aria-label="Generazione in corso">
+              <span className="en-ai-thinking" aria-label={t('Generazione in corso', 'Generating')}>
                 <span /><span /><span />
               </span>
             </div>
@@ -363,7 +363,7 @@ export function AIChat({ onClose }: { onClose: () => void }) {
 
       {aiConfigured === true && messages.length <= 1 && refImages.length === 0 && (
         <div className="px-3 pb-2 space-y-1.5">
-          <div className="text-xs text-muted-foreground flex items-center gap-1.5"><Wand2 className="h-3 w-3" /> Idee veloci</div>
+          <div className="text-xs text-muted-foreground flex items-center gap-1.5"><Wand2 className="h-3 w-3" /> {t('Idee veloci', 'Quick ideas')}</div>
           {QUICK_PROMPTS.map((p) => (
             <button
               key={p}
@@ -416,7 +416,7 @@ export function AIChat({ onClose }: { onClose: () => void }) {
             }
           }}
           rows={2}
-          placeholder="Descrivi cosa vuoi creare... (puoi incollare/trascinare immagini di riferimento)"
+          placeholder={t('Descrivi cosa vuoi creare... (puoi incollare/trascinare immagini di riferimento)', 'Describe what you want to create... (you can paste/drag reference images)')}
           disabled={loading}
         />
 
@@ -427,13 +427,13 @@ export function AIChat({ onClose }: { onClose: () => void }) {
             size="sm"
             onClick={() => fileInputRef.current?.click()}
             disabled={loading || refImages.length >= 5}
-            title="Allega immagine di riferimento"
+            title={t('Allega immagine di riferimento', 'Attach a reference image')}
           >
             <ImageIcon className="h-4 w-4" />
           </Button>
           <Button onClick={() => send()} disabled={loading || !input.trim()} className="flex-1" size="sm">
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-            Genera
+            {t('Genera', 'Generate')}
           </Button>
         </div>
       </div>

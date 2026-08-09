@@ -19,6 +19,7 @@ import { BorderField, ShadowField, BackgroundField } from './StyleFields';
 import { Settings, Layers, Trash2, Plus, Monitor, Tablet, Smartphone, ChevronDown, Copy, ClipboardPaste, RotateCcw } from 'lucide-react';
 import { WIDGET_STYLE_SECTIONS, type StyleControlGroup } from '@/lib/widget-styles';
 import { FontPicker } from '@/components/admin/FontPicker';
+import { t } from '@/lib/admin-i18n';
 
 export function PropertyPanel() {
   return (
@@ -83,23 +84,23 @@ function StyleClipboardActions(props: {
     <div className="flex items-center gap-1 px-3 py-2 border-b bg-muted/40">
       <Button
         variant="ghost" size="sm" className="h-7 px-2 text-xs"
-        title="Copia stile (CMD+ALT+C)"
-        onClick={() => { copyStyle(props.target); flash('Stile copiato'); }}
+        title={t('Copia stile (CMD+ALT+C)', 'Copy style (CMD+ALT+C)')}
+        onClick={() => { copyStyle(props.target); flash(t('Stile copiato', 'Style copied')); }}
       >
-        <Copy className="h-3.5 w-3.5 mr-1" /> Copia
+        <Copy className="h-3.5 w-3.5 mr-1" /> {t('Copia', 'Copy')}
       </Button>
       <Button
         variant="ghost" size="sm" className="h-7 px-2 text-xs"
         disabled={!canPaste}
-        title={canPaste ? 'Incolla stile' : (clip ? `Clipboard di tipo "${clip.kind}", non compatibile` : 'Nessuno stile copiato')}
-        onClick={() => { pasteStyle(props.target); flash('Stile incollato'); }}
+        title={canPaste ? t('Incolla stile', 'Paste style') : (clip ? t(`Clipboard di tipo "${clip.kind}", non compatibile`, `Clipboard of type "${clip.kind}", not compatible`) : t('Nessuno stile copiato', 'No style copied'))}
+        onClick={() => { pasteStyle(props.target); flash(t('Stile incollato', 'Style pasted')); }}
       >
-        <ClipboardPaste className="h-3.5 w-3.5 mr-1" /> Incolla
+        <ClipboardPaste className="h-3.5 w-3.5 mr-1" /> {t('Incolla', 'Paste')}
       </Button>
       <Button
         variant="ghost" size="sm" className="h-7 px-2 text-xs"
-        title="Reset stile ai default"
-        onClick={() => { if (confirm('Ripristinare lo stile ai default del widget? (Il content viene preservato)')) { resetStyle(props.target); flash('Stile resettato'); } }}
+        title={t('Reset stile ai default', 'Reset style to defaults')}
+        onClick={() => { if (confirm(t('Ripristinare lo stile ai default del widget? (Il content viene preservato)', 'Reset the style to the widget defaults? (Content is preserved)'))) { resetStyle(props.target); flash(t('Stile resettato', 'Style reset')); } }}
       >
         <RotateCcw className="h-3.5 w-3.5 mr-1" /> Reset
       </Button>
@@ -112,7 +113,7 @@ function EmptyContent() {
   return (
     <div className="flex-1 flex flex-col items-center justify-center text-center p-8 text-sm text-muted-foreground">
       <Layers className="h-10 w-10 mb-2 opacity-30" />
-      Seleziona una sezione, una colonna o un widget per modificarlo.
+      {t('Seleziona una sezione, una colonna o un widget per modificarlo.', 'Select a section, a column or a widget to edit it.')}
     </div>
   );
 }
@@ -121,11 +122,11 @@ function EmptyPanel() {
   return (
     <aside className="w-80 bg-card border-l flex flex-col shrink-0">
       <div className="p-3 border-b">
-        <h3 className="text-sm font-semibold flex items-center gap-2"><Settings className="h-4 w-4" /> Proprietà</h3>
+        <h3 className="text-sm font-semibold flex items-center gap-2"><Settings className="h-4 w-4" /> {t('Proprietà', 'Properties')}</h3>
       </div>
       <div className="flex-1 flex flex-col items-center justify-center text-center p-8 text-sm text-muted-foreground">
         <Layers className="h-10 w-10 mb-2 opacity-30" />
-        Seleziona una sezione, una colonna o un widget per modificarlo.
+        {t('Seleziona una sezione, una colonna o un widget per modificarlo.', 'Select a section, a column or a widget to edit it.')}
       </div>
     </aside>
   );
@@ -170,13 +171,13 @@ function SectionPanel({ sectionId, settings }: { sectionId: string; settings: Re
   function updateBg(patch: Partial<BgObj>) { update(sectionId, { background: { ...bg, ...patch } }); }
 
   return (
-    <PanelShell title="Sezione">
+    <PanelShell title={t('Sezione', 'Section')}>
       <StyleClipboardActions target={{ kind: 'section', sectionId }} />
       <Tabs defaultValue="layout">
         <TabsList className="w-full grid grid-cols-3">
           <TabsTrigger value="layout">Layout</TabsTrigger>
-          <TabsTrigger value="bg">Sfondo</TabsTrigger>
-          <TabsTrigger value="adv">Avanzato</TabsTrigger>
+          <TabsTrigger value="bg">{t('Sfondo', 'Background')}</TabsTrigger>
+          <TabsTrigger value="adv">{t('Avanzato', 'Advanced')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="layout" className="space-y-4 pt-2">
@@ -185,18 +186,18 @@ function SectionPanel({ sectionId, settings }: { sectionId: string; settings: Re
           </Field>
           <div className="grid grid-cols-2 gap-2">
             <Field label="Padding top">
-              <Input value={String(s.paddingTop ?? '')} onChange={(e) => update(sectionId, { paddingTop: e.target.value })} placeholder="es. 70" />
+              <Input value={String(s.paddingTop ?? '')} onChange={(e) => update(sectionId, { paddingTop: e.target.value })} placeholder={t('es. 70', 'e.g. 70')} />
             </Field>
             <Field label="Padding bottom">
-              <Input value={String(s.paddingBottom ?? '')} onChange={(e) => update(sectionId, { paddingBottom: e.target.value })} placeholder="es. 70" />
+              <Input value={String(s.paddingBottom ?? '')} onChange={(e) => update(sectionId, { paddingBottom: e.target.value })} placeholder={t('es. 70', 'e.g. 70')} />
             </Field>
           </div>
-          <Field label="Min height"><Input value={s.minHeight ?? ''} onChange={(e) => update(sectionId, { minHeight: e.target.value })} placeholder="es. 90vh" /></Field>
+          <Field label="Min height"><Input value={s.minHeight ?? ''} onChange={(e) => update(sectionId, { minHeight: e.target.value })} placeholder={t('es. 90vh', 'e.g. 90vh')} /></Field>
           <Field label="Container max-width"><Input value={s.containerWidth ?? ''} onChange={(e) => update(sectionId, { containerWidth: e.target.value })} placeholder="1170px" /></Field>
-          <Field label="Gap colonne"><Input value={s.gap ?? '0'} onChange={(e) => update(sectionId, { gap: e.target.value })} placeholder="0 (default)" /></Field>
-          <Field label="Border radius"><Input value={s.borderRadius ?? ''} onChange={(e) => update(sectionId, { borderRadius: e.target.value })} placeholder="es. 16px" /></Field>
+          <Field label={t('Gap colonne', 'Column gap')}><Input value={s.gap ?? '0'} onChange={(e) => update(sectionId, { gap: e.target.value })} placeholder="0 (default)" /></Field>
+          <Field label="Border radius"><Input value={s.borderRadius ?? ''} onChange={(e) => update(sectionId, { borderRadius: e.target.value })} placeholder={t('es. 16px', 'e.g. 16px')} /></Field>
           <Field label="Box shadow"><ShadowControl value={s.boxShadow ?? ''} onChange={(v) => update(sectionId, { boxShadow: v })} /></Field>
-          <Field label="Colore testo"><ColorInput value={s.color ?? ''} onChange={(v) => update(sectionId, { color: v })} /></Field>
+          <Field label={t('Colore testo', 'Text color')}><ColorInput value={s.color ?? ''} onChange={(v) => update(sectionId, { color: v })} /></Field>
           <div className="flex items-center gap-2">
             <Switch checked={!!s.fullWidth} onCheckedChange={(v) => update(sectionId, { fullWidth: v })} />
             <Label className="text-sm">Full width</Label>
@@ -205,27 +206,27 @@ function SectionPanel({ sectionId, settings }: { sectionId: string; settings: Re
             <Switch checked={!!s.sticky} onCheckedChange={(v) => update(sectionId, { sticky: v })} />
             <Label className="text-sm">Sticky (top:0)</Label>
           </div>
-          <Field label="Anchor (id HTML)"><Input value={s.anchor ?? ''} onChange={(e) => update(sectionId, { anchor: e.target.value })} placeholder="es. about" /></Field>
+          <Field label={t('Anchor (id HTML)', 'Anchor (HTML id)')}><Input value={s.anchor ?? ''} onChange={(e) => update(sectionId, { anchor: e.target.value })} placeholder={t('es. about', 'e.g. about')} /></Field>
         </TabsContent>
 
         <TabsContent value="bg" className="space-y-4 pt-2">
-          <Field label="Tipo sfondo">
+          <Field label={t('Tipo sfondo', 'Background type')}>
             <Select value={bg.type ?? 'none'} onValueChange={(v) => update(sectionId, { background: { ...bg, type: v as BgObj['type'] } })}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="none">Nessuno</SelectItem>
-                <SelectItem value="color">Colore</SelectItem>
-                <SelectItem value="image">Immagine</SelectItem>
+                <SelectItem value="none">{t('Nessuno', 'None')}</SelectItem>
+                <SelectItem value="color">{t('Colore', 'Color')}</SelectItem>
+                <SelectItem value="image">{t('Immagine', 'Image')}</SelectItem>
                 <SelectItem value="gradient">Gradient</SelectItem>
               </SelectContent>
             </Select>
           </Field>
           {(bg.type === 'color' || bg.type === 'image') && (
-            <Field label="Colore di base"><ColorInput value={bg.color ?? ''} onChange={(v) => updateBg({ color: v })} /></Field>
+            <Field label={t('Colore di base', 'Base color')}><ColorInput value={bg.color ?? ''} onChange={(v) => updateBg({ color: v })} /></Field>
           )}
           {bg.type === 'image' && (
             <>
-              <Field label="Immagine">
+              <Field label={t('Immagine', 'Image')}>
                 <MediaField value={bg.image ?? ''} onChange={(v) => updateBg({ image: v })} />
               </Field>
               <Field label="Overlay (CSS)">
@@ -276,7 +277,7 @@ function SectionPanel({ sectionId, settings }: { sectionId: string; settings: Re
           <Field label="Background CSS raw (override)">
             <Textarea value={typeof s.background === 'string' ? s.background : ''}
               onChange={(e) => update(sectionId, { background: e.target.value })}
-              placeholder="Solo se vuoi una stringa CSS arbitraria — sovrascrive il tab Sfondo" rows={3} />
+              placeholder={t('Solo se vuoi una stringa CSS arbitraria — sovrascrive il tab Sfondo', 'Only if you want an arbitrary CSS string — overrides the Background tab')} rows={3} />
           </Field>
         </TabsContent>
       </Tabs>
@@ -288,9 +289,9 @@ function ColumnPanel({ sectionId, columnId, width, settings }: { sectionId: stri
   const updateCol = useEditor((s) => s.updateColumn);
   const s = settings as { padding?: string; align?: string; background?: string };
   return (
-    <PanelShell title="Colonna">
+    <PanelShell title={t('Colonna', 'Column')}>
       <StyleClipboardActions target={{ kind: 'column', sectionId, columnId }} />
-      <Field label={`Larghezza: ${width}%`}>
+      <Field label={t(`Larghezza: ${width}%`, `Width: ${width}%`)}>
         <input
           type="range"
           min={5}
@@ -303,61 +304,61 @@ function ColumnPanel({ sectionId, columnId, width, settings }: { sectionId: stri
       <Field label="Padding">
         <Input value={s.padding ?? '20px'} onChange={(e) => updateCol(sectionId, columnId, { settings: { ...settings, padding: e.target.value } })} />
       </Field>
-      <Field label="Allineamento">
+      <Field label={t('Allineamento', 'Alignment')}>
         <Select value={(s.align as string) ?? 'left'} onValueChange={(v) => updateCol(sectionId, columnId, { settings: { ...settings, align: v } })}>
           <SelectTrigger><SelectValue /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="left">Sinistra</SelectItem>
-            <SelectItem value="center">Centro</SelectItem>
-            <SelectItem value="right">Destra</SelectItem>
+            <SelectItem value="left">{t('Sinistra', 'Left')}</SelectItem>
+            <SelectItem value="center">{t('Centro', 'Center')}</SelectItem>
+            <SelectItem value="right">{t('Destra', 'Right')}</SelectItem>
           </SelectContent>
         </Select>
       </Field>
-      <Field label="Sfondo">
+      <Field label={t('Sfondo', 'Background')}>
         <Input value={(s.background as string) ?? ''} onChange={(e) => updateCol(sectionId, columnId, { settings: { ...settings, background: e.target.value } })} />
       </Field>
       <Field label="Border radius">
-        <Input value={(settings.borderRadius as string) ?? ''} onChange={(e) => updateCol(sectionId, columnId, { settings: { ...settings, borderRadius: e.target.value } })} placeholder="es. 16px" />
+        <Input value={(settings.borderRadius as string) ?? ''} onChange={(e) => updateCol(sectionId, columnId, { settings: { ...settings, borderRadius: e.target.value } })} placeholder={t('es. 16px', 'e.g. 16px')} />
       </Field>
       <Field label="Box shadow">
         <ShadowControl value={(settings.boxShadow as string) ?? ''} onChange={(v) => updateCol(sectionId, columnId, { settings: { ...settings, boxShadow: v } })} />
       </Field>
-      <Field label="Bordo">
-        <Input value={(settings.border as string) ?? ''} onChange={(e) => updateCol(sectionId, columnId, { settings: { ...settings, border: e.target.value } })} placeholder="es. 1px solid #e6f4ff" />
+      <Field label={t('Bordo', 'Border')}>
+        <Input value={(settings.border as string) ?? ''} onChange={(e) => updateCol(sectionId, columnId, { settings: { ...settings, border: e.target.value } })} placeholder={t('es. 1px solid #e6f4ff', 'e.g. 1px solid #e6f4ff')} />
       </Field>
       <Field label="Overflow">
         <Select value={(settings.overflow as string) || 'visible'} onValueChange={(v) => updateCol(sectionId, columnId, { settings: { ...settings, overflow: v === 'visible' ? '' : v } })}>
           <SelectTrigger><SelectValue /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="visible">Visibile</SelectItem>
-            <SelectItem value="hidden">Nascosto (card con media)</SelectItem>
+            <SelectItem value="visible">{t('Visibile', 'Visible')}</SelectItem>
+            <SelectItem value="hidden">{t('Nascosto (card con media)', 'Hidden (card with media)')}</SelectItem>
           </SelectContent>
         </Select>
       </Field>
-      <Field label="Disposizione elementi">
+      <Field label={t('Disposizione elementi', 'Element layout')}>
         <Select value={(settings.elementsDirection as string) || 'column'} onValueChange={(v) => updateCol(sectionId, columnId, { settings: { ...settings, elementsDirection: v } })}>
           <SelectTrigger><SelectValue /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="column">In colonna (default)</SelectItem>
-            <SelectItem value="row">In riga (bottoni/loghi affiancati)</SelectItem>
+            <SelectItem value="column">{t('In colonna (default)', 'Stacked (default)')}</SelectItem>
+            <SelectItem value="row">{t('In riga (bottoni/loghi affiancati)', 'In a row (buttons/logos side by side)')}</SelectItem>
           </SelectContent>
         </Select>
       </Field>
       {(settings.elementsDirection as string) === 'row' && (
         <>
-          <Field label="Giustificazione riga">
+          <Field label={t('Giustificazione riga', 'Row justification')}>
             <Select value={(settings.elementsJustify as string) || 'center'} onValueChange={(v) => updateCol(sectionId, columnId, { settings: { ...settings, elementsJustify: v } })}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="flex-start">Inizio</SelectItem>
-                <SelectItem value="center">Centro</SelectItem>
-                <SelectItem value="flex-end">Fine</SelectItem>
-                <SelectItem value="space-between">Spazio tra</SelectItem>
-                <SelectItem value="space-around">Spazio attorno</SelectItem>
+                <SelectItem value="flex-start">{t('Inizio', 'Start')}</SelectItem>
+                <SelectItem value="center">{t('Centro', 'Center')}</SelectItem>
+                <SelectItem value="flex-end">{t('Fine', 'End')}</SelectItem>
+                <SelectItem value="space-between">{t('Spazio tra', 'Space between')}</SelectItem>
+                <SelectItem value="space-around">{t('Spazio attorno', 'Space around')}</SelectItem>
               </SelectContent>
             </Select>
           </Field>
-          <Field label="Gap riga (px)">
+          <Field label={t('Gap riga (px)', 'Row gap (px)')}>
             <Input value={String(settings.elementsGap ?? '16')} onChange={(e) => updateCol(sectionId, columnId, { settings: { ...settings, elementsGap: e.target.value } })} placeholder="16" />
           </Field>
         </>
@@ -387,9 +388,9 @@ function ElementPanel({ sectionId, columnId, element }: { sectionId: string; col
       <DeviceIndicator device={device} />
       <Tabs defaultValue="content">
         <TabsList className="w-full grid grid-cols-3">
-          <TabsTrigger value="content">Contenuto</TabsTrigger>
-          <TabsTrigger value="style">Stile</TabsTrigger>
-          <TabsTrigger value="advanced">Avanzato</TabsTrigger>
+          <TabsTrigger value="content">{t('Contenuto', 'Content')}</TabsTrigger>
+          <TabsTrigger value="style">{t('Stile', 'Style')}</TabsTrigger>
+          <TabsTrigger value="advanced">{t('Avanzato', 'Advanced')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="content" className="space-y-4 pt-2">
@@ -422,11 +423,11 @@ function ElementPanel({ sectionId, columnId, element }: { sectionId: string; col
               }}
             />
           ) : (
-            <p className="text-xs text-muted-foreground">Questo widget non espone controlli di stile per sotto-elementi. Usa Avanzato per CSS custom.</p>
+            <p className="text-xs text-muted-foreground">{t('Questo widget non espone controlli di stile per sotto-elementi. Usa Avanzato per CSS custom.', 'This widget does not expose style controls for sub-elements. Use Advanced for custom CSS.')}</p>
           )}
           <div className="border-t pt-4 mt-4">
             <details>
-              <summary className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-2 cursor-pointer hover:text-foreground select-none">Wrapper widget (avanzato)</summary>
+              <summary className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-2 cursor-pointer hover:text-foreground select-none">{t('Wrapper widget (avanzato)', 'Widget wrapper (advanced)')}</summary>
               <div className="space-y-3 mt-3">
                 <Field label="Margin">
                   <DimensionsField value={(styleObj.margin as string) ?? ''} onChange={(v) => setStyle('margin', v)} />
@@ -440,14 +441,14 @@ function ElementPanel({ sectionId, columnId, element }: { sectionId: string; col
             </details>
           </div>
           <div>
-            <h4 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Bordo</h4>
+            <h4 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">{t('Bordo', 'Border')}</h4>
             <Field label="Border (CSS)"><Input value={(styleObj.border as string) ?? ''} onChange={(e) => setStyle('border', e.target.value)} placeholder="1px solid #ddd" /></Field>
             <div className="mt-3">
               <Field label="Box shadow"><ShadowControl value={(styleObj.boxShadow as string) ?? ''} onChange={(v) => setStyle('boxShadow', v)} /></Field>
             </div>
           </div>
           <div>
-            <h4 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Effetti</h4>
+            <h4 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">{t('Effetti', 'Effects')}</h4>
             <Field label={`Opacity: ${styleObj.opacity ?? '1'}`}>
               <input
                 type="range" min={0} max={1} step={0.05}
@@ -465,7 +466,7 @@ function ElementPanel({ sectionId, columnId, element }: { sectionId: string; col
 
           {/* Visibilità responsive */}
           <div className="pt-3 border-t">
-            <h4 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Visibilità responsive</h4>
+            <h4 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">{t('Visibilità responsive', 'Responsive visibility')}</h4>
             <div className="grid grid-cols-3 gap-2 text-xs">
               {([
                 { key: 'desktop', label: 'Desktop', Icon: Monitor },
@@ -493,12 +494,12 @@ function ElementPanel({ sectionId, columnId, element }: { sectionId: string; col
                 );
               })}
             </div>
-            <p className="text-[10px] text-muted-foreground mt-1">Nascondi questo widget su device specifici</p>
+            <p className="text-[10px] text-muted-foreground mt-1">{t('Nascondi questo widget su device specifici', 'Hide this widget on specific devices')}</p>
           </div>
         </TabsContent>
 
         <TabsContent value="advanced" className="space-y-4 pt-2 text-sm text-muted-foreground">
-          <Field label="ID elemento"><Input value={element.id} readOnly className="font-mono text-xs" /></Field>
+          <Field label={t('ID elemento', 'Element ID')}><Input value={element.id} readOnly className="font-mono text-xs" /></Field>
           <Field label="CSS classes">
             <Input
               value={(element.settings._classes as string) ?? ''}
@@ -513,7 +514,7 @@ function ElementPanel({ sectionId, columnId, element }: { sectionId: string; col
               placeholder="my-anchor"
             />
           </Field>
-          <Field label="CSS personalizzato">
+          <Field label={t('CSS personalizzato', 'Custom CSS')}>
             <Textarea
               value={(element.settings._css as string) ?? ''}
               onChange={(e) => set('_css', e.target.value)}
@@ -538,7 +539,7 @@ function DeviceIndicator({ device }: { device: string }) {
   const Icon = d.Icon;
   return (
     <div className="px-3 py-1.5 bg-muted rounded-md text-[10px] text-muted-foreground flex items-center justify-between">
-      <span>Vista {d.label} · {d.w}</span>
+      <span>{t('Vista', 'View')} {d.label} · {d.w}</span>
       <Icon className="h-3.5 w-3.5" />
     </div>
   );
@@ -564,11 +565,11 @@ function FormPicker({ value, onChange }: { value: string; onChange: (v: string) 
     }).catch(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="text-xs text-muted-foreground">Caricamento...</div>;
+  if (loading) return <div className="text-xs text-muted-foreground">{t('Caricamento...', 'Loading...')}</div>;
   if (forms.length === 0) {
     return (
       <div className="text-xs text-muted-foreground border rounded p-2">
-        Nessun form salvato. <a href="/admin/forms" className="text-primary underline" target="_blank" rel="noreferrer">Crea un form</a> per usarlo qui.
+        {t('Nessun form salvato.', 'No saved forms.')} <a href="/admin/forms" className="text-primary underline" target="_blank" rel="noreferrer">{t('Crea un form', 'Create a form')}</a> {t('per usarlo qui.', 'to use it here.')}
       </div>
     );
   }
@@ -576,9 +577,9 @@ function FormPicker({ value, onChange }: { value: string; onChange: (v: string) 
   return (
     <div className="space-y-1.5">
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger><SelectValue placeholder="Seleziona un form..." /></SelectTrigger>
+        <SelectTrigger><SelectValue placeholder={t('Seleziona un form...', 'Select a form...')} /></SelectTrigger>
         <SelectContent>
-          <SelectItem value=" ">— Nessuno (usa fields inline) —</SelectItem>
+          <SelectItem value=" ">{t('— Nessuno (usa fields inline) —', '— None (use inline fields) —')}</SelectItem>
           {forms.map((f) => (
             <SelectItem key={f.id} value={f.id}>
               {f.name} {f.status !== 'ACTIVE' && `(${f.status})`}
@@ -588,7 +589,7 @@ function FormPicker({ value, onChange }: { value: string; onChange: (v: string) 
       </Select>
       {value && value.trim() && (
         <a href={`/admin/forms/${value}`} target="_blank" rel="noreferrer" className="text-[10px] text-primary hover:underline">
-          Modifica form
+          {t('Modifica form', 'Edit form')}
         </a>
       )}
     </div>
@@ -610,19 +611,19 @@ function ColorInput({ value, onChange }: { value: string; onChange: (v: string) 
 }
 
 const BOX_CHILD_TYPES: { value: string; label: string }[] = [
-  { value: 'heading', label: 'Titolo' },
-  { value: 'text', label: 'Testo' },
-  { value: 'button', label: 'Pulsante' },
-  { value: 'image', label: 'Immagine' },
-  { value: 'icon', label: 'Icona' },
-  { value: 'icon-box', label: 'Box Icona' },
-  { value: 'icon-list', label: 'Lista Icone' },
-  { value: 'counter', label: 'Contatore' },
-  { value: 'divider', label: 'Divisore' },
-  { value: 'spacer', label: 'Spazio' },
+  { value: 'heading', label: t('Titolo', 'Heading') },
+  { value: 'text', label: t('Testo', 'Text') },
+  { value: 'button', label: t('Pulsante', 'Button') },
+  { value: 'image', label: t('Immagine', 'Image') },
+  { value: 'icon', label: t('Icona', 'Icon') },
+  { value: 'icon-box', label: t('Box Icona', 'Icon Box') },
+  { value: 'icon-list', label: t('Lista Icone', 'Icon List') },
+  { value: 'counter', label: t('Contatore', 'Counter') },
+  { value: 'divider', label: t('Divisore', 'Divider') },
+  { value: 'spacer', label: t('Spazio', 'Spacer') },
   { value: 'testimonial', label: 'Testimonial' },
   { value: 'social-icons', label: 'Social Icons' },
-  { value: 'box', label: 'Box annidato' },
+  { value: 'box', label: t('Box annidato', 'Nested Box') },
   { value: 'html', label: 'HTML' },
 ];
 
@@ -660,7 +661,7 @@ function BoxChildrenEditor({ childrenEls, onChange }: { childrenEls: ElementNode
 
   return (
     <div className="border-t pt-3 mt-3 space-y-2">
-      <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Elementi nel box ({childrenEls.length})</Label>
+      <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t('Elementi nel box', 'Box elements')} ({childrenEls.length})</Label>
       {childrenEls.map((child, i) => {
         const cdesc = WIDGETS[child.type];
         const isOpen = openIdx === i;
@@ -672,9 +673,9 @@ function BoxChildrenEditor({ childrenEls, onChange }: { childrenEls: ElementNode
                 {cdesc?.label ?? child.type}
                 {preview ? <span className="text-muted-foreground font-normal"> — {preview.slice(0, 26)}</span> : null}
               </button>
-              <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => move(i, -1)} disabled={i === 0} title="Su">↑</Button>
-              <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => move(i, 1)} disabled={i === childrenEls.length - 1} title="Giù">↓</Button>
-              <Button variant="ghost" size="icon" className="h-6 w-6 text-red-500" onClick={() => remove(i)} title="Rimuovi"><Trash2 className="h-3.5 w-3.5" /></Button>
+              <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => move(i, -1)} disabled={i === 0} title={t('Su', 'Up')}>↑</Button>
+              <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => move(i, 1)} disabled={i === childrenEls.length - 1} title={t('Giù', 'Down')}>↓</Button>
+              <Button variant="ghost" size="icon" className="h-6 w-6 text-red-500" onClick={() => remove(i)} title={t('Rimuovi', 'Remove')}><Trash2 className="h-3.5 w-3.5" /></Button>
               <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
             </div>
             {isOpen && cdesc && (
@@ -705,7 +706,7 @@ function BoxChildrenEditor({ childrenEls, onChange }: { childrenEls: ElementNode
             {BOX_CHILD_TYPES.map((t) => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
           </SelectContent>
         </Select>
-        <Button variant="outline" size="sm" className="h-8" onClick={add}><Plus className="h-3.5 w-3.5 mr-1" />Aggiungi</Button>
+        <Button variant="outline" size="sm" className="h-8" onClick={add}><Plus className="h-3.5 w-3.5 mr-1" />{t('Aggiungi', 'Add')}</Button>
       </div>
     </div>
   );
@@ -779,8 +780,8 @@ function RenderField({
     case 'icon':
       return (
         <Field label={field.label}>
-          <Input value={(value as string) ?? ''} onChange={(e) => onChange(e.target.value)} placeholder="es. Star, Heart, Zap" />
-          <p className="text-[10px] text-muted-foreground mt-1">Nomi icone da lucide.dev</p>
+          <Input value={(value as string) ?? ''} onChange={(e) => onChange(e.target.value)} placeholder={t('es. Star, Heart, Zap', 'e.g. Star, Heart, Zap')} />
+          <p className="text-[10px] text-muted-foreground mt-1">{t('Nomi icone da lucide.dev', 'Icon names from lucide.dev')}</p>
         </Field>
       );
     case 'slider':
@@ -808,7 +809,7 @@ function RenderField({
               type="button"
               onClick={() => onChange(isAuto ? '100%' : 'auto')}
               className={`text-[10px] px-2 py-1 rounded border h-7 ${isAuto ? 'bg-primary text-primary-foreground border-primary' : 'border-input bg-card hover:bg-muted'}`}
-              title={isAuto ? 'Disattiva auto (usa slider)' : 'Imposta a auto'}
+              title={isAuto ? t('Disattiva auto (usa slider)', 'Turn off auto (use the slider)') : t('Imposta a auto', 'Set to auto')}
             >
               auto
             </button>
@@ -824,7 +825,7 @@ function RenderField({
                 />
               </div>
             )}
-            {isAuto && <span className="text-xs text-muted-foreground flex-1">Dimensione automatica</span>}
+            {isAuto && <span className="text-xs text-muted-foreground flex-1">{t('Dimensione automatica', 'Automatic size')}</span>}
           </div>
         </Field>
       );
@@ -910,7 +911,7 @@ function ListField({ field, value, onChange }: { field: WidgetField; value: Reco
         </div>
       ))}
       <Button variant="outline" size="sm" onClick={add} className="w-full">
-        <Plus className="h-3 w-3" /> Aggiungi voce
+        <Plus className="h-3 w-3" /> {t('Aggiungi voce', 'Add item')}
       </Button>
     </div>
   );
@@ -962,7 +963,7 @@ function SubStyleAccordion({
         <div className="p-3 space-y-3 border-t border-border">
           {controls.includes('typography') && (
             <div className="space-y-2">
-              <h5 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Tipografia</h5>
+              <h5 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{t('Tipografia', 'Typography')}</h5>
               <Field label="Font family">
                 <FontPicker
                   value={(value.fontFamily as string) ?? ''}
@@ -1004,7 +1005,7 @@ function SubStyleAccordion({
             </div>
           )}
           {controls.includes('color') && (
-            <Field label="Colore"><ColorInput value={(value.color as string) ?? ''} onChange={(v) => onChange({ color: v })} /></Field>
+            <Field label={t('Colore', 'Color')}><ColorInput value={(value.color as string) ?? ''} onChange={(v) => onChange({ color: v })} /></Field>
           )}
           {controls.includes('background') && (
             <Field label="Background"><ColorInput value={(value.background as string) ?? ''} onChange={(v) => onChange({ background: v })} /></Field>
@@ -1057,7 +1058,7 @@ function serializeShadow(p: ShadowParts): string {
 }
 
 const SHADOW_PRESETS: Array<{ label: string; value: string }> = [
-  { label: 'Nessuna', value: '' },
+  { label: t('Nessuna', 'None'), value: '' },
   { label: 'XS', value: '0 1px 2px rgba(0,0,0,.06)' },
   { label: 'SM', value: '0 2px 8px rgba(0,0,0,.08)' },
   { label: 'MD', value: '0 4px 16px rgba(0,0,0,.10)' },
@@ -1115,7 +1116,7 @@ function ShadowControl({ value, onChange }: { value: string; onChange: (v: strin
               checked={parts.inset}
               onChange={(e) => set({ inset: e.target.checked })}
             />
-            <span>Inset (ombra interna)</span>
+            <span>{t('Inset (ombra interna)', 'Inset (inner shadow)')}</span>
           </label>
           <div className="flex items-center justify-center bg-card rounded-md py-4 mt-1">
             <div

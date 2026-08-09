@@ -16,6 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import type { FormField, FormAction, FormSettings } from '@/lib/forms';
 import { fieldTypes } from '@/lib/forms';
+import { t } from '@/lib/admin-i18n';
 
 interface InitialState {
   name: string;
@@ -28,10 +29,10 @@ interface InitialState {
 }
 
 const FIELD_TYPE_LABELS: Record<string, string> = {
-  text: 'Testo', email: 'Email', tel: 'Telefono', url: 'URL',
-  number: 'Numero', textarea: 'Area di testo', select: 'Select',
-  radio: 'Radio button', checkbox: 'Checkbox', 'checkbox-group': 'Checkbox multipli',
-  date: 'Data', time: 'Ora', file: 'File', hidden: 'Nascosto', consent: 'Consenso GDPR',
+  text: t('Testo', 'Text'), email: 'Email', tel: t('Telefono', 'Phone'), url: 'URL',
+  number: t('Numero', 'Number'), textarea: t('Area di testo', 'Text area'), select: 'Select',
+  radio: 'Radio button', checkbox: 'Checkbox', 'checkbox-group': t('Checkbox multipli', 'Multiple checkboxes'),
+  date: t('Data', 'Date'), time: t('Ora', 'Time'), file: 'File', hidden: t('Nascosto', 'Hidden'), consent: t('Consenso GDPR', 'GDPR consent'),
 };
 
 export function FormBuilder({ id, initial }: { id: string; initial: InitialState }) {
@@ -52,10 +53,10 @@ export function FormBuilder({ id, initial }: { id: string; initial: InitialState
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        toast.error('Errore', { description: err?.error?.message });
+        toast.error(t('Errore', 'Error'), { description: err?.error?.message });
         return;
       }
-      toast.success('Salvato');
+      toast.success(t('Salvato', 'Saved'));
       router.refresh();
     });
   }
@@ -63,7 +64,7 @@ export function FormBuilder({ id, initial }: { id: string; initial: InitialState
   function addField() {
     const id = `f_${Math.random().toString(36).slice(2, 8)}`;
     setFields([...fields, {
-      id, type: 'text', name: `field_${fields.length + 1}`, label: 'Nuovo campo',
+      id, type: 'text', name: `field_${fields.length + 1}`, label: t('Nuovo campo', 'New field'),
       required: false, width: 12,
     }]);
   }
@@ -89,8 +90,8 @@ export function FormBuilder({ id, initial }: { id: string; initial: InitialState
 
   function addAction(type: FormAction['type']) {
     const base: FormAction =
-      type === 'email' ? { type, to: '', subject: 'Submission da {form}' }
-      : type === 'autoresponder' ? { type, toField: 'email', subject: 'Grazie!', body: 'Abbiamo ricevuto la tua richiesta.' }
+      type === 'email' ? { type, to: '', subject: t('Submission da {form}', 'Submission from {form}') }
+      : type === 'autoresponder' ? { type, toField: 'email', subject: t('Grazie!', 'Thank you!'), body: t('Abbiamo ricevuto la tua richiesta.', 'We have received your request.') }
       : type === 'webhook' ? { type, url: '', method: 'POST' }
       : type === 'mailchimp' ? { type, apiKey: '', listId: '', emailField: 'email' }
       : type === 'redirect' ? { type, url: '/grazie' }
@@ -121,7 +122,7 @@ export function FormBuilder({ id, initial }: { id: string; initial: InitialState
           <div className="flex items-center justify-between">
             <div>
               <CardTitle><Input value={name} onChange={(e) => setName(e.target.value)} className="text-xl font-bold border-0 px-0 h-auto py-0 focus-visible:ring-0" /></CardTitle>
-              <Textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Descrizione interna..." rows={1} className="mt-1 border-0 px-0 resize-none focus-visible:ring-0" />
+              <Textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder={t('Descrizione interna...', 'Internal description...')} rows={1} className="mt-1 border-0 px-0 resize-none focus-visible:ring-0" />
             </div>
             <Badge variant={status === 'ACTIVE' ? 'success' : 'outline'}>{status}</Badge>
           </div>
@@ -130,10 +131,10 @@ export function FormBuilder({ id, initial }: { id: string; initial: InitialState
 
       <Tabs defaultValue="fields">
         <TabsList>
-          <TabsTrigger value="fields">Campi ({fields.length})</TabsTrigger>
-          <TabsTrigger value="actions">Azioni ({actions.length})</TabsTrigger>
-          <TabsTrigger value="settings">Impostazioni</TabsTrigger>
-          <TabsTrigger value="embed">Inserisci nel sito</TabsTrigger>
+          <TabsTrigger value="fields">{t('Campi', 'Fields')} ({fields.length})</TabsTrigger>
+          <TabsTrigger value="actions">{t('Azioni', 'Actions')} ({actions.length})</TabsTrigger>
+          <TabsTrigger value="settings">{t('Impostazioni', 'Settings')}</TabsTrigger>
+          <TabsTrigger value="embed">{t('Inserisci nel sito', 'Embed on site')}</TabsTrigger>
         </TabsList>
 
         {/* ===== FIELDS ===== */}
@@ -141,12 +142,12 @@ export function FormBuilder({ id, initial }: { id: string; initial: InitialState
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle>Campi del form</CardTitle>
-                <Button onClick={addField}><Plus className="h-4 w-4" /> Aggiungi campo</Button>
+                <CardTitle>{t('Campi del form', 'Form fields')}</CardTitle>
+                <Button onClick={addField}><Plus className="h-4 w-4" /> {t('Aggiungi campo', 'Add field')}</Button>
               </div>
             </CardHeader>
             <CardContent className="space-y-3">
-              {fields.length === 0 && <p className="text-sm text-muted-foreground">Nessun campo.</p>}
+              {fields.length === 0 && <p className="text-sm text-muted-foreground">{t('Nessun campo.', 'No fields.')}</p>}
               {fields.map((f, idx) => (
                 <FieldEditor
                   key={f.id}
@@ -169,7 +170,7 @@ export function FormBuilder({ id, initial }: { id: string; initial: InitialState
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle>Azioni alla submission</CardTitle>
+                <CardTitle>{t('Azioni alla submission', 'Submission actions')}</CardTitle>
                 <div className="flex gap-1.5">
                   <Button size="sm" variant="outline" onClick={() => addAction('email')}>+ Email</Button>
                   <Button size="sm" variant="outline" onClick={() => addAction('autoresponder')}>+ Autoresponder</Button>
@@ -178,10 +179,10 @@ export function FormBuilder({ id, initial }: { id: string; initial: InitialState
                   <Button size="sm" variant="outline" onClick={() => addAction('redirect')}>+ Redirect</Button>
                 </div>
               </div>
-              <CardDescription>Eseguite in ordine. Le submission sono sempre salvate nel DB.</CardDescription>
+              <CardDescription>{t('Eseguite in ordine. Le submission sono sempre salvate nel DB.', 'Executed in order. Submissions are always saved to the DB.')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              {actions.length === 0 && <p className="text-sm text-muted-foreground">Solo salvataggio DB. Aggiungi un'azione per inviare email, webhook o iscrivere a Mailchimp.</p>}
+              {actions.length === 0 && <p className="text-sm text-muted-foreground">{t("Solo salvataggio DB. Aggiungi un'azione per inviare email, webhook o iscrivere a Mailchimp.", 'DB save only. Add an action to send emails, call webhooks or subscribe to Mailchimp.')}</p>}
               {actions.map((a, idx) => (
                 <ActionEditor key={idx} action={a} onChange={(p) => updateAction(idx, p)} onRemove={() => removeAction(idx)} />
               ))}
@@ -192,32 +193,32 @@ export function FormBuilder({ id, initial }: { id: string; initial: InitialState
         {/* ===== SETTINGS ===== */}
         <TabsContent value="settings">
           <Card>
-            <CardHeader><CardTitle>Impostazioni</CardTitle></CardHeader>
+            <CardHeader><CardTitle>{t('Impostazioni', 'Settings')}</CardTitle></CardHeader>
             <CardContent className="space-y-4 max-w-2xl">
-              <div className="space-y-2"><Label>Stato</Label>
+              <div className="space-y-2"><Label>{t('Stato', 'Status')}</Label>
                 <Select value={status} onValueChange={setStatus}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="ACTIVE">Attivo</SelectItem>
-                    <SelectItem value="PAUSED">In pausa</SelectItem>
-                    <SelectItem value="ARCHIVED">Archiviato</SelectItem>
+                    <SelectItem value="ACTIVE">{t('Attivo', 'Active')}</SelectItem>
+                    <SelectItem value="PAUSED">{t('In pausa', 'Paused')}</SelectItem>
+                    <SelectItem value="ARCHIVED">{t('Archiviato', 'Archived')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-2"><Label>Testo bottone</Label><Input value={settings.submitText} onChange={(e) => setS('submitText', e.target.value)} /></div>
-                <div className="space-y-2"><Label>Limite IP/24h (0 = no limit)</Label><Input type="number" value={settings.rateLimitPerIp} onChange={(e) => setS('rateLimitPerIp', Number(e.target.value))} /></div>
+                <div className="space-y-2"><Label>{t('Testo bottone', 'Button text')}</Label><Input value={settings.submitText} onChange={(e) => setS('submitText', e.target.value)} /></div>
+                <div className="space-y-2"><Label>{t('Limite IP/24h (0 = no limit)', 'IP limit/24h (0 = no limit)')}</Label><Input type="number" value={settings.rateLimitPerIp} onChange={(e) => setS('rateLimitPerIp', Number(e.target.value))} /></div>
               </div>
-              <div className="space-y-2"><Label>Messaggio successo</Label><Textarea rows={2} value={settings.successMessage} onChange={(e) => setS('successMessage', e.target.value)} /></div>
-              <div className="space-y-2"><Label>Messaggio errore</Label><Textarea rows={2} value={settings.errorMessage} onChange={(e) => setS('errorMessage', e.target.value)} /></div>
-              <div className="space-y-2"><Label>Redirect URL (opzionale)</Label><Input value={settings.redirectUrl ?? ''} onChange={(e) => setS('redirectUrl', e.target.value || undefined)} placeholder="/grazie" /></div>
-              <div className="space-y-2"><Label>Testo consenso GDPR</Label><Textarea rows={2} value={settings.gdprText ?? ''} onChange={(e) => setS('gdprText', e.target.value || undefined)} placeholder="Acconsento al trattamento..." /></div>
+              <div className="space-y-2"><Label>{t('Messaggio successo', 'Success message')}</Label><Textarea rows={2} value={settings.successMessage} onChange={(e) => setS('successMessage', e.target.value)} /></div>
+              <div className="space-y-2"><Label>{t('Messaggio errore', 'Error message')}</Label><Textarea rows={2} value={settings.errorMessage} onChange={(e) => setS('errorMessage', e.target.value)} /></div>
+              <div className="space-y-2"><Label>{t('Redirect URL (opzionale)', 'Redirect URL (optional)')}</Label><Input value={settings.redirectUrl ?? ''} onChange={(e) => setS('redirectUrl', e.target.value || undefined)} placeholder="/grazie" /></div>
+              <div className="space-y-2"><Label>{t('Testo consenso GDPR', 'GDPR consent text')}</Label><Textarea rows={2} value={settings.gdprText ?? ''} onChange={(e) => setS('gdprText', e.target.value || undefined)} placeholder={t('Acconsento al trattamento...', 'I consent to the processing...')} /></div>
               <div className="space-y-2"><Label>Anti-spam</Label>
                 <Select value={settings.captcha} onValueChange={(v) => setS('captcha', v as FormSettings['captcha'])}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">Nessuno</SelectItem>
-                    <SelectItem value="honeypot">Honeypot (campo nascosto)</SelectItem>
+                    <SelectItem value="none">{t('Nessuno', 'None')}</SelectItem>
+                    <SelectItem value="honeypot">{t('Honeypot (campo nascosto)', 'Honeypot (hidden field)')}</SelectItem>
                     <SelectItem value="recaptcha-v3">reCAPTCHA v3</SelectItem>
                   </SelectContent>
                 </Select>
@@ -236,8 +237,8 @@ export function FormBuilder({ id, initial }: { id: string; initial: InitialState
         <TabsContent value="embed">
           <Card>
             <CardHeader>
-              <CardTitle><Code2 className="h-5 w-5 inline mr-2" />Inserisci nel sito</CardTitle>
-              <CardDescription>Usa il widget &quot;Form&quot; nell'editor visuale e seleziona questo form, oppure embeddalo via API.</CardDescription>
+              <CardTitle><Code2 className="h-5 w-5 inline mr-2" />{t('Inserisci nel sito', 'Embed on site')}</CardTitle>
+              <CardDescription>{t('Usa il widget "Form" nell\'editor visuale e seleziona questo form, oppure embeddalo via API.', 'Use the "Form" widget in the visual editor and select this form, or embed it via API.')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -259,7 +260,7 @@ export function FormBuilder({ id, initial }: { id: string; initial: InitialState
           <Link href={`/admin/forms/${id}/submissions`}><Inbox /> {''} Submission</Link>
         </Button>
         <Button onClick={save} disabled={pending} size="lg">
-          {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />} Salva
+          {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />} {t('Salva', 'Save')}
         </Button>
       </div>
     </div>
@@ -298,7 +299,7 @@ function FieldEditor({
       {expanded && (
         <div className="p-3 grid grid-cols-2 gap-3">
           <div className="space-y-1.5">
-            <Label className="text-xs">Tipo</Label>
+            <Label className="text-xs">{t('Tipo', 'Type')}</Label>
             <Select value={field.type} onValueChange={(v) => onChange({ type: v as FormField['type'] })}>
               <SelectTrigger className="h-8"><SelectValue /></SelectTrigger>
               <SelectContent>
@@ -306,15 +307,15 @@ function FieldEditor({
               </SelectContent>
             </Select>
           </div>
-          <div className="space-y-1.5"><Label className="text-xs">Etichetta</Label><Input value={field.label} onChange={(e) => onChange({ label: e.target.value })} className="h-8" /></div>
-          <div className="space-y-1.5"><Label className="text-xs">Nome (chiave)</Label><Input value={field.name} onChange={(e) => onChange({ name: e.target.value })} className="h-8 font-mono" /></div>
+          <div className="space-y-1.5"><Label className="text-xs">{t('Etichetta', 'Label')}</Label><Input value={field.label} onChange={(e) => onChange({ label: e.target.value })} className="h-8" /></div>
+          <div className="space-y-1.5"><Label className="text-xs">{t('Nome (chiave)', 'Name (key)')}</Label><Input value={field.name} onChange={(e) => onChange({ name: e.target.value })} className="h-8 font-mono" /></div>
           <div className="space-y-1.5"><Label className="text-xs">Placeholder</Label><Input value={field.placeholder ?? ''} onChange={(e) => onChange({ placeholder: e.target.value })} className="h-8" /></div>
           <div className="space-y-1.5 col-span-2"><Label className="text-xs">Help text</Label><Input value={field.helpText ?? ''} onChange={(e) => onChange({ helpText: e.target.value })} className="h-8" /></div>
-          <div className="space-y-1.5"><Label className="text-xs">Larghezza (1-12)</Label><Input type="number" value={field.width} onChange={(e) => onChange({ width: Math.max(1, Math.min(12, Number(e.target.value))) })} className="h-8" /></div>
-          <div className="flex items-center justify-between p-2 border rounded col-span-1"><Label className="text-xs">Obbligatorio</Label><Switch checked={field.required} onCheckedChange={(v) => onChange({ required: v })} /></div>
+          <div className="space-y-1.5"><Label className="text-xs">{t('Larghezza (1-12)', 'Width (1-12)')}</Label><Input type="number" value={field.width} onChange={(e) => onChange({ width: Math.max(1, Math.min(12, Number(e.target.value))) })} className="h-8" /></div>
+          <div className="flex items-center justify-between p-2 border rounded col-span-1"><Label className="text-xs">{t('Obbligatorio', 'Required')}</Label><Switch checked={field.required} onCheckedChange={(v) => onChange({ required: v })} /></div>
           {hasOptions && (
             <div className="col-span-2 space-y-2">
-              <Label className="text-xs">Opzioni (una per riga: valore|etichetta)</Label>
+              <Label className="text-xs">{t('Opzioni (una per riga: valore|etichetta)', 'Options (one per line: value|label)')}</Label>
               <Textarea
                 value={(field.options ?? []).map((o) => `${o.value}|${o.label}`).join('\n')}
                 onChange={(e) => {
@@ -337,12 +338,12 @@ function FieldEditor({
 
 function ActionEditor({ action, onChange, onRemove }: { action: FormAction; onChange: (p: Record<string, unknown>) => void; onRemove: () => void }) {
   const labels: Record<string, string> = {
-    email: 'Email a destinatario',
+    email: t('Email a destinatario', 'Email to recipient'),
     autoresponder: 'Autoresponder',
     webhook: 'Webhook',
     mailchimp: 'Mailchimp',
     redirect: 'Redirect',
-    'db-only': 'Solo salva in DB',
+    'db-only': t('Solo salva in DB', 'Save to DB only'),
   };
   return (
     <div className="border rounded-lg p-3 bg-muted/20 space-y-3">
@@ -352,24 +353,24 @@ function ActionEditor({ action, onChange, onRemove }: { action: FormAction; onCh
       </div>
       {action.type === 'email' && (
         <div className="grid grid-cols-2 gap-2">
-          <div className="space-y-1.5 col-span-2"><Label className="text-xs">Destinatario</Label><Input value={action.to} onChange={(e) => onChange({ to: e.target.value })} placeholder="email@dominio.it" /></div>
+          <div className="space-y-1.5 col-span-2"><Label className="text-xs">{t('Destinatario', 'Recipient')}</Label><Input value={action.to} onChange={(e) => onChange({ to: e.target.value })} placeholder={t('email@dominio.it', 'email@domain.com')} /></div>
           <div className="space-y-1.5"><Label className="text-xs">CC</Label><Input value={action.cc ?? ''} onChange={(e) => onChange({ cc: e.target.value || undefined })} /></div>
-          <div className="space-y-1.5"><Label className="text-xs">Reply-To (campo)</Label><Input value={action.replyToField ?? ''} onChange={(e) => onChange({ replyToField: e.target.value || undefined })} placeholder="email" /></div>
-          <div className="space-y-1.5 col-span-2"><Label className="text-xs">Oggetto</Label><Input value={action.subject ?? ''} onChange={(e) => onChange({ subject: e.target.value })} placeholder="Submission da {form}" /></div>
-          <div className="space-y-1.5 col-span-2"><Label className="text-xs">Template (HTML, usa &#123;&#123;fieldName&#125;&#125;)</Label><Textarea rows={4} value={action.template ?? ''} onChange={(e) => onChange({ template: e.target.value || undefined })} className="font-mono text-xs" /></div>
+          <div className="space-y-1.5"><Label className="text-xs">{t('Reply-To (campo)', 'Reply-To (field)')}</Label><Input value={action.replyToField ?? ''} onChange={(e) => onChange({ replyToField: e.target.value || undefined })} placeholder="email" /></div>
+          <div className="space-y-1.5 col-span-2"><Label className="text-xs">{t('Oggetto', 'Subject')}</Label><Input value={action.subject ?? ''} onChange={(e) => onChange({ subject: e.target.value })} placeholder={t('Submission da {form}', 'Submission from {form}')} /></div>
+          <div className="space-y-1.5 col-span-2"><Label className="text-xs">{t('Template (HTML, usa {{fieldName}})', 'Template (HTML, use {{fieldName}})')}</Label><Textarea rows={4} value={action.template ?? ''} onChange={(e) => onChange({ template: e.target.value || undefined })} className="font-mono text-xs" /></div>
         </div>
       )}
       {action.type === 'autoresponder' && (
         <div className="grid grid-cols-2 gap-2">
-          <div className="space-y-1.5"><Label className="text-xs">Campo email destinatario</Label><Input value={action.toField} onChange={(e) => onChange({ toField: e.target.value })} placeholder="email" /></div>
-          <div className="space-y-1.5"><Label className="text-xs">Oggetto</Label><Input value={action.subject} onChange={(e) => onChange({ subject: e.target.value })} /></div>
-          <div className="space-y-1.5 col-span-2"><Label className="text-xs">Corpo (testo)</Label><Textarea rows={5} value={action.body} onChange={(e) => onChange({ body: e.target.value })} /></div>
+          <div className="space-y-1.5"><Label className="text-xs">{t('Campo email destinatario', 'Recipient email field')}</Label><Input value={action.toField} onChange={(e) => onChange({ toField: e.target.value })} placeholder="email" /></div>
+          <div className="space-y-1.5"><Label className="text-xs">{t('Oggetto', 'Subject')}</Label><Input value={action.subject} onChange={(e) => onChange({ subject: e.target.value })} /></div>
+          <div className="space-y-1.5 col-span-2"><Label className="text-xs">{t('Corpo (testo)', 'Body (text)')}</Label><Textarea rows={5} value={action.body} onChange={(e) => onChange({ body: e.target.value })} /></div>
         </div>
       )}
       {action.type === 'webhook' && (
         <div className="grid grid-cols-2 gap-2">
           <div className="space-y-1.5"><Label className="text-xs">URL</Label><Input value={action.url} onChange={(e) => onChange({ url: e.target.value })} placeholder="https://..." /></div>
-          <div className="space-y-1.5"><Label className="text-xs">Metodo</Label>
+          <div className="space-y-1.5"><Label className="text-xs">{t('Metodo', 'Method')}</Label>
             <Select value={action.method} onValueChange={(v) => onChange({ method: v })}>
               <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
               <SelectContent><SelectItem value="POST">POST</SelectItem><SelectItem value="PUT">PUT</SelectItem></SelectContent>
@@ -381,12 +382,12 @@ function ActionEditor({ action, onChange, onRemove }: { action: FormAction; onCh
         <div className="grid grid-cols-2 gap-2">
           <div className="space-y-1.5"><Label className="text-xs">API Key</Label><Input type="password" value={action.apiKey} onChange={(e) => onChange({ apiKey: e.target.value })} /></div>
           <div className="space-y-1.5"><Label className="text-xs">List ID</Label><Input value={action.listId} onChange={(e) => onChange({ listId: e.target.value })} /></div>
-          <div className="space-y-1.5"><Label className="text-xs">Campo email</Label><Input value={action.emailField} onChange={(e) => onChange({ emailField: e.target.value })} /></div>
-          <div className="space-y-1.5"><Label className="text-xs">Campo nome (FNAME)</Label><Input value={action.nameField ?? ''} onChange={(e) => onChange({ nameField: e.target.value || undefined })} /></div>
+          <div className="space-y-1.5"><Label className="text-xs">{t('Campo email', 'Email field')}</Label><Input value={action.emailField} onChange={(e) => onChange({ emailField: e.target.value })} /></div>
+          <div className="space-y-1.5"><Label className="text-xs">{t('Campo nome (FNAME)', 'Name field (FNAME)')}</Label><Input value={action.nameField ?? ''} onChange={(e) => onChange({ nameField: e.target.value || undefined })} /></div>
         </div>
       )}
       {action.type === 'redirect' && (
-        <div className="space-y-1.5"><Label className="text-xs">URL redirect</Label><Input value={action.url} onChange={(e) => onChange({ url: e.target.value })} /></div>
+        <div className="space-y-1.5"><Label className="text-xs">{t('URL redirect', 'Redirect URL')}</Label><Input value={action.url} onChange={(e) => onChange({ url: e.target.value })} /></div>
       )}
     </div>
   );

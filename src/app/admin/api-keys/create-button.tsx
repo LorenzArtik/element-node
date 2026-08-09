@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ALL_SCOPES } from '@/lib/api-key';
+import { t } from '@/lib/admin-i18n';
 
 export function CreateApiKeyButton() {
   const [open, setOpen] = useState(false);
@@ -25,8 +26,8 @@ export function CreateApiKeyButton() {
   }
 
   async function create() {
-    if (!name.trim()) return toast.error('Inserisci un nome');
-    if (scopes.length === 0) return toast.error('Seleziona almeno uno scope');
+    if (!name.trim()) return toast.error(t('Inserisci un nome', 'Enter a name'));
+    if (scopes.length === 0) return toast.error(t('Seleziona almeno uno scope', 'Select at least one scope'));
     setLoading(true);
     const payload: Record<string, unknown> = { name, scopes };
     if (expiresInDays) payload.expiresInDays = Number(expiresInDays);
@@ -35,7 +36,7 @@ export function CreateApiKeyButton() {
       body: JSON.stringify(payload),
     });
     setLoading(false);
-    if (!res.ok) return toast.error('Errore creazione');
+    if (!res.ok) return toast.error(t('Errore creazione', 'Creation error'));
     const data = await res.json();
     setCreated({ name: data.name, plaintext: data.plaintext });
     router.refresh();
@@ -45,7 +46,7 @@ export function CreateApiKeyButton() {
     if (!created) return;
     navigator.clipboard.writeText(created.plaintext);
     setCopied(true);
-    toast.success('Copiata');
+    toast.success(t('Copiata', 'Copied'));
     setTimeout(() => setCopied(false), 2000);
   }
 
@@ -60,21 +61,21 @@ export function CreateApiKeyButton() {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}><Plus className="h-4 w-4" /> Nuova API key</Button>
+      <Button onClick={() => setOpen(true)}><Plus className="h-4 w-4" /> {t('Nuova API key', 'New API key')}</Button>
       <Dialog open={open} onOpenChange={(v) => { if (!v) close(); else setOpen(v); }}>
         <DialogContent className="max-w-2xl">
           {!created ? (
             <>
               <DialogHeader>
-                <DialogTitle>Nuova API key</DialogTitle>
+                <DialogTitle>{t('Nuova API key', 'New API key')}</DialogTitle>
                 <DialogDescription>
-                  Le API key permettono accesso programmatico al CMS via header <code>Authorization: Bearer ...</code>
+                  {t('Le API key permettono accesso programmatico al CMS via header', 'API keys allow programmatic access to the CMS via the header')} <code>Authorization: Bearer ...</code>
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
                 <div className="space-y-1.5">
-                  <Label>Nome (descrittivo)</Label>
-                  <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="es. Claude Code site builder" autoFocus />
+                  <Label>{t('Nome (descrittivo)', 'Name (descriptive)')}</Label>
+                  <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={t('es. Claude Code site builder', 'e.g. Claude Code site builder')} autoFocus />
                 </div>
                 <div className="space-y-1.5">
                   <Label>Scopes</Label>
@@ -89,24 +90,24 @@ export function CreateApiKeyButton() {
                   </div>
                 </div>
                 <div className="space-y-1.5">
-                  <Label>Scadenza (giorni, vuoto = mai)</Label>
+                  <Label>{t('Scadenza (giorni, vuoto = mai)', 'Expiry (days, empty = never)')}</Label>
                   <Input type="number" value={expiresInDays} onChange={(e) => setExpiresInDays(e.target.value)} placeholder="365" />
                 </div>
               </div>
               <DialogFooter>
-                <Button variant="outline" onClick={close}>Annulla</Button>
+                <Button variant="outline" onClick={close}>{t('Annulla', 'Cancel')}</Button>
                 <Button onClick={create} disabled={loading}>
-                  {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Crea API key'}
+                  {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : t('Crea API key', 'Create API key')}
                 </Button>
               </DialogFooter>
             </>
           ) : (
             <>
               <DialogHeader>
-                <DialogTitle>API key creata</DialogTitle>
+                <DialogTitle>{t('API key creata', 'API key created')}</DialogTitle>
                 <DialogDescription className="flex items-start gap-2 text-amber-600 dark:text-amber-400">
                   <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
-                  <span>Questa è l&apos;UNICA volta che vedrai la chiave. Copiala ora.</span>
+                  <span>{t("Questa è l'UNICA volta che vedrai la chiave. Copiala ora.", 'This is the ONLY time you will see the key. Copy it now.')}</span>
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-3">
@@ -120,11 +121,11 @@ export function CreateApiKeyButton() {
                   </div>
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  Esempio uso: <code className="bg-muted px-1.5 py-0.5 rounded">curl -H &quot;Authorization: Bearer {created.plaintext.slice(0, 15)}…&quot; http://localhost:3000/api/admin/export</code>
+                  {t('Esempio uso:', 'Example usage:')} <code className="bg-muted px-1.5 py-0.5 rounded">curl -H &quot;Authorization: Bearer {created.plaintext.slice(0, 15)}…&quot; http://localhost:3000/api/admin/export</code>
                 </div>
               </div>
               <DialogFooter>
-                <Button onClick={close}>Ho salvato la chiave</Button>
+                <Button onClick={close}>{t('Ho salvato la chiave', 'I saved the key')}</Button>
               </DialogFooter>
             </>
           )}

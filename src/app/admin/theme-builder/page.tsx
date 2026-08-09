@@ -7,6 +7,7 @@ import { Plus, PanelTop, PanelBottom, Edit3, Trash2, Settings2 } from 'lucide-re
 import { formatDate } from '@/lib/utils';
 import { CreateBlockButton } from './create-button';
 import { DeleteBlockButton } from './delete-button';
+import { t } from '@/lib/admin-i18n';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,7 +23,7 @@ export default async function ThemeBuilderPage() {
     <div className="p-8 space-y-8">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Theme Builder</h1>
-        <p className="text-muted-foreground">Crea header e footer globali con regole di applicazione</p>
+        <p className="text-muted-foreground">{t('Crea header e footer globali con regole di applicazione', 'Create global headers and footers with display rules')}</p>
       </div>
 
       <BlockGroup
@@ -30,7 +31,7 @@ export default async function ThemeBuilderPage() {
         kind="HEADER"
         icon={PanelTop}
         blocks={headers}
-        emptyHint="Crea un header per definire la barra superiore di navigazione."
+        emptyHint={t('Crea un header per definire la barra superiore di navigazione.', 'Create a header to define the top navigation bar.')}
       />
 
       <BlockGroup
@@ -38,7 +39,7 @@ export default async function ThemeBuilderPage() {
         kind="FOOTER"
         icon={PanelBottom}
         blocks={footers}
-        emptyHint="Crea un footer per definire l'area inferiore del sito."
+        emptyHint={t("Crea un footer per definire l'area inferiore del sito.", 'Create a footer to define the bottom area of the site.')}
       />
     </div>
   );
@@ -74,15 +75,15 @@ function BlockGroup({
               <div key={b.id} className="grid grid-cols-[1fr_auto_auto_auto_auto] gap-4 items-center px-6 py-4 hover:bg-muted/40 transition-colors">
                 <div>
                   <div className="font-medium">{b.name}</div>
-                  <div className="text-xs text-muted-foreground">Aggiornato {formatDate(b.updatedAt)}</div>
+                  <div className="text-xs text-muted-foreground">{t('Aggiornato', 'Updated')} {formatDate(b.updatedAt)}</div>
                 </div>
-                <Badge variant="outline">Priorità {b.priority}</Badge>
+                <Badge variant="outline">{t('Priorità', 'Priority')} {b.priority}</Badge>
                 <Badge variant={b.status === 'PUBLISHED' ? 'success' : 'outline'}>{b.status}</Badge>
                 <div className="flex gap-1">
-                  <Button asChild variant="ghost" size="icon" title="Modifica conditions">
+                  <Button asChild variant="ghost" size="icon" title={t('Modifica conditions', 'Edit conditions')}>
                     <Link href={`/admin/theme-builder/${b.id}/settings`}><Settings2 className="h-4 w-4" /></Link>
                   </Button>
-                  <Button asChild variant="ghost" size="icon" title="Apri editor">
+                  <Button asChild variant="ghost" size="icon" title={t('Apri editor', 'Open editor')}>
                     <Link href={`/editor/theme-block/${b.id}`}><Edit3 className="h-4 w-4" /></Link>
                   </Button>
                   <DeleteBlockButton id={b.id} name={b.name} />

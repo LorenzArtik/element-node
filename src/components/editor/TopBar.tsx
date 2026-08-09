@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEditor } from '@/lib/editor-store';
+import { t } from '@/lib/admin-i18n';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -66,7 +67,7 @@ export function TopBar({
 
   return (
     <div className="h-14 bg-card border-b flex items-center px-3 gap-2 shrink-0">
-      <Button asChild variant="ghost" size="icon" title="Torna indietro">
+      <Button asChild variant="ghost" size="icon" title={t('Torna indietro', 'Go back')}>
         <Link href={
           entityKind === 'theme-block' ? '/admin/theme-builder'
           : entityKind === 'post' ? `/admin/posts?type=${postTypeSlug ?? 'post'}`
@@ -85,7 +86,7 @@ export function TopBar({
         className="bg-transparent text-sm font-semibold focus:outline-none focus:bg-muted rounded px-2 py-1 max-w-xs"
       />
       <Badge variant={status === 'PUBLISHED' ? 'success' : 'outline'}>{status}</Badge>
-      {isDirty && <Badge variant="destructive">Non salvato</Badge>}
+      {isDirty && <Badge variant="destructive">{t('Non salvato', 'Unsaved')}</Badge>}
 
       <div className="flex-1 flex justify-center">
         <div className="flex items-center bg-muted rounded-lg p-1">
@@ -116,10 +117,10 @@ export function TopBar({
         </div>
       </div>
 
-      <Button variant="ghost" size="icon" onClick={undo} disabled={history === 0} title="Annulla (⌘Z)">
+      <Button variant="ghost" size="icon" onClick={undo} disabled={history === 0} title={t('Annulla (⌘Z)', 'Undo (⌘Z)')}>
         <Undo2 className="h-4 w-4" />
       </Button>
-      <Button variant="ghost" size="icon" onClick={redo} disabled={future === 0} title="Ripeti (⌘⇧Z)">
+      <Button variant="ghost" size="icon" onClick={redo} disabled={future === 0} title={t('Ripeti (⌘⇧Z)', 'Redo (⌘⇧Z)')}>
         <Redo2 className="h-4 w-4" />
       </Button>
 
@@ -131,7 +132,7 @@ export function TopBar({
           size="sm"
           onClick={onToggleNavigator}
           className="gap-2"
-          title="Navigatore (struttura pagina)"
+          title={t('Navigatore (struttura pagina)', 'Navigator (page structure)')}
         >
           <Layers className="h-4 w-4" />
         </Button>
@@ -142,7 +143,7 @@ export function TopBar({
           size="sm"
           onClick={onTogglePageSettings}
           className="gap-2"
-          title="Impostazioni pagina"
+          title={t('Impostazioni pagina', 'Page settings')}
         >
           <Settings2 className="h-4 w-4" />
         </Button>
@@ -169,23 +170,23 @@ export function TopBar({
       {entityKind === 'page' && (
         <Button asChild variant="outline" size="sm">
           <Link href={`/${slug === 'home' ? '' : slug}`} target="_blank">
-            <Eye className="h-4 w-4" /> Anteprima
+            <Eye className="h-4 w-4" /> {t('Anteprima', 'Preview')}
           </Link>
         </Button>
       )}
       {entityKind === 'post' && postTypeSlug && (
         <Button asChild variant="outline" size="sm">
           <Link href={`/${postTypeSlug}/${slug}`} target="_blank">
-            <Eye className="h-4 w-4" /> Anteprima
+            <Eye className="h-4 w-4" /> {t('Anteprima', 'Preview')}
           </Link>
         </Button>
       )}
 
       <Button variant="outline" size="sm" onClick={onSave} disabled={saving}>
-        {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />} Salva
+        {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />} {t('Salva', 'Save')}
       </Button>
       <Button size="sm" onClick={onPublish} disabled={saving} className="gap-2">
-        {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Globe className="h-4 w-4" />} Pubblica
+        {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Globe className="h-4 w-4" />} {t('Pubblica', 'Publish')}
       </Button>
     </div>
   );

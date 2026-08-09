@@ -7,6 +7,7 @@ import { Plus, Edit3, Inbox, Trash2 } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { CreateFormButton } from './create-button';
 import { DeleteFormButton } from './delete-button';
+import { t } from '@/lib/admin-i18n';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,7 +22,7 @@ export default async function FormsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Form</h1>
-          <p className="text-muted-foreground">{forms.length} form configurati</p>
+          <p className="text-muted-foreground">{t(`${forms.length} form configurati`, `${forms.length} forms configured`)}</p>
         </div>
         <CreateFormButton />
       </div>
@@ -29,17 +30,17 @@ export default async function FormsPage() {
       {forms.length === 0 ? (
         <Card className="p-16 text-center">
           <Inbox className="h-12 w-12 mx-auto mb-3 text-muted-foreground" />
-          <p className="text-muted-foreground">Nessun form. Creane uno per gestire contatti, newsletter, lead generation.</p>
+          <p className="text-muted-foreground">{t('Nessun form. Creane uno per gestire contatti, newsletter, lead generation.', 'No forms. Create one to manage contacts, newsletters, lead generation.')}</p>
         </Card>
       ) : (
         <Card>
           <div className="divide-y">
             <div className="grid grid-cols-[1fr_120px_120px_180px_140px] gap-4 px-6 py-3 text-xs font-medium uppercase text-muted-foreground bg-muted/40">
-              <div>Nome</div>
-              <div>Stato</div>
+              <div>{t('Nome', 'Name')}</div>
+              <div>{t('Stato', 'Status')}</div>
               <div>Submission</div>
-              <div>Aggiornato</div>
-              <div className="text-right">Azioni</div>
+              <div>{t('Aggiornato', 'Updated')}</div>
+              <div className="text-right">{t('Azioni', 'Actions')}</div>
             </div>
             {forms.map((f) => (
               <div key={f.id} className="grid grid-cols-[1fr_120px_120px_180px_140px] gap-4 items-center px-6 py-4 hover:bg-muted/40">
@@ -56,7 +57,7 @@ export default async function FormsPage() {
                   <Button asChild variant="ghost" size="icon" title="Submission">
                     <Link href={`/admin/forms/${f.id}/submissions`}><Inbox className="h-4 w-4" /></Link>
                   </Button>
-                  <Button asChild variant="ghost" size="icon" title="Modifica">
+                  <Button asChild variant="ghost" size="icon" title={t('Modifica', 'Edit')}>
                     <Link href={`/admin/forms/${f.id}`}><Edit3 className="h-4 w-4" /></Link>
                   </Button>
                   <DeleteFormButton id={f.id} name={f.name} />

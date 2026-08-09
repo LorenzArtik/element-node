@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Activity, CheckCircle2, XCircle, AlertTriangle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { t } from '@/lib/admin-i18n';
 
 interface CheckResult { ok: boolean; ms: number; error?: string; meta?: Record<string, unknown> }
 interface Health {
@@ -26,7 +27,7 @@ export function HealthWidget() {
 
   useEffect(() => { load(); }, []);
 
-  if (!data && loading) return <Card><CardContent className="p-6 text-sm text-muted-foreground">Caricamento health...</CardContent></Card>;
+  if (!data && loading) return <Card><CardContent className="p-6 text-sm text-muted-foreground">{t('Caricamento health...', 'Loading health...')}</CardContent></Card>;
   if (!data) return null;
 
   return (
@@ -62,13 +63,13 @@ function formatUptime(s: number): string {
   if (s < 60) return `${s}s`;
   if (s < 3600) return `${Math.floor(s / 60)}m`;
   if (s < 86400) return `${Math.floor(s / 3600)}h`;
-  return `${Math.floor(s / 86400)}g`;
+  return t(`${Math.floor(s / 86400)}g`, `${Math.floor(s / 86400)}d`);
 }
 
 function formatMeta(key: string, c: CheckResult): string {
-  if (key === 'db' && c.meta) return `${c.ms}ms · ${c.meta.pages} pagine`;
+  if (key === 'db' && c.meta) return t(`${c.ms}ms · ${c.meta.pages} pagine`, `${c.ms}ms · ${c.meta.pages} pages`);
   if (key === 'memory' && c.meta) return `${c.meta.heapUsedMB}MB`;
   if (key === 'email' && c.meta) return c.meta.mode as string;
-  if (key === 'ai') return c.ok ? 'configurato' : 'non configurato';
-  return c.ok ? 'OK' : (c.error ?? 'errore');
+  if (key === 'ai') return c.ok ? t('configurato', 'configured') : t('non configurato', 'not configured');
+  return c.ok ? 'OK' : (c.error ?? t('errore', 'error'));
 }

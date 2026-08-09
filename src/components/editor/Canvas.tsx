@@ -7,6 +7,7 @@ import type { ColumnNode, ElementNode, SectionNode } from '@/lib/widgets-schema'
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { renderWidget } from './widgets/render';
 import { isWidgetLocked, requiredPlanFor } from '@/lib/license-features';
+import { t } from '@/lib/admin-i18n';
 import { useLicenseTier } from '@/lib/use-license-tier';
 import { WIDGETS } from '@/lib/widgets-schema';
 import * as LucideIcons from 'lucide-react';
@@ -82,7 +83,7 @@ export function Canvas() {
                 onClick={() => addSection(1)}
                 className="w-full py-5 border-2 border-dashed border-gray-200 hover:border-[#92003b] hover:bg-[#92003b]/5 text-sm text-muted-foreground hover:text-[#92003b] flex items-center justify-center gap-2 transition-colors"
               >
-                <Plus className="h-4 w-4" /> Aggiungi nuova sezione
+                <Plus className="h-4 w-4" /> {t('Aggiungi nuova sezione', 'Add new section')}
               </button>
             )}
           </div>
@@ -108,11 +109,11 @@ function EmptyDropZone({ onAdd }: { onAdd: () => void }) {
         <Plus className="h-8 w-8" />
       </div>
       <div>
-        <h3 className="text-2xl font-bold mb-1">Inizia a costruire</h3>
-        <p className="text-muted-foreground">Trascina un widget o una struttura qui.</p>
+        <h3 className="text-2xl font-bold mb-1">{t('Inizia a costruire', 'Start building')}</h3>
+        <p className="text-muted-foreground">{t('Trascina un widget o una struttura qui.', 'Drag a widget or a structure here.')}</p>
       </div>
       <button onClick={onAdd} className="px-5 py-2.5 rounded-lg bg-[#92003b] text-white font-medium hover:bg-[#92003b]/90">
-        Aggiungi nuova sezione
+        {t('Aggiungi nuova sezione', 'Add new section')}
       </button>
     </div>
   );
@@ -191,20 +192,20 @@ function SectionView({ section, index }: { section: SectionNode; index: number }
         >
           {/* Section toolbar */}
           <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-30 opacity-0 group-hover/section:opacity-100 transition-opacity flex items-center bg-[#92003b] text-white text-xs rounded-md overflow-hidden shadow-lg">
-            <button {...attributes} {...listeners} className="px-2 py-1.5 hover:bg-black/20 cursor-grab active:cursor-grabbing" title="Trascina sezione" onClick={(e) => e.stopPropagation()}>
+            <button {...attributes} {...listeners} className="px-2 py-1.5 hover:bg-black/20 cursor-grab active:cursor-grabbing" title={t('Trascina sezione', 'Drag section')} onClick={(e) => e.stopPropagation()}>
               <Columns className="h-3.5 w-3.5" />
             </button>
-            <span className="px-2 py-1.5 border-l border-white/20 font-medium">Sezione</span>
-            <button className="px-2 py-1.5 hover:bg-black/20 border-l border-white/20" title="Aggiungi sezione sopra" onClick={(e) => { e.stopPropagation(); addSectionAtIndex(1, index); }}>
+            <span className="px-2 py-1.5 border-l border-white/20 font-medium">{t('Sezione', 'Section')}</span>
+            <button className="px-2 py-1.5 hover:bg-black/20 border-l border-white/20" title={t('Aggiungi sezione sopra', 'Add section above')} onClick={(e) => { e.stopPropagation(); addSectionAtIndex(1, index); }}>
               <Plus className="h-3.5 w-3.5" />
             </button>
-            <button className="px-2 py-1.5 hover:bg-black/20 border-l border-white/20" title="Aggiungi sezione sotto" onClick={(e) => { e.stopPropagation(); addSectionAtIndex(1, index + 1); }}>
+            <button className="px-2 py-1.5 hover:bg-black/20 border-l border-white/20" title={t('Aggiungi sezione sotto', 'Add section below')} onClick={(e) => { e.stopPropagation(); addSectionAtIndex(1, index + 1); }}>
               <ArrowDown className="h-3.5 w-3.5" />
             </button>
-            <button className="px-2 py-1.5 hover:bg-black/20 border-l border-white/20" title="Duplica" onClick={(e) => { e.stopPropagation(); duplicateSection(section.id); }}>
+            <button className="px-2 py-1.5 hover:bg-black/20 border-l border-white/20" title={t('Duplica', 'Duplicate')} onClick={(e) => { e.stopPropagation(); duplicateSection(section.id); }}>
               <Copy className="h-3.5 w-3.5" />
             </button>
-            <button className="px-2 py-1.5 hover:bg-black/20 border-l border-white/20" title="Elimina" onClick={(e) => { e.stopPropagation(); removeSection(section.id); }}>
+            <button className="px-2 py-1.5 hover:bg-black/20 border-l border-white/20" title={t('Elimina', 'Delete')} onClick={(e) => { e.stopPropagation(); removeSection(section.id); }}>
               <Trash2 className="h-3.5 w-3.5" />
             </button>
           </div>
@@ -218,43 +219,43 @@ function SectionView({ section, index }: { section: SectionNode; index: number }
       </ContextMenuTrigger>
 
       <ContextMenuContent>
-        <ContextMenuLabel>Sezione</ContextMenuLabel>
+        <ContextMenuLabel>{t('Sezione', 'Section')}</ContextMenuLabel>
         <ContextMenuItem onSelect={() => addColumn(section.id)}>
-          <Plus className="h-4 w-4" />Aggiungi colonna
+          <Plus className="h-4 w-4" />{t('Aggiungi colonna', 'Add column')}
         </ContextMenuItem>
         <ContextMenuItem onSelect={() => duplicateSection(section.id)}>
-          <Copy className="h-4 w-4" />Duplica
+          <Copy className="h-4 w-4" />{t('Duplica', 'Duplicate')}
         </ContextMenuItem>
         <ContextMenuItem onSelect={() => copyToClipboard('section', { sectionId: section.id })}>
-          <ClipboardCopy className="h-4 w-4" />Copia
+          <ClipboardCopy className="h-4 w-4" />{t('Copia', 'Copy')}
         </ContextMenuItem>
         <ContextMenuItem
           disabled={!clipboard}
           onSelect={() => pasteFromClipboard({ afterIndex: undefined })}
         >
-          <Clipboard className="h-4 w-4" />Incolla {clipboard ? `(${clipboard.kind})` : ''}
+          <Clipboard className="h-4 w-4" />{t('Incolla', 'Paste')} {clipboard ? `(${clipboard.kind})` : ''}
         </ContextMenuItem>
         <ContextMenuSeparator />
-        <ContextMenuLabel>Stile</ContextMenuLabel>
+        <ContextMenuLabel>{t('Stile', 'Style')}</ContextMenuLabel>
         <ContextMenuItem onSelect={() => copyStyle({ kind: 'section', sectionId: section.id })}>
-          <Copy className="h-4 w-4" />Copia stile <span className="ml-auto text-[10px] text-muted-foreground">⌘⌥C</span>
+          <Copy className="h-4 w-4" />{t('Copia stile', 'Copy style')} <span className="ml-auto text-[10px] text-muted-foreground">⌘⌥C</span>
         </ContextMenuItem>
         <ContextMenuItem
           disabled={!styleClipboard || styleClipboard.kind !== 'section'}
           onSelect={() => pasteStyle({ kind: 'section', sectionId: section.id })}
         >
-          <Clipboard className="h-4 w-4" />Incolla stile <span className="ml-auto text-[10px] text-muted-foreground">⌘⌥V</span>
+          <Clipboard className="h-4 w-4" />{t('Incolla stile', 'Paste style')} <span className="ml-auto text-[10px] text-muted-foreground">⌘⌥V</span>
         </ContextMenuItem>
-        <ContextMenuItem onSelect={() => { if (confirm('Reset stile ai default?')) resetStyle({ kind: 'section', sectionId: section.id }); }}>
-          <RotateCcw className="h-4 w-4" />Reset stile <span className="ml-auto text-[10px] text-muted-foreground">⌘⌥R</span>
+        <ContextMenuItem onSelect={() => { if (confirm(t('Reset stile ai default?', 'Reset style to defaults?'))) resetStyle({ kind: 'section', sectionId: section.id }); }}>
+          <RotateCcw className="h-4 w-4" />{t('Reset stile', 'Reset style')} <span className="ml-auto text-[10px] text-muted-foreground">⌘⌥R</span>
         </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem onSelect={() => select({ kind: 'section', sectionId: section.id })}>
-          <Settings2 className="h-4 w-4" />Impostazioni
+          <Settings2 className="h-4 w-4" />{t('Impostazioni', 'Settings')}
         </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem destructive onSelect={() => removeSection(section.id)}>
-          <Trash2 className="h-4 w-4" />Elimina sezione
+          <Trash2 className="h-4 w-4" />{t('Elimina sezione', 'Delete section')}
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
@@ -310,10 +311,10 @@ function ColumnView({ sectionId, column }: { sectionId: string; column: ColumnNo
           {/* Column toolbar - top right */}
           <div className="absolute top-1 right-1 z-20 opacity-0 group-hover/col:opacity-100 transition-opacity flex items-center bg-[#61ce70] text-white text-[10px] rounded overflow-hidden shadow">
             <span className="px-1.5 py-1 font-medium">Col {column.width}%</span>
-            <button className="px-1.5 py-1 hover:bg-black/20 border-l border-white/20" title="Duplica colonna" onClick={(e) => { e.stopPropagation(); duplicateColumn(sectionId, column.id); }}>
+            <button className="px-1.5 py-1 hover:bg-black/20 border-l border-white/20" title={t('Duplica colonna', 'Duplicate column')} onClick={(e) => { e.stopPropagation(); duplicateColumn(sectionId, column.id); }}>
               <Copy className="h-3 w-3" />
             </button>
-            <button className="px-1.5 py-1 hover:bg-black/20 border-l border-white/20" title="Elimina colonna" onClick={(e) => { e.stopPropagation(); removeColumn(sectionId, column.id); }}>
+            <button className="px-1.5 py-1 hover:bg-black/20 border-l border-white/20" title={t('Elimina colonna', 'Delete column')} onClick={(e) => { e.stopPropagation(); removeColumn(sectionId, column.id); }}>
               <Trash2 className="h-3 w-3" />
             </button>
           </div>
@@ -322,7 +323,7 @@ function ColumnView({ sectionId, column }: { sectionId: string; column: ColumnNo
             <div className={`border-2 border-dashed rounded-lg p-8 text-center text-xs transition-colors ${
               isOver ? 'border-[#92003b] bg-[#92003b]/5 text-[#92003b]' : 'border-gray-300 text-muted-foreground'
             }`}>
-              {isOver ? 'Rilascia qui' : 'Trascina widget qui'}
+              {isOver ? t('Rilascia qui', 'Drop here') : t('Trascina widget qui', 'Drag a widget here')}
             </div>
           ) : (
             <>
@@ -339,40 +340,40 @@ function ColumnView({ sectionId, column }: { sectionId: string; column: ColumnNo
       </ContextMenuTrigger>
 
       <ContextMenuContent>
-        <ContextMenuLabel>Colonna ({column.width}%)</ContextMenuLabel>
+        <ContextMenuLabel>{t('Colonna', 'Column')} ({column.width}%)</ContextMenuLabel>
         <ContextMenuItem onSelect={() => duplicateColumn(sectionId, column.id)}>
-          <Copy className="h-4 w-4" />Duplica colonna
+          <Copy className="h-4 w-4" />{t('Duplica colonna', 'Duplicate column')}
         </ContextMenuItem>
         <ContextMenuItem onSelect={() => copyToClipboard('column', { sectionId, columnId: column.id })}>
-          <ClipboardCopy className="h-4 w-4" />Copia colonna
+          <ClipboardCopy className="h-4 w-4" />{t('Copia colonna', 'Copy column')}
         </ContextMenuItem>
         <ContextMenuItem
           disabled={!clipboard}
           onSelect={() => pasteFromClipboard({ sectionId, columnId: column.id })}
         >
-          <Clipboard className="h-4 w-4" />Incolla {clipboard ? `(${clipboard.kind})` : ''}
+          <Clipboard className="h-4 w-4" />{t('Incolla', 'Paste')} {clipboard ? `(${clipboard.kind})` : ''}
         </ContextMenuItem>
         <ContextMenuSeparator />
-        <ContextMenuLabel>Stile</ContextMenuLabel>
+        <ContextMenuLabel>{t('Stile', 'Style')}</ContextMenuLabel>
         <ContextMenuItem onSelect={() => copyStyle({ kind: 'column', sectionId, columnId: column.id })}>
-          <Copy className="h-4 w-4" />Copia stile <span className="ml-auto text-[10px] text-muted-foreground">⌘⌥C</span>
+          <Copy className="h-4 w-4" />{t('Copia stile', 'Copy style')} <span className="ml-auto text-[10px] text-muted-foreground">⌘⌥C</span>
         </ContextMenuItem>
         <ContextMenuItem
           disabled={!styleClipboard || styleClipboard.kind !== 'column'}
           onSelect={() => pasteStyle({ kind: 'column', sectionId, columnId: column.id })}
         >
-          <Clipboard className="h-4 w-4" />Incolla stile <span className="ml-auto text-[10px] text-muted-foreground">⌘⌥V</span>
+          <Clipboard className="h-4 w-4" />{t('Incolla stile', 'Paste style')} <span className="ml-auto text-[10px] text-muted-foreground">⌘⌥V</span>
         </ContextMenuItem>
-        <ContextMenuItem onSelect={() => { if (confirm('Reset stile ai default?')) resetStyle({ kind: 'column', sectionId, columnId: column.id }); }}>
-          <RotateCcw className="h-4 w-4" />Reset stile <span className="ml-auto text-[10px] text-muted-foreground">⌘⌥R</span>
+        <ContextMenuItem onSelect={() => { if (confirm(t('Reset stile ai default?', 'Reset style to defaults?'))) resetStyle({ kind: 'column', sectionId, columnId: column.id }); }}>
+          <RotateCcw className="h-4 w-4" />{t('Reset stile', 'Reset style')} <span className="ml-auto text-[10px] text-muted-foreground">⌘⌥R</span>
         </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem onSelect={() => select({ kind: 'column', sectionId, columnId: column.id })}>
-          <Settings2 className="h-4 w-4" />Impostazioni
+          <Settings2 className="h-4 w-4" />{t('Impostazioni', 'Settings')}
         </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem destructive onSelect={() => removeColumn(sectionId, column.id)}>
-          <Trash2 className="h-4 w-4" />Elimina colonna
+          <Trash2 className="h-4 w-4" />{t('Elimina colonna', 'Delete column')}
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
@@ -448,17 +449,17 @@ function ElementView({ sectionId, columnId, element, index }: { sectionId: strin
           {customCss && <style dangerouslySetInnerHTML={{ __html: customCss }} />}
 
           <div className={`absolute -top-2.5 left-2 z-20 transition-opacity flex items-center bg-[#2196f3] text-white text-[11px] rounded overflow-hidden shadow ${isSelected ? 'opacity-100' : 'opacity-0 group-hover/el:opacity-100'}`}>
-            <button {...attributes} {...listeners} className="px-1.5 py-1 hover:bg-black/20 cursor-grab active:cursor-grabbing" title="Trascina" onClick={(e) => e.stopPropagation()}>
+            <button {...attributes} {...listeners} className="px-1.5 py-1 hover:bg-black/20 cursor-grab active:cursor-grabbing" title={t('Trascina', 'Drag')} onClick={(e) => e.stopPropagation()}>
               <GripVertical className="h-3 w-3" />
             </button>
             <span className="px-1.5 py-1 border-l border-white/20 flex items-center gap-1 font-medium">
               <Icon className="h-3 w-3" />
               {desc?.label ?? element.type}
             </span>
-            <button className="px-1.5 py-1 hover:bg-black/20 border-l border-white/20" onClick={(e) => { e.stopPropagation(); duplicateElement(sectionId, columnId, element.id); }} title="Duplica">
+            <button className="px-1.5 py-1 hover:bg-black/20 border-l border-white/20" onClick={(e) => { e.stopPropagation(); duplicateElement(sectionId, columnId, element.id); }} title={t('Duplica', 'Duplicate')}>
               <Copy className="h-3 w-3" />
             </button>
-            <button className="px-1.5 py-1 hover:bg-black/20 border-l border-white/20" onClick={(e) => { e.stopPropagation(); removeElement(sectionId, columnId, element.id); }} title="Elimina">
+            <button className="px-1.5 py-1 hover:bg-black/20 border-l border-white/20" onClick={(e) => { e.stopPropagation(); removeElement(sectionId, columnId, element.id); }} title={t('Elimina', 'Delete')}>
               <Trash2 className="h-3 w-3" />
             </button>
           </div>
@@ -466,10 +467,10 @@ function ElementView({ sectionId, columnId, element, index }: { sectionId: strin
           {lockedForPlan && (
             <div
               className="absolute -top-2.5 right-2 z-20 flex items-center gap-1 rounded bg-amber-500 px-1.5 py-1 text-[10px] font-semibold text-white shadow"
-              title={`Questo widget richiede il piano ${requiredPlanFor(element.type)}: nell'editor resta modificabile, ma NON viene mostrato sul sito pubblico finché non aggiorni il piano.`}
+              title={t(`Questo widget richiede il piano ${requiredPlanFor(element.type)}: nell'editor resta modificabile, ma NON viene mostrato sul sito pubblico finché non aggiorni il piano.`, `This widget requires the ${requiredPlanFor(element.type)} plan: it stays editable in the editor, but it is NOT shown on the public site until you upgrade your plan.`)}
             >
               <Lock className="h-3 w-3" />
-              Non visibile sul sito — richiede {requiredPlanFor(element.type)}
+              {t('Non visibile sul sito — richiede', 'Not visible on the site — requires')} {requiredPlanFor(element.type)}
             </div>
           )}
           {renderWidget(element, {
@@ -482,37 +483,37 @@ function ElementView({ sectionId, columnId, element, index }: { sectionId: strin
       <ContextMenuContent>
         <ContextMenuLabel>{desc?.label ?? element.type}</ContextMenuLabel>
         <ContextMenuItem onSelect={() => select({ kind: 'element', sectionId, columnId, elementId: element.id })}>
-          <Edit3 className="h-4 w-4" />Modifica
+          <Edit3 className="h-4 w-4" />{t('Modifica', 'Edit')}
         </ContextMenuItem>
         <ContextMenuItem onSelect={() => duplicateElement(sectionId, columnId, element.id)}>
-          <Copy className="h-4 w-4" />Duplica
+          <Copy className="h-4 w-4" />{t('Duplica', 'Duplicate')}
         </ContextMenuItem>
         <ContextMenuItem onSelect={() => copyToClipboard('element', { sectionId, columnId, elementId: element.id })}>
-          <ClipboardCopy className="h-4 w-4" />Copia
+          <ClipboardCopy className="h-4 w-4" />{t('Copia', 'Copy')}
         </ContextMenuItem>
         <ContextMenuItem
           disabled={!clipboard || clipboard.kind !== 'element'}
           onSelect={() => pasteFromClipboard({ sectionId, columnId, afterIndex: index })}
         >
-          <Clipboard className="h-4 w-4" />Incolla dopo
+          <Clipboard className="h-4 w-4" />{t('Incolla dopo', 'Paste after')}
         </ContextMenuItem>
         <ContextMenuSeparator />
-        <ContextMenuLabel>Stile</ContextMenuLabel>
+        <ContextMenuLabel>{t('Stile', 'Style')}</ContextMenuLabel>
         <ContextMenuItem onSelect={() => copyStyle({ kind: 'element', sectionId, columnId, elementId: element.id })}>
-          <Copy className="h-4 w-4" />Copia stile <span className="ml-auto text-[10px] text-muted-foreground">⌘⌥C</span>
+          <Copy className="h-4 w-4" />{t('Copia stile', 'Copy style')} <span className="ml-auto text-[10px] text-muted-foreground">⌘⌥C</span>
         </ContextMenuItem>
         <ContextMenuItem
           disabled={!styleClipboard || styleClipboard.kind !== 'element'}
           onSelect={() => pasteStyle({ kind: 'element', sectionId, columnId, elementId: element.id })}
         >
-          <Clipboard className="h-4 w-4" />Incolla stile <span className="ml-auto text-[10px] text-muted-foreground">⌘⌥V</span>
+          <Clipboard className="h-4 w-4" />{t('Incolla stile', 'Paste style')} <span className="ml-auto text-[10px] text-muted-foreground">⌘⌥V</span>
         </ContextMenuItem>
-        <ContextMenuItem onSelect={() => { if (confirm('Reset stile ai default?')) resetStyle({ kind: 'element', sectionId, columnId, elementId: element.id }); }}>
-          <RotateCcw className="h-4 w-4" />Reset stile <span className="ml-auto text-[10px] text-muted-foreground">⌘⌥R</span>
+        <ContextMenuItem onSelect={() => { if (confirm(t('Reset stile ai default?', 'Reset style to defaults?'))) resetStyle({ kind: 'element', sectionId, columnId, elementId: element.id }); }}>
+          <RotateCcw className="h-4 w-4" />{t('Reset stile', 'Reset style')} <span className="ml-auto text-[10px] text-muted-foreground">⌘⌥R</span>
         </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem destructive onSelect={() => removeElement(sectionId, columnId, element.id)}>
-          <Trash2 className="h-4 w-4" />Elimina
+          <Trash2 className="h-4 w-4" />{t('Elimina', 'Delete')}
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>

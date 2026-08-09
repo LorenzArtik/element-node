@@ -7,6 +7,7 @@ import { Key, Clock } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { CreateApiKeyButton } from './create-button';
 import { RevokeApiKeyButton } from './revoke-button';
+import { t } from '@/lib/admin-i18n';
 
 export const dynamic = 'force-dynamic';
 
@@ -26,7 +27,7 @@ export default async function ApiKeysPage() {
             <Key className="h-7 w-7 text-amber-500" />
             API Keys
           </h1>
-          <p className="text-muted-foreground">Token per accesso programmatico al CMS (es. da Claude Code, script, automazioni)</p>
+          <p className="text-muted-foreground">{t('Token per accesso programmatico al CMS (es. da Claude Code, script, automazioni)', 'Tokens for programmatic access to the CMS (e.g. from Claude Code, scripts, automations)')}</p>
         </div>
         <CreateApiKeyButton />
       </div>
@@ -34,17 +35,17 @@ export default async function ApiKeysPage() {
       <Card>
         <div className="divide-y">
           <div className="grid grid-cols-[1fr_180px_140px_180px_auto] gap-4 px-6 py-3 text-xs font-medium uppercase text-muted-foreground bg-muted/40">
-            <div>Nome / Token</div>
+            <div>{t('Nome / Token', 'Name / Token')}</div>
             <div>Scopes</div>
-            <div>Stato</div>
-            <div>Ultimo uso</div>
-            <div className="text-right">Azioni</div>
+            <div>{t('Stato', 'Status')}</div>
+            <div>{t('Ultimo uso', 'Last used')}</div>
+            <div className="text-right">{t('Azioni', 'Actions')}</div>
           </div>
           {keys.length === 0 ? (
             <div className="p-12 text-center text-muted-foreground">
               <Key className="h-10 w-10 mx-auto mb-3 opacity-30" />
-              <p>Nessuna API key ancora.</p>
-              <p className="text-xs mt-1">Crea la prima per usare il CMS programmaticamente.</p>
+              <p>{t('Nessuna API key ancora.', 'No API keys yet.')}</p>
+              <p className="text-xs mt-1">{t('Crea la prima per usare il CMS programmaticamente.', 'Create the first one to use the CMS programmatically.')}</p>
             </div>
           ) : (
             keys.map((k) => {
@@ -56,7 +57,7 @@ export default async function ApiKeysPage() {
                     <div className="font-medium">{k.name}</div>
                     <div className="text-xs text-muted-foreground font-mono">{k.prefix}…{k.tail}</div>
                     <div className="text-[10px] text-muted-foreground mt-0.5">
-                      Creata {formatDate(k.createdAt)} · {k.createdBy?.name ?? k.createdBy?.email ?? 'sistema'}
+                      {t('Creata', 'Created')} {formatDate(k.createdAt)} · {k.createdBy?.name ?? k.createdBy?.email ?? t('sistema', 'system')}
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-1">
@@ -67,12 +68,12 @@ export default async function ApiKeysPage() {
                   </div>
                   <div>
                     <Badge variant={status === 'active' ? 'success' : status === 'expired' ? 'outline' : 'destructive'}>
-                      {status === 'active' ? 'Attiva' : status === 'expired' ? 'Scaduta' : 'Revocata'}
+                      {status === 'active' ? t('Attiva', 'Active') : status === 'expired' ? t('Scaduta', 'Expired') : t('Revocata', 'Revoked')}
                     </Badge>
                   </div>
                   <div className="text-xs text-muted-foreground flex items-center gap-1.5">
                     <Clock className="h-3 w-3" />
-                    {k.lastUsedAt ? formatDate(k.lastUsedAt) : 'mai usata'}
+                    {k.lastUsedAt ? formatDate(k.lastUsedAt) : t('mai usata', 'never used')}
                   </div>
                   <div className="flex justify-end">
                     {!k.revokedAt && <RevokeApiKeyButton id={k.id} name={k.name} />}

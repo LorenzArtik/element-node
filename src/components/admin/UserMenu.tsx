@@ -5,6 +5,7 @@ import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 import { signOut } from 'next-auth/react';
 import { ChevronRight, User, LogOut, Sun, Moon, Monitor, ExternalLink } from 'lucide-react';
+import { t } from '@/lib/admin-i18n';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,9 +33,9 @@ export function UserMenu({
   const initials = (name || email).slice(0, 2).toUpperCase();
 
   const themeOpts = [
-    { value: 'light', icon: Sun, label: 'Tema chiaro' },
-    { value: 'dark', icon: Moon, label: 'Tema scuro' },
-    { value: 'system', icon: Monitor, label: 'Tema sistema' },
+    { value: 'light', icon: Sun, label: t('Tema chiaro', 'Light theme') },
+    { value: 'dark', icon: Moon, label: t('Tema scuro', 'Dark theme') },
+    { value: 'system', icon: Monitor, label: t('Tema sistema', 'System theme') },
   ];
 
   return (
@@ -42,7 +43,7 @@ export function UserMenu({
       <DropdownMenuTrigger asChild>
         <button
           className="w-full flex items-center gap-2.5 p-2 rounded-lg border bg-card hover:bg-accent transition-colors group focus:outline-none focus:ring-2 focus:ring-ring"
-          aria-label="Apri menu utente"
+          aria-label={t('Apri menu utente', 'Open user menu')}
         >
           {avatarUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -69,19 +70,19 @@ export function UserMenu({
         <DropdownMenuItem asChild>
           <Link href="/admin/profile">
             <User className="h-4 w-4" />
-            Il mio profilo
+            {t('Il mio profilo', 'My profile')}
           </Link>
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
           <a href="/" target="_blank" rel="noreferrer">
             <ExternalLink className="h-4 w-4" />
-            Visualizza sito
+            {t('Visualizza sito', 'View site')}
           </a>
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
-        <DropdownMenuLabel>Aspetto</DropdownMenuLabel>
+        <DropdownMenuLabel>{t('Aspetto', 'Appearance')}</DropdownMenuLabel>
 
         {mounted && themeOpts.map((opt) => {
           const Icon = opt.icon;
@@ -94,7 +95,7 @@ export function UserMenu({
             >
               <Icon className="h-4 w-4" />
               {opt.label}
-              {active && <span className="ml-auto text-[10px] text-muted-foreground">attivo</span>}
+              {active && <span className="ml-auto text-[10px] text-muted-foreground">{t('attivo', 'active')}</span>}
             </DropdownMenuItem>
           );
         })}
@@ -109,7 +110,7 @@ export function UserMenu({
           }}
         >
           <LogOut className="h-4 w-4" />
-          Esci
+          {t('Esci', 'Sign out')}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

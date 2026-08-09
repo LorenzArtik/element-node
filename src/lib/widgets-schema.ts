@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid';
+import { t } from '@/lib/admin-i18n';
 
 export type WidgetType =
   | 'box'
@@ -128,7 +129,7 @@ const ALIGN_OPTIONS = [
 export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
   // ===== BASIC (ordine identico a Elementor) =====
   heading: {
-    type: 'heading', label: 'Titolo', icon: 'Heading1', category: 'basic', order: 1,
+    type: 'heading', label: t('Titolo', 'Heading'), icon: 'Heading1', category: 'basic', order: 1,
     defaults: { text: 'Aggiungi qui il titolo', tag: 'h2', align: 'left', color: '', size: '', weight: '', letterSpacing: '', transform: 'none', textStroke: '' , dash: false},
     fields: [
       { key: 'text', label: 'Titolo', control: 'text' },
@@ -149,7 +150,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   image: {
-    type: 'image', label: 'Immagine', icon: 'Image', category: 'basic', order: 2,
+    type: 'image', label: t('Immagine', 'Image'), icon: 'Image', category: 'basic', order: 2,
     defaults: {
       src: '', alt: '', width: 'auto', height: 'auto', align: 'center', caption: '',
       maxWidth: '100%', maxHeight: '', objectFit: '', aspectRatio: '',
@@ -210,7 +211,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   text: {
-    type: 'text', label: 'Editor Testo', icon: 'Type', category: 'basic', order: 3,
+    type: 'text', label: t('Editor Testo', 'Text Editor'), icon: 'Type', category: 'basic', order: 3,
     defaults: { html: '<p>Inserisci il tuo testo qui.</p>', color: '', size: '', lineHeight: '', align: 'left' },
     fields: [
       { key: 'html', label: 'Contenuto', control: 'richtext' },
@@ -232,7 +233,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   button: {
-    type: 'button', label: 'Pulsante', icon: 'MousePointerClick', category: 'basic', order: 5,
+    type: 'button', label: t('Pulsante', 'Button'), icon: 'MousePointerClick', category: 'basic', order: 5,
     defaults: { text: 'Clicca qui', url: '#', target: '_self', align: 'left', style: 'primary', size: 'md', fullWidth: false, radius: '', bgColor: '', textColor: '', borderColor: '', paddingCustom: '', shadow: 'none', btnIcon: '', btnIconSize: 18, btnIconPosition: 'left', btnIconStyle: 'stroke', btnIconGap: 10 },
     fields: [
       { key: 'text', label: 'Testo', control: 'text' },
@@ -255,7 +256,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   divider: {
-    type: 'divider', label: 'Divisore', icon: 'Minus', category: 'basic', order: 6,
+    type: 'divider', label: t('Divisore', 'Divider'), icon: 'Minus', category: 'basic', order: 6,
     defaults: { color: '#e2e8f0', weight: 1, style: 'solid' },
     fields: [
       { key: 'color', label: 'Colore', control: 'color' },
@@ -264,12 +265,12 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   spacer: {
-    type: 'spacer', label: 'Spazio', icon: 'StretchVertical', category: 'basic', order: 7,
+    type: 'spacer', label: t('Spazio', 'Spacer'), icon: 'StretchVertical', category: 'basic', order: 7,
     defaults: { height: 50 },
     fields: [{ key: 'height', label: 'Altezza', control: 'slider', min: 0, max: 400, step: 1, unit: 'px' }],
   },
   icon: {
-    type: 'icon', label: 'Icona', icon: 'Star', category: 'basic', order: 8,
+    type: 'icon', label: t('Icona', 'Icon'), icon: 'Star', category: 'basic', order: 8,
     defaults: { icon: 'Star', size: 64, color: '', align: 'center', link: '' },
     fields: [
       { key: 'icon', label: 'Icona', control: 'icon' },
@@ -280,7 +281,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   'image-box': {
-    type: 'image-box', label: 'Box Immagine', icon: 'LayoutPanelTop', category: 'basic', order: 9,
+    type: 'image-box', label: t('Box Immagine', 'Image Box'), icon: 'LayoutPanelTop', category: 'basic', order: 9,
     defaults: { image: '', title: 'Titolo', text: 'Testo descrittivo.', align: 'center', link: '', imageRatio: 'auto', imageRadius: '', ctaText: '', ctaIcon: 'ChevronRight', ctaIconSize: 16 },
     fields: [
       { key: 'image', label: 'Immagine', control: 'media' },
@@ -302,7 +303,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   'icon-box': {
-    type: 'icon-box', label: 'Box Icona', icon: 'Sparkles', category: 'basic', order: 10,
+    type: 'icon-box', label: t('Box Icona', 'Icon Box'), icon: 'Sparkles', category: 'basic', order: 10,
     defaults: { icon: 'Star', title: 'Questo è il titolo', text: 'Fai clic sul pulsante di modifica per cambiare questo testo.', align: 'center', iconColor: '', iconSize: 56, iconStyle: 'stroke' },
     fields: [
       { key: 'icon', label: 'Icona', control: 'icon' },
@@ -316,7 +317,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   'icon-list': {
-    type: 'icon-list', label: 'Lista Icone', icon: 'ListChecks', category: 'basic', order: 11,
+    type: 'icon-list', label: t('Lista Icone', 'Icon List'), icon: 'ListChecks', category: 'basic', order: 11,
     defaults: {
       align: 'left', iconColor: '', spacing: 12,
       items: [
@@ -340,7 +341,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   counter: {
-    type: 'counter', label: 'Contatore', icon: 'Hash', category: 'basic', order: 12,
+    type: 'counter', label: t('Contatore', 'Counter'), icon: 'Hash', category: 'basic', order: 12,
     defaults: { from: 0, to: 100, duration: 2000, prefix: '', suffix: '+', label: 'Clienti soddisfatti', size: '64px', color: '', labelColor: '', labelSize: '', labelWeight: '' , accentColor: ''},
     fields: [
       { key: 'from', label: 'Da', control: 'number' },
@@ -358,7 +359,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   progress: {
-    type: 'progress', label: 'Barra Progresso', icon: 'BarChart3', category: 'basic', order: 13,
+    type: 'progress', label: t('Barra Progresso', 'Progress Bar'), icon: 'BarChart3', category: 'basic', order: 13,
     defaults: { percent: 75, label: 'La mia skill', color: '', height: 12, showPercent: true },
     fields: [
       { key: 'label', label: 'Etichetta', control: 'text' },
@@ -369,7 +370,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   testimonial: {
-    type: 'testimonial', label: 'Testimonianza', icon: 'Quote', category: 'basic', order: 14,
+    type: 'testimonial', label: t('Testimonianza', 'Testimonial'), icon: 'Quote', category: 'basic', order: 14,
     defaults: { text: 'Lavoro fantastico, super consigliato!', author: 'Mario Rossi', role: 'CEO, Acme Inc.', avatar: '', rating: 5 },
     fields: [
       { key: 'text', label: 'Testo', control: 'textarea' },
@@ -440,7 +441,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   alert: {
-    type: 'alert', label: 'Avviso', icon: 'AlertCircle', category: 'basic', order: 18,
+    type: 'alert', label: t('Avviso', 'Alert'), icon: 'AlertCircle', category: 'basic', order: 18,
     defaults: { variant: 'info', title: 'Questo è un avviso', text: 'Sono un avviso. Fai clic sul pulsante di modifica per cambiare questo testo.', dismissible: false },
     fields: [
       { key: 'variant', label: 'Tipo', control: 'select', options: [
@@ -460,7 +461,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     fields: [{ key: 'code', label: 'Codice HTML', control: 'textarea' }],
   },
   box: {
-    type: 'box', label: 'Box (contenitore)', icon: 'Group', category: 'basic', order: 20,
+    type: 'box', label: t('Box (contenitore)', 'Box (container)'), icon: 'Group', category: 'basic', order: 20,
     defaults: {
       direction: 'column', gap: 12, align: 'stretch', justify: 'flex-start', wrap: false,
       background: '', borderRadius: '', padding: '', border: '', boxShadow: 'none',
@@ -502,7 +503,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
 
   // ===== PRO =====
   'posts-grid': {
-    type: 'posts-grid', label: 'Articoli', icon: 'LayoutGrid', category: 'pro', order: 1,
+    type: 'posts-grid', label: t('Articoli', 'Posts'), icon: 'LayoutGrid', category: 'pro', order: 1,
     defaults: { columns: 3, count: 6, showImage: true, showExcerpt: true },
     fields: [
       { key: 'columns', label: 'Colonne', control: 'slider', min: 1, max: 6, step: 1 },
@@ -541,7 +542,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   gallery: {
-    type: 'gallery', label: 'Galleria', icon: 'Images', category: 'pro', order: 3,
+    type: 'gallery', label: t('Galleria', 'Gallery'), icon: 'Images', category: 'pro', order: 3,
     defaults: { columns: 3, gap: 8, images: [] },
     fields: [
       { key: 'columns', label: 'Colonne', control: 'slider', min: 1, max: 6, step: 1 },
@@ -561,7 +562,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   'price-table': {
-    type: 'price-table', label: 'Tabella Prezzi', icon: 'Tag', category: 'pro', order: 5,
+    type: 'price-table', label: t('Tabella Prezzi', 'Price Table'), icon: 'Tag', category: 'pro', order: 5,
     defaults: {
       title: 'Pro', subtitle: 'Per professionisti', currency: '€', price: '29', period: '/mese',
       featured: false, ctaText: 'Inizia ora', ctaUrl: '#',
@@ -606,7 +607,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
   },
   // ===== GENERAL / THEME ELEMENTS =====
   'site-logo': {
-    type: 'site-logo', label: 'Logo Sito', icon: 'ImagePlus', category: 'general', order: 1,
+    type: 'site-logo', label: t('Logo Sito', 'Site Logo'), icon: 'ImagePlus', category: 'general', order: 1,
     defaults: { variant: 'auto', maxHeight: 48, link: '/', align: 'left' },
     fields: [
       { key: 'variant', label: 'Variante', control: 'select', options: [
@@ -620,7 +621,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   'site-title': {
-    type: 'site-title', label: 'Nome Sito', icon: 'CaseSensitive', category: 'general', order: 2,
+    type: 'site-title', label: t('Nome Sito', 'Site Title'), icon: 'CaseSensitive', category: 'general', order: 2,
     defaults: { tag: 'span', size: '24px', weight: '700', color: '', link: '/', align: 'left' },
     fields: [
       { key: 'tag', label: 'Tag HTML', control: 'select', options: ['h1','h2','h3','span','div'].map(v => ({ value: v, label: v.toUpperCase() })) },
@@ -632,7 +633,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   'nav-menu': {
-    type: 'nav-menu', label: 'Menu Navigazione', icon: 'Menu', category: 'general', order: 3,
+    type: 'nav-menu', label: t('Menu Navigazione', 'Nav Menu'), icon: 'Menu', category: 'general', order: 3,
     defaults: {
       align: 'left', gap: 24, color: '',
       items: [
@@ -653,7 +654,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   'search-form': {
-    type: 'search-form', label: 'Cerca', icon: 'Search', category: 'general', order: 4,
+    type: 'search-form', label: t('Cerca', 'Search'), icon: 'Search', category: 'general', order: 4,
     defaults: { placeholder: 'Cerca...', buttonText: 'Cerca', action: '/search', width: '300px' },
     fields: [
       { key: 'placeholder', label: 'Placeholder', control: 'text' },
@@ -663,7 +664,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   'page-title': {
-    type: 'page-title', label: 'Titolo Pagina', icon: 'Type', category: 'general', order: 5,
+    type: 'page-title', label: t('Titolo Pagina', 'Page Title'), icon: 'Type', category: 'general', order: 5,
     defaults: { tag: 'h1', align: 'left', color: '', size: '40px', weight: '700' },
     fields: [
       { key: 'tag', label: 'Tag', control: 'select', options: ['h1','h2','h3'].map(v => ({ value: v, label: v.toUpperCase() })) },
@@ -685,7 +686,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
 
   // ===== DYNAMIC POST WIDGETS (per template SINGLE) =====
   'post-content': {
-    type: 'post-content', label: 'Contenuto Post', icon: 'FileText', category: 'general', order: 7,
+    type: 'post-content', label: t('Contenuto Post', 'Post Content'), icon: 'FileText', category: 'general', order: 7,
     defaults: { proseSize: 'md' },
     fields: [
       { key: 'proseSize', label: 'Dimensione testo', control: 'select', options: [
@@ -694,7 +695,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   'post-excerpt': {
-    type: 'post-excerpt', label: 'Estratto Post', icon: 'Quote', category: 'general', order: 8,
+    type: 'post-excerpt', label: t('Estratto Post', 'Post Excerpt'), icon: 'Quote', category: 'general', order: 8,
     defaults: { color: '', size: '18px', lineHeight: '1.6' },
     fields: [
       { key: 'color', label: 'Colore', control: 'color' },
@@ -703,7 +704,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   'featured-image': {
-    type: 'featured-image', label: 'Immagine Evidenza', icon: 'ImagePlus', category: 'general', order: 9,
+    type: 'featured-image', label: t('Immagine Evidenza', 'Featured Image'), icon: 'ImagePlus', category: 'general', order: 9,
     defaults: { ratio: '16/9', radius: '12px', fallback: '' },
     fields: [
       { key: 'ratio', label: 'Aspect ratio', control: 'select', options: [
@@ -716,7 +717,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   'post-meta': {
-    type: 'post-meta', label: 'Meta Post', icon: 'CalendarClock', category: 'general', order: 10,
+    type: 'post-meta', label: t('Meta Post', 'Post Meta'), icon: 'CalendarClock', category: 'general', order: 10,
     defaults: {
       showDate: true, showAuthor: true, showCategories: true, showReadTime: false,
       separator: '·', color: '',
@@ -731,7 +732,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   'author-box': {
-    type: 'author-box', label: 'Box Autore', icon: 'UserCircle', category: 'general', order: 11,
+    type: 'author-box', label: t('Box Autore', 'Author Box'), icon: 'UserCircle', category: 'general', order: 11,
     defaults: { showBio: true, showAvatar: true, layout: 'card' },
     fields: [
       { key: 'showAvatar', label: 'Mostra avatar', control: 'switch' },
@@ -742,7 +743,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   'posts-list': {
-    type: 'posts-list', label: 'Lista Post', icon: 'List', category: 'general', order: 12,
+    type: 'posts-list', label: t('Lista Post', 'Posts List'), icon: 'List', category: 'general', order: 12,
     defaults: {
       postType: 'post', count: 5, layout: 'list', showImage: true, showExcerpt: true, showMeta: true, columns: 1,
     },
@@ -804,7 +805,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   'hero-slider': {
-    type: 'hero-slider', label: 'Slide', icon: 'GalleryHorizontalEnd', category: 'pro', order: 0.5,
+    type: 'hero-slider', label: t('Slide', 'Slider'), icon: 'GalleryHorizontalEnd', category: 'pro', order: 0.5,
     defaults: {
       slides: [
         { title: 'Slide 1', subtitle: 'Descrizione della prima slide', ctaText: 'Scopri', ctaUrl: '#', bgImage: '', bgGradient: 'linear-gradient(135deg, #92003b, #1f2937)', bgOverlay: 'rgba(0,0,0,0.4)' },
@@ -833,7 +834,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
 
   // ===== PRO WIDGETS extra =====
   'animated-headline': {
-    type: 'animated-headline', label: 'Titolo Animato', icon: 'WandSparkles', category: 'pro', order: 8,
+    type: 'animated-headline', label: t('Titolo Animato', 'Animated Headline'), icon: 'WandSparkles', category: 'pro', order: 8,
     defaults: {
       before: 'Costruisci il tuo',
       animated: ['sito', 'brand', 'futuro'],
@@ -867,7 +868,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   'image-carousel': {
-    type: 'image-carousel', label: 'Carosello Immagini', icon: 'GalleryHorizontalEnd', category: 'pro', order: 9,
+    type: 'image-carousel', label: t('Carosello Immagini', 'Image Carousel'), icon: 'GalleryHorizontalEnd', category: 'pro', order: 9,
     defaults: {
       images: [
         { src: '', alt: 'Slide 1' }, { src: '', alt: 'Slide 2' }, { src: '', alt: 'Slide 3' },
@@ -895,7 +896,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   'testimonial-carousel': {
-    type: 'testimonial-carousel', label: 'Carosello Testimonianze', icon: 'MessagesSquare', category: 'pro', order: 10,
+    type: 'testimonial-carousel', label: t('Carosello Testimonianze', 'Testimonial Carousel'), icon: 'MessagesSquare', category: 'pro', order: 10,
     defaults: {
       items: [
         { text: 'Lavoro eccezionale, super consigliato.', author: 'Mario Rossi', role: 'CEO, Acme', avatar: '', rating: 5 },
@@ -950,7 +951,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   'share-buttons': {
-    type: 'share-buttons', label: 'Condividi', icon: 'Share', category: 'pro', order: 12,
+    type: 'share-buttons', label: t('Condividi', 'Share'), icon: 'Share', category: 'pro', order: 12,
     defaults: {
       networks: ['facebook','twitter','linkedin','whatsapp','email'],
       align: 'left', size: 36, gap: 8, color: '#fff', radius: '8px',
@@ -972,7 +973,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   'reviews': {
-    type: 'reviews', label: 'Recensioni', icon: 'Star', category: 'pro', order: 13,
+    type: 'reviews', label: t('Recensioni', 'Reviews'), icon: 'Star', category: 'pro', order: 13,
     defaults: {
       title: 'Recensioni dei clienti',
       averageRating: 4.8,
@@ -998,7 +999,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   'lottie': {
-    type: 'lottie', label: 'Lottie / Animazione', icon: 'PlayCircle', category: 'pro', order: 14,
+    type: 'lottie', label: t('Lottie / Animazione', 'Lottie / Animation'), icon: 'PlayCircle', category: 'pro', order: 14,
     defaults: { src: '', width: '100%', height: '300px', loop: true, autoplay: true },
     fields: [
       { key: 'src', label: 'URL JSON Lottie', control: 'url', placeholder: 'https://lottie.host/.../animation.json' },
@@ -1051,7 +1052,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     ],
   },
   'nav-drawer': {
-    type: 'nav-drawer', label: 'Menu Mobile (burger)', icon: 'Menu', category: 'general', order: 20,
+    type: 'nav-drawer', label: t('Menu Mobile (burger)', 'Mobile Menu (burger)'), icon: 'Menu', category: 'general', order: 20,
     defaults: {
       links: 'Home|/\nPagina|/pagina',
       ctaText: '', ctaUrl: '',
@@ -1111,9 +1112,9 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
 };
 
 export const WIDGET_CATEGORIES: { key: WidgetCategory; label: string }[] = [
-  { key: 'basic', label: 'Base' },
+  { key: 'basic', label: t('Base', 'Basic') },
   { key: 'pro', label: 'Pro' },
-  { key: 'general', label: 'Generale' },
+  { key: 'general', label: t('Generale', 'General') },
 ];
 
 export function getWidgetsByCategory(cat: WidgetCategory): WidgetDescriptor[] {

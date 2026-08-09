@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Palette, Type, ExternalLink, Copy, Check, Loader2, Save } from 'lucide-react';
 import { toast } from 'sonner';
 import { FontPicker } from '@/components/admin/FontPicker';
+import { t } from '@/lib/admin-i18n';
 
 interface SiteTheme {
   colors: Record<string, string>;
@@ -25,16 +26,16 @@ interface SiteTheme {
 }
 
 const COLOR_LABELS: Record<string, string> = {
-  primary: 'Primario',
-  primaryHover: 'Primario hover',
-  secondary: 'Secondario',
+  primary: t('Primario', 'Primary'),
+  primaryHover: t('Primario hover', 'Primary hover'),
+  secondary: t('Secondario', 'Secondary'),
   accent: 'Accent',
-  text: 'Testo',
-  textMuted: 'Testo muted',
-  textInverse: 'Testo inverso',
+  text: t('Testo', 'Text'),
+  textMuted: t('Testo muted', 'Muted text'),
+  textInverse: t('Testo inverso', 'Inverse text'),
   background: 'Background',
   surface: 'Surface',
-  border: 'Bordo',
+  border: t('Bordo', 'Border'),
   success: 'Success',
   warning: 'Warning',
   danger: 'Danger',
@@ -74,9 +75,9 @@ export function GlobalsPanel() {
         setDirty(false);
         // Aggiorna le CSS vars live nel DOM dell'editor
         applyVarsLive(next);
-        toast.success('Globali salvati');
+        toast.success(t('Globali salvati', 'Globals saved'));
       } catch {
-        toast.error('Errore salvataggio');
+        toast.error(t('Errore salvataggio', 'Save error'));
       } finally {
         setSaving(false);
       }
@@ -100,14 +101,14 @@ export function GlobalsPanel() {
   function copy(text: string, key: string) {
     navigator.clipboard.writeText(text);
     setCopied(key);
-    toast.success(`${text} copiato`);
+    toast.success(t(`${text} copiato`, `${text} copied`));
     setTimeout(() => setCopied(null), 1500);
   }
 
   if (!theme) {
     return (
       <div className="flex-1 flex items-center justify-center text-xs text-muted-foreground">
-        <Loader2 className="h-4 w-4 animate-spin mr-2" /> Caricamento tema…
+        <Loader2 className="h-4 w-4 animate-spin mr-2" /> {t('Caricamento tema…', 'Loading theme…')}
       </div>
     );
   }
@@ -117,16 +118,16 @@ export function GlobalsPanel() {
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       <div className="px-3 py-2 border-b bg-card flex items-center justify-between">
-        <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Tema globale</span>
+        <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{t('Tema globale', 'Global theme')}</span>
         <div className="flex items-center gap-2">
           {saving && <Loader2 className="h-3 w-3 animate-spin text-[#92003b]" />}
-          {!saving && dirty && <span className="text-[10px] text-amber-600">non salvato</span>}
+          {!saving && dirty && <span className="text-[10px] text-amber-600">{t('non salvato', 'unsaved')}</span>}
           {!saving && !dirty && <Check className="h-3 w-3 text-emerald-500" />}
           <Link
             href="/admin/settings/site"
             target="_blank"
             className="flex items-center gap-1 text-[11px] text-[#92003b] hover:underline"
-            title="Apri pagina completa"
+            title={t('Apri pagina completa', 'Open full page')}
           >
             <ExternalLink className="h-3 w-3" />
           </Link>
@@ -137,9 +138,9 @@ export function GlobalsPanel() {
         {/* Palette colori — editabile con UX più chiara */}
         <div>
           <h4 className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">
-            <Palette className="h-3 w-3" /> Palette colori
+            <Palette className="h-3 w-3" /> {t('Palette colori', 'Color palette')}
           </h4>
-          <p className="text-[10px] text-muted-foreground mb-2 px-1">Click sullo swatch per aprire il color picker, oppure modifica l&apos;hex.</p>
+          <p className="text-[10px] text-muted-foreground mb-2 px-1">{t("Click sullo swatch per aprire il color picker, oppure modifica l'hex.", 'Click the swatch to open the color picker, or edit the hex.')}</p>
           <div className="space-y-1.5">
             {colorEntries.map(([key, hex]) => {
               const cssVar = `var(--en-color-${camelToKebab(key)})`;
@@ -151,7 +152,7 @@ export function GlobalsPanel() {
                       value={/^#[0-9a-f]{6}$/i.test(hex) ? hex : '#000000'}
                       onChange={(e) => setColor(key, e.target.value)}
                       className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      title={`Modifica ${COLOR_LABELS[key]}`}
+                      title={t(`Modifica ${COLOR_LABELS[key]}`, `Edit ${COLOR_LABELS[key]}`)}
                     />
                   </label>
                   <div className="flex-1 min-w-0">
@@ -164,10 +165,10 @@ export function GlobalsPanel() {
                     />
                   </div>
                   <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 shrink-0">
-                    <button onClick={() => copy(hex, `${key}-hex`)} className="p-1 hover:bg-black/10 rounded" title="Copia hex">
+                    <button onClick={() => copy(hex, `${key}-hex`)} className="p-1 hover:bg-black/10 rounded" title={t('Copia hex', 'Copy hex')}>
                       {copied === `${key}-hex` ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
                     </button>
-                    <button onClick={() => copy(cssVar, `${key}-var`)} className="p-1 hover:bg-black/10 rounded" title={`Copia ${cssVar}`}>
+                    <button onClick={() => copy(cssVar, `${key}-var`)} className="p-1 hover:bg-black/10 rounded" title={t(`Copia ${cssVar}`, `Copy ${cssVar}`)}>
                       <span className="text-[10px] font-mono">var()</span>
                     </button>
                   </div>
@@ -180,7 +181,7 @@ export function GlobalsPanel() {
         {/* Tipografia — pieni controlli per Heading e Body (Elementor-style) */}
         <div>
           <h4 className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">
-            <Type className="h-3 w-3" /> Tipografia
+            <Type className="h-3 w-3" /> {t('Tipografia', 'Typography')}
           </h4>
           <div className="space-y-3">
             <FontFieldFull
@@ -241,7 +242,7 @@ export function GlobalsPanel() {
         </div>
 
         <div className="text-[10px] text-muted-foreground border-t pt-3 leading-relaxed">
-          Le modifiche si salvano in automatico (debounce 500ms). Le CSS vars vengono aggiornate live; ricarica il canvas per vedere i widget con stili agganciati alle var.
+          {t('Le modifiche si salvano in automatico (debounce 500ms). Le CSS vars vengono aggiornate live; ricarica il canvas per vedere i widget con stili agganciati alle var.', 'Changes are saved automatically (500ms debounce). CSS vars are updated live; reload the canvas to see widgets with styles bound to the vars.')}
         </div>
       </div>
     </div>
@@ -269,10 +270,10 @@ const TRANSFORMS = [
   { v: 'none', l: 'Default' }, { v: 'uppercase', l: 'UPPERCASE' },
   { v: 'lowercase', l: 'lowercase' }, { v: 'capitalize', l: 'Capitalize' },
 ];
-const STYLES = [{ v: 'normal', l: 'Normale' }, { v: 'italic', l: 'Corsivo' }];
+const STYLES = [{ v: 'normal', l: t('Normale', 'Normal') }, { v: 'italic', l: t('Corsivo', 'Italic') }];
 const DECORATIONS = [
-  { v: 'none', l: 'Nessuna' }, { v: 'underline', l: 'Sottolineato' },
-  { v: 'line-through', l: 'Barrato' }, { v: 'overline', l: 'Soprallineato' },
+  { v: 'none', l: t('Nessuna', 'None') }, { v: 'underline', l: t('Sottolineato', 'Underline') },
+  { v: 'line-through', l: t('Barrato', 'Line-through') }, { v: 'overline', l: t('Soprallineato', 'Overline') },
 ];
 
 function FontFieldFull(props: {

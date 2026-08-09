@@ -14,6 +14,7 @@ import {
   X, Search, ChevronDown, ChevronRight, Eye, EyeOff, Trash2, Copy, ArrowUp, ArrowDown,
   Layers, Columns, Box, GripVertical, ChevronsUpDown, ChevronsDownUp,
 } from 'lucide-react';
+import { t } from '@/lib/admin-i18n';
 
 interface NavigatorProps { onClose: () => void }
 
@@ -109,16 +110,16 @@ export function Navigator({ onClose }: NavigatorProps) {
       <div className="px-3 py-2.5 border-b flex items-center justify-between bg-muted/40">
         <div className="flex items-center gap-2">
           <Layers className="h-4 w-4 text-[#92003b]" />
-          <span className="text-sm font-semibold">Navigatore</span>
+          <span className="text-sm font-semibold">{t('Navigatore', 'Navigator')}</span>
         </div>
         <div className="flex items-center gap-0.5">
-          <button onClick={expandAll} className="p-1 hover:bg-accent rounded transition-colors" title="Espandi tutto">
+          <button onClick={expandAll} className="p-1 hover:bg-accent rounded transition-colors" title={t('Espandi tutto', 'Expand all')}>
             <ChevronsUpDown className="h-3.5 w-3.5" />
           </button>
-          <button onClick={collapseAll} className="p-1 hover:bg-accent rounded transition-colors" title="Comprimi tutto">
+          <button onClick={collapseAll} className="p-1 hover:bg-accent rounded transition-colors" title={t('Comprimi tutto', 'Collapse all')}>
             <ChevronsDownUp className="h-3.5 w-3.5" />
           </button>
-          <button onClick={onClose} className="p-1 hover:bg-accent rounded transition-colors ml-1" title="Chiudi">
+          <button onClick={onClose} className="p-1 hover:bg-accent rounded transition-colors ml-1" title={t('Chiudi', 'Close')}>
             <X className="h-3.5 w-3.5" />
           </button>
         </div>
@@ -130,7 +131,7 @@ export function Navigator({ onClose }: NavigatorProps) {
           <Input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Cerca..."
+            placeholder={t('Cerca...', 'Search...')}
             className="pl-8 h-9 text-sm bg-muted/50"
           />
         </div>
@@ -141,7 +142,7 @@ export function Navigator({ onClose }: NavigatorProps) {
           {content.sections.length === 0 && (
             <div className="text-center py-12 text-xs text-muted-foreground">
               <Layers className="h-8 w-8 mx-auto mb-2 opacity-30" />
-              Nessuna sezione
+              {t('Nessuna sezione', 'No sections')}
             </div>
           )}
           {content.sections.length > 0 && <SectionDropZone index={0} active={isDraggingSection} />}
@@ -194,7 +195,7 @@ function SectionRow({
   if (!matched) return null;
 
   const anchor = (section.settings.anchor as string) || '';
-  const label = anchor ? `Sezione · #${anchor}` : `Sezione ${index + 1}`;
+  const label = anchor ? t(`Sezione · #${anchor}`, `Section · #${anchor}`) : t(`Sezione ${index + 1}`, `Section ${index + 1}`);
 
   return (
     <div>
@@ -212,7 +213,7 @@ function SectionRow({
               {...listeners}
               onClick={(e) => e.stopPropagation()}
               className="p-0.5 hover:bg-black/10 rounded cursor-grab active:cursor-grabbing"
-              title="Trascina per spostare"
+              title={t('Trascina per spostare', 'Drag to move')}
             >
               <GripVertical className="h-3.5 w-3.5 text-muted-foreground" />
             </button>
@@ -232,24 +233,24 @@ function SectionRow({
         </ContextMenuTrigger>
         <ContextMenuContent>
           <ContextMenuItem onClick={() => onSelect({ kind: 'section', sectionId: section.id })}>
-            Seleziona
+            {t('Seleziona', 'Select')}
           </ContextMenuItem>
           <ContextMenuItem onClick={() => duplicateSection(section.id)}>
-            <Copy className="h-3.5 w-3.5 mr-2" /> Duplica
+            <Copy className="h-3.5 w-3.5 mr-2" /> {t('Duplica', 'Duplicate')}
           </ContextMenuItem>
           {index > 0 && (
             <ContextMenuItem onClick={() => moveSection(section.id, 'up')}>
-              <ArrowUp className="h-3.5 w-3.5 mr-2" /> Sposta sopra
+              <ArrowUp className="h-3.5 w-3.5 mr-2" /> {t('Sposta sopra', 'Move up')}
             </ContextMenuItem>
           )}
           {index < total - 1 && (
             <ContextMenuItem onClick={() => moveSection(section.id, 'down')}>
-              <ArrowDown className="h-3.5 w-3.5 mr-2" /> Sposta sotto
+              <ArrowDown className="h-3.5 w-3.5 mr-2" /> {t('Sposta sotto', 'Move down')}
             </ContextMenuItem>
           )}
           <ContextMenuSeparator />
           <ContextMenuItem onClick={() => removeSection(section.id)} className="text-destructive">
-            <Trash2 className="h-3.5 w-3.5 mr-2" /> Elimina
+            <Trash2 className="h-3.5 w-3.5 mr-2" /> {t('Elimina', 'Delete')}
           </ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>
@@ -309,7 +310,7 @@ function ColumnRow({
               {isOpen ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
             </button>
             <Columns className="h-3.5 w-3.5 text-[#2196f3]" />
-            <span className="flex-1 truncate text-xs">Colonna {index + 1} · {column.width}%</span>
+            <span className="flex-1 truncate text-xs">{t('Colonna', 'Column')} {index + 1} · {column.width}%</span>
             <span className="text-[10px] text-muted-foreground shrink-0">{column.elements.length}e</span>
             <RowActions
               onDuplicate={() => duplicateColumn(sectionId, column.id)}
@@ -318,15 +319,15 @@ function ColumnRow({
           </div>
         </ContextMenuTrigger>
         <ContextMenuContent>
-          <ContextMenuItem onClick={() => onSelect({ kind: 'column', sectionId, columnId: column.id })}>Seleziona</ContextMenuItem>
+          <ContextMenuItem onClick={() => onSelect({ kind: 'column', sectionId, columnId: column.id })}>{t('Seleziona', 'Select')}</ContextMenuItem>
           <ContextMenuItem onClick={() => duplicateColumn(sectionId, column.id)}>
-            <Copy className="h-3.5 w-3.5 mr-2" /> Duplica
+            <Copy className="h-3.5 w-3.5 mr-2" /> {t('Duplica', 'Duplicate')}
           </ContextMenuItem>
           {total > 1 && (
             <>
               <ContextMenuSeparator />
               <ContextMenuItem onClick={() => removeColumn(sectionId, column.id)} className="text-destructive">
-                <Trash2 className="h-3.5 w-3.5 mr-2" /> Elimina
+                <Trash2 className="h-3.5 w-3.5 mr-2" /> {t('Elimina', 'Delete')}
               </ContextMenuItem>
             </>
           )}
@@ -399,7 +400,7 @@ function ElementRow({
           <button
             onClick={toggleVisibility}
             className="p-0.5 hover:bg-black/10 rounded opacity-0 group-hover:opacity-100"
-            title={hidden ? 'Mostra' : 'Nascondi'}
+            title={hidden ? t('Mostra', 'Show') : t('Nascondi', 'Hide')}
           >
             {hidden ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
           </button>
@@ -410,17 +411,17 @@ function ElementRow({
         </div>
       </ContextMenuTrigger>
       <ContextMenuContent>
-        <ContextMenuItem onClick={() => onSelect({ kind: 'element', sectionId, columnId, elementId: element.id })}>Seleziona</ContextMenuItem>
+        <ContextMenuItem onClick={() => onSelect({ kind: 'element', sectionId, columnId, elementId: element.id })}>{t('Seleziona', 'Select')}</ContextMenuItem>
         <ContextMenuItem onClick={() => duplicateElement(sectionId, columnId, element.id)}>
           <Copy className="h-3.5 w-3.5 mr-2" /> Duplica
         </ContextMenuItem>
         <ContextMenuItem onClick={(e) => toggleVisibility(e as unknown as React.MouseEvent)}>
           {hidden ? <Eye className="h-3.5 w-3.5 mr-2" /> : <EyeOff className="h-3.5 w-3.5 mr-2" />}
-          {hidden ? 'Mostra' : 'Nascondi'}
+          {hidden ? t('Mostra', 'Show') : t('Nascondi', 'Hide')}
         </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem onClick={() => removeElement(sectionId, columnId, element.id)} className="text-destructive">
-          <Trash2 className="h-3.5 w-3.5 mr-2" /> Elimina
+          <Trash2 className="h-3.5 w-3.5 mr-2" /> {t('Elimina', 'Delete')}
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
@@ -451,7 +452,7 @@ function SectionDropZone({ index, active }: { index: number; active: boolean }) 
           <div className={`flex items-center gap-1.5 transition-opacity ${isOver ? 'opacity-100' : 'opacity-0'}`}>
             <div className="h-0.5 w-full bg-[#92003b]" />
             <div className="text-[10px] font-bold uppercase tracking-wider text-[#92003b] whitespace-nowrap px-2">
-              Rilascia qui
+              {t('Rilascia qui', 'Drop here')}
             </div>
             <div className="h-0.5 w-full bg-[#92003b]" />
           </div>
@@ -472,22 +473,22 @@ function RowActions({
   return (
     <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 shrink-0">
       {onMoveUp && (
-        <button onClick={(e) => { e.stopPropagation(); onMoveUp(); }} className="p-0.5 hover:bg-black/10 rounded" title="Sposta sopra">
+        <button onClick={(e) => { e.stopPropagation(); onMoveUp(); }} className="p-0.5 hover:bg-black/10 rounded" title={t('Sposta sopra', 'Move up')}>
           <ArrowUp className="h-3 w-3" />
         </button>
       )}
       {onMoveDown && (
-        <button onClick={(e) => { e.stopPropagation(); onMoveDown(); }} className="p-0.5 hover:bg-black/10 rounded" title="Sposta sotto">
+        <button onClick={(e) => { e.stopPropagation(); onMoveDown(); }} className="p-0.5 hover:bg-black/10 rounded" title={t('Sposta sotto', 'Move down')}>
           <ArrowDown className="h-3 w-3" />
         </button>
       )}
       {onDuplicate && (
-        <button onClick={(e) => { e.stopPropagation(); onDuplicate(); }} className="p-0.5 hover:bg-black/10 rounded" title="Duplica">
+        <button onClick={(e) => { e.stopPropagation(); onDuplicate(); }} className="p-0.5 hover:bg-black/10 rounded" title={t('Duplica', 'Duplicate')}>
           <Copy className="h-3 w-3" />
         </button>
       )}
       {onDelete && (
-        <button onClick={(e) => { e.stopPropagation(); onDelete(); }} className="p-0.5 hover:bg-destructive/20 rounded text-destructive" title="Elimina">
+        <button onClick={(e) => { e.stopPropagation(); onDelete(); }} className="p-0.5 hover:bg-destructive/20 rounded text-destructive" title={t('Elimina', 'Delete')}>
           <Trash2 className="h-3 w-3" />
         </button>
       )}

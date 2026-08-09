@@ -12,6 +12,7 @@ import { UserMenu } from '@/components/admin/UserMenu';
 import { ROLE_LABELS } from '@/lib/permissions';
 import { getLicenseInfo } from '@/lib/license-client';
 import { getLatestVersion, semverGt, currentVersion } from '@/lib/update-status';
+import { t } from '@/lib/admin-i18n';
 
 const NAV_GROUPS = [
   {
@@ -21,11 +22,11 @@ const NAV_GROUPS = [
     ],
   },
   {
-    label: 'Contenuti',
+    label: t('Contenuti', 'Content'),
     items: [
-      { href: '/admin/pages', label: 'Pagine', icon: FileText },
-      { href: '/admin/posts?type=post', label: 'Articoli', icon: Newspaper },
-      { href: '/admin/post-types', label: 'Tipi contenuto', icon: Database },
+      { href: '/admin/pages', label: t('Pagine', 'Pages'), icon: FileText },
+      { href: '/admin/posts?type=post', label: t('Articoli', 'Posts'), icon: Newspaper },
+      { href: '/admin/post-types', label: t('Tipi contenuto', 'Content types'), icon: Database },
       { href: '/admin/media', label: 'Media', icon: ImageIcon },
     ],
   },
@@ -33,17 +34,17 @@ const NAV_GROUPS = [
     label: 'Design',
     items: [
       { href: '/admin/theme-builder', label: 'Theme Builder', icon: PanelTop },
-      { href: '/admin/popups', label: 'Popup', icon: MessageSquare },
-      { href: '/admin/forms', label: 'Form', icon: Inbox },
+      { href: '/admin/popups', label: t('Popup', 'Popups'), icon: MessageSquare },
+      { href: '/admin/forms', label: t('Form', 'Forms'), icon: Inbox },
     ],
   },
   {
-    label: 'Sito',
+    label: t('Sito', 'Site'),
     items: [
-      { href: '/admin/users', label: 'Utenti', icon: Users },
-      { href: '/admin/redirects', label: 'Redirect', icon: ArrowRightLeft },
+      { href: '/admin/users', label: t('Utenti', 'Users'), icon: Users },
+      { href: '/admin/redirects', label: t('Redirect', 'Redirects'), icon: ArrowRightLeft },
       { href: '/admin/settings/site', label: 'Site Settings', icon: Palette },
-      { href: '/admin/settings', label: 'Sistema', icon: Settings },
+      { href: '/admin/settings', label: t('Sistema', 'System'), icon: Settings },
     ],
   },
 ];
@@ -102,7 +103,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                 </span>
               </div>
               <div className="mt-1 text-[9px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                CMS Visual
+                {t('CMS Visual', 'Visual CMS')}
               </div>
             </div>
           </div>
@@ -149,16 +150,16 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <main className="ml-64 min-h-screen">
           {updateAvailable && (
             <div className="border-b border-sky-200 bg-sky-50 px-8 py-2 text-sm text-sky-900 dark:border-sky-900 dark:bg-sky-950 dark:text-sky-200">
-              Aggiornamento disponibile: v{latest} (installata v{currentVersion()}).{' '}
-              <Link href="/admin/settings/site?tab=integrations" className="font-medium underline underline-offset-2">Vai agli aggiornamenti</Link>
+              {t(`Aggiornamento disponibile: v${latest} (installata v${currentVersion()}).`, `Update available: v${latest} (installed v${currentVersion()}).`)}{' '}
+              <Link href="/admin/settings/site?tab=integrations" className="font-medium underline underline-offset-2">{t('Vai agli aggiornamenti', 'Go to updates')}</Link>
             </div>
           )}
           {!license.valid && (
             <div className="border-b border-amber-200 bg-amber-50 px-8 py-2 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-200">
               {license.key
-                ? 'Licenza non attiva: aggiornamenti e supporto sospesi. '
-                : 'Aggiornamenti non attivi: inserisci la licenza per ricevere update e patch di sicurezza. '}
-              <Link href="/admin/settings/site?tab=integrations" className="font-medium underline underline-offset-2">Gestisci licenza</Link>
+                ? t('Licenza non attiva: aggiornamenti e supporto sospesi. ', 'License not active: updates and support suspended. ')
+                : t('Aggiornamenti non attivi: inserisci la licenza per ricevere update e patch di sicurezza. ', 'Updates not active: enter your license to receive updates and security patches. ')}
+              <Link href="/admin/settings/site?tab=integrations" className="font-medium underline underline-offset-2">{t('Gestisci licenza', 'Manage license')}</Link>
             </div>
           )}
           {children}

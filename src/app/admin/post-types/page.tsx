@@ -8,17 +8,22 @@ import { Plus, Settings2, FileText, Layers as LayersIcon } from 'lucide-react';
 import { CreatePostTypeButton } from './create-button';
 import { DeletePostTypeButton } from './delete-button';
 import { DuplicateButton } from '@/components/admin/DuplicateButton';
+import { t } from '@/lib/admin-i18n';
 
 export const dynamic = 'force-dynamic';
 
 export default async function PostTypesPage() {
   const types = await listPostTypes();
+  // Pre-computed: inside types.map the param `t` shadows the i18n helper.
+  const openListLabel = t('Apri lista', 'Open list');
+  const taxonomiesLabel = t('Tassonomie', 'Taxonomies');
+  const settingsLabel = t('Impostazioni', 'Settings');
   return (
     <div className="p-8 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Tipi di contenuto</h1>
-          <p className="text-muted-foreground">Crea Custom Post Types (es. articoli, prodotti, eventi)</p>
+          <h1 className="text-3xl font-bold tracking-tight">{t('Tipi di contenuto', 'Content types')}</h1>
+          <p className="text-muted-foreground">{t('Crea Custom Post Types (es. articoli, prodotti, eventi)', 'Create Custom Post Types (e.g. articles, products, events)')}</p>
         </div>
         <CreatePostTypeButton />
       </div>
@@ -26,10 +31,10 @@ export default async function PostTypesPage() {
       <Card>
         <div className="divide-y">
           <div className="grid grid-cols-[2fr_1fr_1fr_auto] gap-4 px-6 py-3 text-xs font-medium uppercase text-muted-foreground bg-muted/40">
-            <div>Tipo</div>
+            <div>{t('Tipo', 'Type')}</div>
             <div>URL pattern</div>
-            <div>Supporta</div>
-            <div className="text-right">Azioni</div>
+            <div>{t('Supporta', 'Supports')}</div>
+            <div className="text-right">{t('Azioni', 'Actions')}</div>
           </div>
           {types.map((t) => {
             const Icon = (LucideIcons as unknown as Record<string, React.ComponentType<{ className?: string }>>)[t.icon] ?? FileText;
@@ -49,12 +54,12 @@ export default async function PostTypesPage() {
                 </div>
                 <div className="flex gap-1">
                   <Button asChild variant="ghost" size="sm">
-                    <Link href={`/admin/posts?type=${t.slug}`}>Apri lista</Link>
+                    <Link href={`/admin/posts?type=${t.slug}`}>{openListLabel}</Link>
                   </Button>
-                  <Button asChild variant="ghost" size="icon" title="Tassonomie">
+                  <Button asChild variant="ghost" size="icon" title={taxonomiesLabel}>
                     <Link href={`/admin/post-types/${t.id}/taxonomies`}><LayersIcon className="h-4 w-4" /></Link>
                   </Button>
-                  <Button asChild variant="ghost" size="icon" title="Impostazioni">
+                  <Button asChild variant="ghost" size="icon" title={settingsLabel}>
                     <Link href={`/admin/post-types/${t.id}`}><Settings2 className="h-4 w-4" /></Link>
                   </Button>
                   <DuplicateButton endpoint={`/api/post-types/${t.id}`} />

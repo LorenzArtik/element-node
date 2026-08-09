@@ -12,6 +12,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { MediaField } from './MediaField';
 import { Search, X, CheckCircle2, AlertTriangle, XCircle, Sparkles, Loader2, WandSparkles } from 'lucide-react';
 import { analyzeSeo, type SeoAnalysis } from '@/lib/seo';
+import { t } from '@/lib/admin-i18n';
 
 export interface SeoMeta {
   seoTitle: string;
@@ -62,7 +63,7 @@ export function SeoPanel({
       setAiDone(true);
       setTimeout(() => setAiDone(false), 4000);
     } catch (e) {
-      setAiError(e instanceof Error ? e.message : 'Errore sconosciuto');
+      setAiError(e instanceof Error ? e.message : t('Errore sconosciuto', 'Unknown error'));
     } finally {
       setAiBusy(false);
     }
@@ -98,17 +99,17 @@ export function SeoPanel({
         <div className="p-4 space-y-4">
           {/* Snippet preview Google */}
           <div className="border rounded-lg p-3 bg-muted/40 space-y-1">
-            <div className="text-[11px] uppercase font-semibold text-muted-foreground">Anteprima Google</div>
+            <div className="text-[11px] uppercase font-semibold text-muted-foreground">{t('Anteprima Google', 'Google preview')}</div>
             <div className="text-xs text-emerald-700 truncate">{baseUrl}/{slug || ''}</div>
-            <div className="text-[#1a0dab] text-base font-medium leading-tight line-clamp-1">{previewTitle || 'Titolo della pagina'}</div>
-            <div className="text-xs text-[#4d5156] leading-snug line-clamp-2">{previewDesc || 'Inserisci una description per mostrarla in anteprima.'}</div>
+            <div className="text-[#1a0dab] text-base font-medium leading-tight line-clamp-1">{previewTitle || t('Titolo della pagina', 'Page title')}</div>
+            <div className="text-xs text-[#4d5156] leading-snug line-clamp-2">{previewDesc || t('Inserisci una description per mostrarla in anteprima.', 'Add a description to preview it here.')}</div>
           </div>
 
           <Tabs defaultValue="meta">
             <TabsList className="w-full grid grid-cols-3">
               <TabsTrigger value="meta">Meta</TabsTrigger>
               <TabsTrigger value="social">Social</TabsTrigger>
-              <TabsTrigger value="adv">Avanzate</TabsTrigger>
+              <TabsTrigger value="adv">{t('Avanzate', 'Advanced')}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="meta" className="space-y-3 pt-3">
@@ -122,15 +123,15 @@ export function SeoPanel({
                   onClick={optimizeWithAi}
                 >
                   {aiBusy ? (
-                    <><Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> Analizzo la pagina…</>
+                    <><Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> {t('Analizzo la pagina…', 'Analyzing the page…')}</>
                   ) : aiDone ? (
-                    <><CheckCircle2 className="h-3.5 w-3.5 mr-1.5 text-emerald-500" /> Fatto — rivedi e salva</>
+                    <><CheckCircle2 className="h-3.5 w-3.5 mr-1.5 text-emerald-500" /> {t('Fatto — rivedi e salva', 'Done — review and save')}</>
                   ) : (
-                    <><WandSparkles className="h-3.5 w-3.5 mr-1.5" /> Ottimizza con AI</>
+                    <><WandSparkles className="h-3.5 w-3.5 mr-1.5" /> {t('Ottimizza con AI', 'Optimize with AI')}</>
                   )}
                 </Button>
                 <p className="text-[10px] text-muted-foreground">
-                  Genera title, description e keyword dal contenuto della pagina. Poi rivedi e salva.
+                  {t('Genera title, description e keyword dal contenuto della pagina. Poi rivedi e salva.', 'Generates title, description and keyword from the page content. Then review and save.')}
                 </p>
                 {aiError && (
                   <div className="text-[11px] text-red-600 border border-red-200 bg-red-50 rounded-md px-2.5 py-1.5">
@@ -140,7 +141,7 @@ export function SeoPanel({
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs">Focus keyword</Label>
-                <Input value={meta.focusKeyword} onChange={(e) => set('focusKeyword', e.target.value)} placeholder="es. cms next.js" />
+                <Input value={meta.focusKeyword} onChange={(e) => set('focusKeyword', e.target.value)} placeholder={t('es. cms next.js', 'e.g. next.js cms')} />
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs">SEO Title <span className="text-muted-foreground">({meta.seoTitle.length}/65)</span></Label>
@@ -167,7 +168,7 @@ export function SeoPanel({
               <div className="flex items-center justify-between p-3 border rounded-lg">
                 <div>
                   <Label className="text-xs">Noindex</Label>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">Esclude la pagina dai motori di ricerca</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">{t('Esclude la pagina dai motori di ricerca', 'Excludes the page from search engines')}</p>
                 </div>
                 <Switch checked={meta.noindex} onCheckedChange={(v) => set('noindex', v)} />
               </div>
@@ -176,18 +177,18 @@ export function SeoPanel({
 
           {/* Stats */}
           <div className="border rounded-lg p-3 grid grid-cols-2 gap-2 text-xs">
-            <Stat label="Parole" value={analysis.stats.wordCount} />
+            <Stat label={t('Parole', 'Words')} value={analysis.stats.wordCount} />
             <Stat label="Heading" value={analysis.stats.headingsCount} />
-            <Stat label="Immagini" value={analysis.stats.imagesCount} />
-            <Stat label="Img senza alt" value={analysis.stats.imagesWithoutAlt} />
-            <Stat label="Densità KW" value={`${analysis.stats.keywordDensity}%`} />
-            <Stat label="Leggibilità" value={`${analysis.stats.fleschScore}/100`} />
+            <Stat label={t('Immagini', 'Images')} value={analysis.stats.imagesCount} />
+            <Stat label={t('Img senza alt', 'Images without alt')} value={analysis.stats.imagesWithoutAlt} />
+            <Stat label={t('Densità KW', 'KW density')} value={`${analysis.stats.keywordDensity}%`} />
+            <Stat label={t('Leggibilità', 'Readability')} value={`${analysis.stats.fleschScore}/100`} />
           </div>
 
           {/* Checks */}
           <div className="border rounded-lg overflow-hidden">
             <div className="px-3 py-2 text-[11px] uppercase font-semibold text-muted-foreground bg-muted/40 flex items-center gap-1.5">
-              <Sparkles className="h-3 w-3" /> Analisi
+              <Sparkles className="h-3 w-3" /> {t('Analisi', 'Analysis')}
             </div>
             <ul className="divide-y">
               {analysis.checks.map((c) => (

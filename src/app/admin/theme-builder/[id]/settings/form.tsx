@@ -12,19 +12,20 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import type { ConditionRule, Conditions } from '@/lib/theme-blocks';
+import { t } from '@/lib/admin-i18n';
 
 const RULE_TYPES: { value: ConditionRule['type']; label: string }[] = [
-  { value: 'all-site', label: 'Tutto il sito' },
-  { value: 'homepage', label: 'Solo homepage' },
-  { value: 'not-homepage', label: 'Esclude homepage' },
-  { value: 'page-slug', label: 'Pagina specifica (slug)' },
-  { value: 'url-prefix', label: 'URL inizia con' },
-  { value: 'url-exact', label: 'URL esatto' },
-  { value: 'url-regex', label: 'URL match regex' },
-  { value: 'role', label: 'Ruolo utente' },
-  { value: 'logged-in', label: 'Utente loggato' },
-  { value: 'logged-out', label: 'Utente non loggato' },
-  { value: 'device', label: 'Dispositivo' },
+  { value: 'all-site', label: t('Tutto il sito', 'Entire site') },
+  { value: 'homepage', label: t('Solo homepage', 'Homepage only') },
+  { value: 'not-homepage', label: t('Esclude homepage', 'Exclude homepage') },
+  { value: 'page-slug', label: t('Pagina specifica (slug)', 'Specific page (slug)') },
+  { value: 'url-prefix', label: t('URL inizia con', 'URL starts with') },
+  { value: 'url-exact', label: t('URL esatto', 'Exact URL') },
+  { value: 'url-regex', label: t('URL match regex', 'URL matches regex') },
+  { value: 'role', label: t('Ruolo utente', 'User role') },
+  { value: 'logged-in', label: t('Utente loggato', 'Logged-in user') },
+  { value: 'logged-out', label: t('Utente non loggato', 'Logged-out user') },
+  { value: 'device', label: t('Dispositivo', 'Device') },
 ];
 
 interface InitialState {
@@ -67,10 +68,10 @@ export function ThemeBlockSettingsForm({ id, initial }: { id: string; initial: I
         }),
       });
       if (!res.ok) {
-        toast.error('Errore salvataggio');
+        toast.error(t('Errore salvataggio', 'Save error'));
         return;
       }
-      toast.success('Impostazioni salvate');
+      toast.success(t('Impostazioni salvate', 'Settings saved'));
       router.refresh();
     });
   }
@@ -83,49 +84,49 @@ export function ThemeBlockSettingsForm({ id, initial }: { id: string; initial: I
 
       <Card>
         <CardHeader>
-          <CardTitle>Generale</CardTitle>
-          <CardDescription>Nome interno e priorità di applicazione</CardDescription>
+          <CardTitle>{t('Generale', 'General')}</CardTitle>
+          <CardDescription>{t('Nome interno e priorità di applicazione', 'Internal name and application priority')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-5 max-w-xl">
           <div className="space-y-2">
-            <Label>Nome</Label>
+            <Label>{t('Nome', 'Name')}</Label>
             <Input value={name} onChange={(e) => setName(e.target.value)} />
           </div>
           <div className="space-y-2">
-            <Label>Priorità ({priority})</Label>
+            <Label>{t('Priorità', 'Priority')} ({priority})</Label>
             <input
               type="range" min={0} max={100} step={1}
               value={priority}
               onChange={(e) => setPriority(Number(e.target.value))}
               className="w-full"
             />
-            <p className="text-xs text-muted-foreground">Più alta = applicato prima quando ci sono regole sovrapposte</p>
+            <p className="text-xs text-muted-foreground">{t('Più alta = applicato prima quando ci sono regole sovrapposte', 'Higher = applied first when rules overlap')}</p>
           </div>
           <div className="flex items-center justify-between p-3 border rounded-lg">
             <div>
-              <Label className="font-medium">Pubblicato</Label>
-              <p className="text-xs text-muted-foreground mt-0.5">Solo i blocchi pubblicati appaiono sul sito</p>
+              <Label className="font-medium">{t('Pubblicato', 'Published')}</Label>
+              <p className="text-xs text-muted-foreground mt-0.5">{t('Solo i blocchi pubblicati appaiono sul sito', 'Only published blocks appear on the site')}</p>
             </div>
             <Switch checked={published} onCheckedChange={setPublished} />
           </div>
 
           <Button asChild variant="outline">
-            <Link href={`/editor/theme-block/${id}`}><Edit3 className="h-4 w-4" /> Modifica contenuto nell'editor</Link>
+            <Link href={`/editor/theme-block/${id}`}><Edit3 className="h-4 w-4" /> {t("Modifica contenuto nell'editor", 'Edit content in the editor')}</Link>
           </Button>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle>Regole di applicazione</CardTitle>
+          <CardTitle>{t('Regole di applicazione', 'Display rules')}</CardTitle>
           <CardDescription>
-            Il blocco si applica se <b>almeno una</b> regola "Include" matcha e <b>nessuna</b> regola "Esclude" matcha.
+            {t('Il blocco si applica se', 'The block applies if')} <b>{t('almeno una', 'at least one')}</b> {t('regola "Include" matcha e', '"Include" rule matches and')} <b>{t('nessuna', 'no')}</b> {t('regola "Esclude" matcha.', '"Exclude" rule matches.')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <RuleGroup
             title="Include"
-            tooltip="Dove DEVE apparire il blocco"
+            tooltip={t('Dove DEVE apparire il blocco', 'Where the block MUST appear')}
             color="emerald"
             rules={conditions.include}
             onAdd={() => addRule('include')}
@@ -133,8 +134,8 @@ export function ThemeBlockSettingsForm({ id, initial }: { id: string; initial: I
             onRemove={(idx) => removeRule('include', idx)}
           />
           <RuleGroup
-            title="Esclude"
-            tooltip="Dove NON deve apparire (override include)"
+            title={t('Esclude', 'Exclude')}
+            tooltip={t('Dove NON deve apparire (override include)', 'Where it must NOT appear (overrides include)')}
             color="red"
             rules={conditions.exclude}
             onAdd={() => addRule('exclude')}
@@ -145,9 +146,9 @@ export function ThemeBlockSettingsForm({ id, initial }: { id: string; initial: I
       </Card>
 
       <div className="sticky bottom-0 -mx-8 -mb-8 px-8 py-3 bg-card border-t flex items-center justify-end gap-3 z-20">
-        <p className="text-xs text-muted-foreground mr-auto">Le modifiche vengono applicate al prossimo refresh delle pagine pubbliche.</p>
+        <p className="text-xs text-muted-foreground mr-auto">{t('Le modifiche vengono applicate al prossimo refresh delle pagine pubbliche.', 'Changes take effect on the next refresh of public pages.')}</p>
         <Button onClick={save} disabled={pending} size="lg">
-          {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />} Salva
+          {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />} {t('Salva', 'Save')}
         </Button>
       </div>
     </>
@@ -170,10 +171,10 @@ function RuleGroup({
     <div>
       <div className="flex items-center justify-between mb-2">
         <h4 className="text-sm font-semibold">{title} <span className="font-normal text-muted-foreground text-xs">— {tooltip}</span></h4>
-        <Button variant="outline" size="sm" onClick={onAdd}><Plus className="h-3 w-3" /> Aggiungi</Button>
+        <Button variant="outline" size="sm" onClick={onAdd}><Plus className="h-3 w-3" /> {t('Aggiungi', 'Add')}</Button>
       </div>
       {rules.length === 0 ? (
-        <p className="text-xs text-muted-foreground italic">Nessuna regola</p>
+        <p className="text-xs text-muted-foreground italic">{t('Nessuna regola', 'No rules')}</p>
       ) : (
         <div className="space-y-2">
           {rules.map((rule, idx) => (
@@ -213,10 +214,10 @@ function RuleEditor({ rule, onChange }: { rule: ConditionRule; onChange: (r: Con
         </SelectContent>
       </Select>
 
-      {rule.type === 'page-slug' && <Input className="flex-1" placeholder="es. chi-siamo" value={rule.slug} onChange={(e) => onChange({ ...rule, slug: e.target.value })} />}
-      {rule.type === 'url-prefix' && <Input className="flex-1" placeholder="es. /blog" value={rule.prefix} onChange={(e) => onChange({ ...rule, prefix: e.target.value })} />}
-      {rule.type === 'url-exact' && <Input className="flex-1" placeholder="es. /landing-bf" value={rule.path} onChange={(e) => onChange({ ...rule, path: e.target.value })} />}
-      {rule.type === 'url-regex' && <Input className="flex-1" placeholder="es. ^/products/.+$" value={rule.pattern} onChange={(e) => onChange({ ...rule, pattern: e.target.value })} />}
+      {rule.type === 'page-slug' && <Input className="flex-1" placeholder={t('es. chi-siamo', 'e.g. about-us')} value={rule.slug} onChange={(e) => onChange({ ...rule, slug: e.target.value })} />}
+      {rule.type === 'url-prefix' && <Input className="flex-1" placeholder={t('es. /blog', 'e.g. /blog')} value={rule.prefix} onChange={(e) => onChange({ ...rule, prefix: e.target.value })} />}
+      {rule.type === 'url-exact' && <Input className="flex-1" placeholder={t('es. /landing-bf', 'e.g. /landing-bf')} value={rule.path} onChange={(e) => onChange({ ...rule, path: e.target.value })} />}
+      {rule.type === 'url-regex' && <Input className="flex-1" placeholder={t('es. ^/products/.+$', 'e.g. ^/products/.+$')} value={rule.pattern} onChange={(e) => onChange({ ...rule, pattern: e.target.value })} />}
       {rule.type === 'role' && (
         <Select value={rule.role} onValueChange={(v) => onChange({ ...rule, role: v as 'ADMIN' | 'EDITOR' | 'VIEWER' | 'guest' })}>
           <SelectTrigger className="flex-1"><SelectValue /></SelectTrigger>
@@ -224,7 +225,7 @@ function RuleEditor({ rule, onChange }: { rule: ConditionRule; onChange: (r: Con
             <SelectItem value="ADMIN">Admin</SelectItem>
             <SelectItem value="EDITOR">Editor</SelectItem>
             <SelectItem value="VIEWER">Viewer</SelectItem>
-            <SelectItem value="guest">Ospite (non loggato)</SelectItem>
+            <SelectItem value="guest">{t('Ospite (non loggato)', 'Guest (logged out)')}</SelectItem>
           </SelectContent>
         </Select>
       )}

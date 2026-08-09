@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { Trash2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { t } from '@/lib/admin-i18n';
 
 export function DeletePostButton({ id, title }: { id: string; title: string }) {
   const [open, setOpen] = useState(false);
@@ -17,27 +18,27 @@ export function DeletePostButton({ id, title }: { id: string; title: string }) {
     const res = await fetch(`/api/posts/${id}`, { method: 'DELETE' });
     setLoading(false);
     if (res.ok) {
-      toast.success('Eliminato');
+      toast.success(t('Eliminato', 'Deleted'));
       setOpen(false);
       router.refresh();
-    } else toast.error('Errore');
+    } else toast.error(t('Errore', 'Error'));
   }
 
   return (
     <>
-      <Button variant="ghost" size="icon" onClick={() => setOpen(true)} title="Elimina">
+      <Button variant="ghost" size="icon" onClick={() => setOpen(true)} title={t('Elimina', 'Delete')}>
         <Trash2 className="h-4 w-4 text-destructive" />
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Eliminare?</DialogTitle>
-            <DialogDescription>Stai per eliminare <b>{title}</b>. Operazione irreversibile.</DialogDescription>
+            <DialogTitle>{t('Eliminare?', 'Delete?')}</DialogTitle>
+            <DialogDescription>{t('Stai per eliminare', 'You are about to delete')} <b>{title}</b>. {t('Operazione irreversibile.', 'This cannot be undone.')}</DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setOpen(false)}>Annulla</Button>
+            <Button variant="outline" onClick={() => setOpen(false)}>{t('Annulla', 'Cancel')}</Button>
             <Button variant="destructive" onClick={onDelete} disabled={loading}>
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Elimina'}
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : t('Elimina', 'Delete')}
             </Button>
           </DialogFooter>
         </DialogContent>

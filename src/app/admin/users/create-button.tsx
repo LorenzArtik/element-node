@@ -11,6 +11,7 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ROLE_LABELS } from '@/lib/permissions';
+import { t } from '@/lib/admin-i18n';
 
 export function CreateUserButton() {
   const [open, setOpen] = useState(false);
@@ -23,8 +24,8 @@ export function CreateUserButton() {
   const router = useRouter();
 
   async function create() {
-    if (!email) { toast.error('Email richiesta'); return; }
-    if (!sendInvite && !password) { toast.error('Specifica una password o attiva l\'invio invito'); return; }
+    if (!email) { toast.error(t('Email richiesta', 'Email required')); return; }
+    if (!sendInvite && !password) { toast.error(t('Specifica una password o attiva l\'invio invito', 'Provide a password or enable the invite email')); return; }
     setLoading(true);
     const res = await fetch('/api/users', {
       method: 'POST', headers: { 'content-type': 'application/json' },
@@ -33,28 +34,28 @@ export function CreateUserButton() {
     setLoading(false);
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      toast.error('Errore', { description: err?.error?.message });
+      toast.error(t('Errore', 'Error'), { description: err?.error?.message });
       return;
     }
-    toast.success(sendInvite ? 'Utente creato. Invito inviato.' : 'Utente creato.');
+    toast.success(sendInvite ? t('Utente creato. Invito inviato.', 'User created. Invite sent.') : t('Utente creato.', 'User created.'));
     setOpen(false);
     router.refresh();
   }
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}><Plus className="h-4 w-4" /> Nuovo utente</Button>
+      <Button onClick={() => setOpen(true)}><Plus className="h-4 w-4" /> {t('Nuovo utente', 'New user')}</Button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Nuovo utente</DialogTitle>
-            <DialogDescription>Aggiungi un membro al team o un cliente</DialogDescription>
+            <DialogTitle>{t('Nuovo utente', 'New user')}</DialogTitle>
+            <DialogDescription>{t('Aggiungi un membro al team o un cliente', 'Add a team member or a client')}</DialogDescription>
           </DialogHeader>
           <div className="space-y-3">
             <div className="space-y-1.5"><Label>Email</Label><Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} /></div>
-            <div className="space-y-1.5"><Label>Nome</Label><Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Opzionale" /></div>
+            <div className="space-y-1.5"><Label>{t('Nome', 'Name')}</Label><Input value={name} onChange={(e) => setName(e.target.value)} placeholder={t('Opzionale', 'Optional')} /></div>
             <div className="space-y-1.5">
-              <Label>Ruolo</Label>
+              <Label>{t('Ruolo', 'Role')}</Label>
               <Select value={role} onValueChange={setRole}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
@@ -64,18 +65,18 @@ export function CreateUserButton() {
             </div>
             <div className="flex items-center justify-between p-3 border rounded-lg">
               <div>
-                <Label>Invia link di invito</Label>
-                <p className="text-xs text-muted-foreground mt-0.5">L'utente imposterà la password dal link email</p>
+                <Label>{t('Invia link di invito', 'Send invite link')}</Label>
+                <p className="text-xs text-muted-foreground mt-0.5">{t("L'utente imposterà la password dal link email", 'The user will set their password from the email link')}</p>
               </div>
               <Switch checked={sendInvite} onCheckedChange={setSendInvite} />
             </div>
             {!sendInvite && (
-              <div className="space-y-1.5"><Label>Password iniziale</Label><Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} /></div>
+              <div className="space-y-1.5"><Label>{t('Password iniziale', 'Initial password')}</Label><Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} /></div>
             )}
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setOpen(false)}>Annulla</Button>
-            <Button onClick={create} disabled={loading}>{loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Crea'}</Button>
+            <Button variant="outline" onClick={() => setOpen(false)}>{t('Annulla', 'Cancel')}</Button>
+            <Button onClick={create} disabled={loading}>{loading ? <Loader2 className="h-4 w-4 animate-spin" /> : t('Crea', 'Create')}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

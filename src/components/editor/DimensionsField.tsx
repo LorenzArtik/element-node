@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link2, Unlink } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { t } from '@/lib/admin-i18n';
 
 /**
  * Controllo CSS multi-side stile Elementor (padding/margin/border-radius).
@@ -140,7 +141,7 @@ export function DimensionsField({ value, onChange, labels = DEFAULT_LABELS_TRBL,
         value={unit}
         onChange={(e) => changeUnit(e.target.value as Unit)}
         className="h-9 text-xs border border-input rounded-md px-1.5 bg-card hover:bg-accent transition-colors cursor-pointer"
-        title="Unità di misura"
+        title={t('Unità di misura', 'Unit')}
       >
         {UNITS.map((u) => <option key={u} value={u}>{u}</option>)}
       </select>
@@ -150,7 +151,7 @@ export function DimensionsField({ value, onChange, labels = DEFAULT_LABELS_TRBL,
         className={`h-9 w-9 flex items-center justify-center rounded-md border transition-colors shrink-0 ${
           linked ? 'bg-primary text-primary-foreground border-primary' : 'border-input hover:bg-accent'
         }`}
-        title={linked ? 'Lati linkati (clicca per scollegare)' : 'Lati indipendenti (clicca per linkare)'}
+        title={linked ? t('Lati linkati (clicca per scollegare)', 'Linked sides (click to unlink)') : t('Lati indipendenti (clicca per linkare)', 'Independent sides (click to link)')}
       >
         {linked ? <Link2 className="h-3.5 w-3.5" /> : <Unlink className="h-3.5 w-3.5" />}
       </button>

@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { Trash2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { t } from '@/lib/admin-i18n';
 
 export function DeletePageButton({ id, title }: { id: string; title: string }) {
   const [open, setOpen] = useState(false);
@@ -17,29 +18,29 @@ export function DeletePageButton({ id, title }: { id: string; title: string }) {
     const res = await fetch(`/api/pages/${id}`, { method: 'DELETE' });
     setLoading(false);
     if (res.ok) {
-      toast.success('Pagina eliminata');
+      toast.success(t('Pagina eliminata', 'Page deleted'));
       setOpen(false);
       router.refresh();
     } else {
-      toast.error('Errore durante l\'eliminazione');
+      toast.error(t('Errore durante l\'eliminazione', 'Error while deleting'));
     }
   }
 
   return (
     <>
-      <Button variant="ghost" size="icon" onClick={() => setOpen(true)} title="Elimina">
+      <Button variant="ghost" size="icon" onClick={() => setOpen(true)} title={t('Elimina', 'Delete')}>
         <Trash2 className="h-4 w-4 text-destructive" />
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Eliminare la pagina?</DialogTitle>
-            <DialogDescription>Stai per eliminare definitivamente <b>{title}</b>. L'azione non si può annullare.</DialogDescription>
+            <DialogTitle>{t('Eliminare la pagina?', 'Delete this page?')}</DialogTitle>
+            <DialogDescription>{t('Stai per eliminare definitivamente', 'You are about to permanently delete')} <b>{title}</b>. {t("L'azione non si può annullare.", 'This action cannot be undone.')}</DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setOpen(false)}>Annulla</Button>
+            <Button variant="outline" onClick={() => setOpen(false)}>{t('Annulla', 'Cancel')}</Button>
             <Button variant="destructive" onClick={onDelete} disabled={loading}>
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Elimina'}
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : t('Elimina', 'Delete')}
             </Button>
           </DialogFooter>
         </DialogContent>

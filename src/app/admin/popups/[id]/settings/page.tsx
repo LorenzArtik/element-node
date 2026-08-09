@@ -4,6 +4,7 @@ import { prisma } from '@/lib/db';
 import { triggerSchema, popupSettingsSchema } from '@/lib/popups';
 import { conditionsSchema } from '@/lib/theme-blocks';
 import { PopupSettingsForm } from './form';
+import { t } from '@/lib/admin-i18n';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,8 +17,8 @@ export default async function PopupSettingsPage({ params }: { params: Promise<{ 
   return (
     <div className="p-8 space-y-6 max-w-4xl mx-auto">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Impostazioni: {row.name}</h1>
-        <p className="text-muted-foreground">Trigger, regole, layout</p>
+        <h1 className="text-3xl font-bold tracking-tight">{t('Impostazioni:', 'Settings:')} {row.name}</h1>
+        <p className="text-muted-foreground">{t('Trigger, regole, layout', 'Trigger, rules, layout')}</p>
       </div>
       <PopupSettingsForm
         id={row.id}

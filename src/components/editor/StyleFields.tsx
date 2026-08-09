@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { t } from '@/lib/admin-i18n';
 
 /**
  * Controlli stile Elementor per valori CSS espressi come stringa:
@@ -37,7 +38,7 @@ function ManualToggle({ manual, setManual }: { manual: boolean; setManual: (v: b
       onClick={() => setManual(!manual)}
       className="text-[10px] text-muted-foreground underline underline-offset-2 hover:text-foreground"
     >
-      {manual ? 'controlli visuali' : 'manuale'}
+      {manual ? t('controlli visuali', 'visual controls') : t('manuale', 'manual')}
     </button>
   );
 }
@@ -45,11 +46,11 @@ function ManualToggle({ manual, setManual }: { manual: boolean; setManual: (v: b
 /* ═══════════════ BORDO ═══════════════ */
 
 const BORDER_STYLES = [
-  { value: 'none', label: 'Nessuno' },
-  { value: 'solid', label: 'Solido' },
-  { value: 'dashed', label: 'Tratteggiato' },
-  { value: 'dotted', label: 'Punteggiato' },
-  { value: 'double', label: 'Doppio' },
+  { value: 'none', label: t('Nessuno', 'None') },
+  { value: 'solid', label: t('Solido', 'Solid') },
+  { value: 'dashed', label: t('Tratteggiato', 'Dashed') },
+  { value: 'dotted', label: t('Punteggiato', 'Dotted') },
+  { value: 'double', label: t('Doppio', 'Double') },
 ];
 
 function parseBorder(v: string): { width: number; style: string; color: string } | null {
@@ -110,11 +111,11 @@ export function BorderField({ value, onChange }: { value: string; onChange: (v: 
 interface Shadow { x: number; y: number; blur: number; spread: number; color: string; inset: boolean }
 
 const SHADOW_PRESETS: { value: string; label: string; css: string }[] = [
-  { value: 'none', label: 'Nessuna', css: '' },
-  { value: 'light', label: 'Leggera', css: '0 1px 3px rgba(0,0,0,0.10)' },
-  { value: 'medium', label: 'Media', css: '0 6px 18px rgba(0,0,0,0.12)' },
-  { value: 'strong', label: 'Forte', css: '0 14px 34px rgba(0,0,0,0.22)' },
-  { value: 'custom', label: 'Personalizzata', css: '' },
+  { value: 'none', label: t('Nessuna', 'None'), css: '' },
+  { value: 'light', label: t('Leggera', 'Light'), css: '0 1px 3px rgba(0,0,0,0.10)' },
+  { value: 'medium', label: t('Media', 'Medium'), css: '0 6px 18px rgba(0,0,0,0.12)' },
+  { value: 'strong', label: t('Forte', 'Strong'), css: '0 14px 34px rgba(0,0,0,0.22)' },
+  { value: 'custom', label: t('Personalizzata', 'Custom'), css: '' },
 ];
 
 function parseShadow(v: string): Shadow | null {
@@ -175,7 +176,7 @@ export function ShadowField({ value, onChange }: { value: string; onChange: (v: 
           <div className="grid grid-cols-4 gap-1.5">
             {(['x', 'y', 'blur', 'spread'] as const).map((k) => (
               <div key={k}>
-                <span className="mb-0.5 block text-[9px] uppercase text-muted-foreground">{k === 'blur' ? 'Sfoc.' : k === 'spread' ? 'Esp.' : k.toUpperCase()}</span>
+                <span className="mb-0.5 block text-[9px] uppercase text-muted-foreground">{k === 'blur' ? t('Sfoc.', 'Blur') : k === 'spread' ? t('Esp.', 'Spread') : k.toUpperCase()}</span>
                 <Input
                   type="number"
                   value={s[k]}
@@ -187,7 +188,7 @@ export function ShadowField({ value, onChange }: { value: string; onChange: (v: 
           </div>
           <MiniColor value={s.color} onChange={(c) => onChange(shadowCss({ ...s, color: c }))} />
           <div className="flex items-center justify-between">
-            <Label className="text-[10px]">Interna (inset)</Label>
+            <Label className="text-[10px]">{t('Interna (inset)', 'Inner (inset)')}</Label>
             <Switch checked={s.inset} onCheckedChange={(v) => onChange(shadowCss({ ...s, inset: v }))} />
           </div>
         </div>
@@ -256,7 +257,7 @@ export function BackgroundField({ value, onChange }: { value: string; onChange: 
   return (
     <div className="space-y-2">
       <div className="grid grid-cols-3 gap-1 rounded-md border p-0.5">
-        {([['none', 'Nessuno'], ['color', 'Colore'], ['gradient', 'Gradiente']] as const).map(([k, lbl]) => (
+        {([['none', t('Nessuno', 'None')], ['color', t('Colore', 'Color')], ['gradient', t('Gradiente', 'Gradient')]] as const).map(([k, lbl]) => (
           <button
             key={k}
             type="button"
@@ -281,16 +282,16 @@ export function BackgroundField({ value, onChange }: { value: string; onChange: 
         <div className="space-y-2 rounded-md border p-2">
           <div className="grid grid-cols-2 gap-1.5">
             <div>
-              <span className="mb-0.5 block text-[9px] uppercase text-muted-foreground">Da</span>
+              <span className="mb-0.5 block text-[9px] uppercase text-muted-foreground">{t('Da', 'From')}</span>
               <MiniColor value={g.from} onChange={(c) => emitGrad({ from: c })} />
             </div>
             <div>
-              <span className="mb-0.5 block text-[9px] uppercase text-muted-foreground">A</span>
+              <span className="mb-0.5 block text-[9px] uppercase text-muted-foreground">{t('A', 'To')}</span>
               <MiniColor value={g.to} onChange={(c) => emitGrad({ to: c })} />
             </div>
           </div>
           <div>
-            <span className="mb-0.5 block text-[9px] uppercase text-muted-foreground">Angolo: {g.angle}°</span>
+            <span className="mb-0.5 block text-[9px] uppercase text-muted-foreground">{t('Angolo', 'Angle')}: {g.angle}°</span>
             <input
               type="range"
               min={0}

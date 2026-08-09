@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Copy, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { t } from '@/lib/admin-i18n';
 
 /**
  * Pulsante duplica generico. POST sull'endpoint per clonare l'entità.
@@ -30,10 +31,10 @@ export function DuplicateButton({
       const res = await fetch(endpoint, { method: 'POST' });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err?.error?.message ?? 'Errore duplicazione');
+        throw new Error(err?.error?.message ?? t('Errore duplicazione', 'Duplication error'));
       }
       const data = await res.json();
-      toast.success('Duplicato');
+      toast.success(t('Duplicato', 'Duplicated'));
       if (redirectTo === 'editor' && data.id) {
         // Nuova entità: porta all'editor (per page/post)
         if (endpoint.includes('/posts/')) router.push(`/editor/post/${data.id}`);
@@ -43,16 +44,16 @@ export function DuplicateButton({
         router.refresh();
       }
     } catch (e) {
-      toast.error('Errore', { description: (e as Error).message });
+      toast.error(t('Errore', 'Error'), { description: (e as Error).message });
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <Button variant="ghost" size={size} onClick={onClick} disabled={loading} title={label ?? 'Duplica'}>
+    <Button variant="ghost" size={size} onClick={onClick} disabled={loading} title={label ?? t('Duplica', 'Duplicate')}>
       {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Copy className="h-4 w-4" />}
-      {size !== 'icon' && (label ?? 'Duplica')}
+      {size !== 'icon' && (label ?? t('Duplica', 'Duplicate'))}
     </Button>
   );
 }

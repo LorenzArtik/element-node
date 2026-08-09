@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Bot, Download, Loader2, CheckCircle2, Copy, Check } from 'lucide-react';
+import { t } from '@/lib/admin-i18n';
 
 /**
  * Skill AI (element-node-builder) per Claude Code / coding agent.
@@ -59,7 +60,7 @@ export function SkillCard({ licenseKey }: { licenseKey?: string }) {
       setDone(true);
       setTimeout(() => setDone(false), 5000);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Download non riuscito');
+      setError(e instanceof Error ? e.message : t('Download non riuscito', 'Download failed'));
     } finally {
       setBusy(false);
     }
@@ -69,42 +70,40 @@ export function SkillCard({ licenseKey }: { licenseKey?: string }) {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
-          <Bot className="h-4 w-4" /> Skill AI per Claude Code
+          <Bot className="h-4 w-4" /> {t('Skill AI per Claude Code', 'AI Skill for Claude Code')}
         </CardTitle>
         <CardDescription>
-          Costruisci il sito con un prompt dal tuo agente AI (Claude Code, Codex…): la skill gli
-          insegna widget, layout e API di Element Node. È{' '}
+          {t('Costruisci il sito con un prompt dal tuo agente AI (Claude Code, Codex…): la skill gli insegna widget, layout e API di Element Node. È', 'Build your site with a prompt from your AI agent (Claude Code, Codex…): the skill teaches it Element Node widgets, layouts and APIs. It\'s')}{' '}
           <a
             href="https://github.com/LorenzArtik/element-node/tree/main/skill"
             target="_blank"
             rel="noopener noreferrer"
             className="underline underline-offset-2"
           >
-            open source su GitHub
+            {t('open source su GitHub', 'open source on GitHub')}
           </a>
-          {' '}e gratuita per tutti; da qui scarichi sempre l&apos;ultima versione impacchettata.
-          Riscaricarla è l&apos;aggiornamento.
+          {' '}{t('e gratuita per tutti; da qui scarichi sempre l\'ultima versione impacchettata. Riscaricarla è l\'aggiornamento.', 'and free for everyone; from here you always download the latest packaged version. Re-downloading it is how you update.')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-3 max-w-2xl">
         <div className="flex flex-wrap items-center gap-3">
           <Button type="button" onClick={download} disabled={busy}>
             {busy ? (
-              <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Scarico…</>
+              <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> {t('Scarico…', 'Downloading…')}</>
             ) : done ? (
-              <><CheckCircle2 className="h-4 w-4 mr-2" /> Scaricata</>
+              <><CheckCircle2 className="h-4 w-4 mr-2" /> {t('Scaricata', 'Downloaded')}</>
             ) : (
-              <><Download className="h-4 w-4 mr-2" /> Scarica l&apos;ultima versione (zip)</>
+              <><Download className="h-4 w-4 mr-2" /> {t('Scarica l\'ultima versione (zip)', 'Download the latest version (zip)')}</>
             )}
           </Button>
           {version && (
-            <span className="text-xs text-muted-foreground">Ultima versione: {version}</span>
+            <span className="text-xs text-muted-foreground">{t('Ultima versione:', 'Latest version:')} {version}</span>
           )}
         </div>
 
         <div className="space-y-1.5">
           <p className="text-xs text-muted-foreground">
-            Oppure installala/aggiornala direttamente dal terminale (o incolla il comando a Claude Code):
+            {t('Oppure installala/aggiornala direttamente dal terminale (o incolla il comando a Claude Code):', 'Or install/update it directly from the terminal (or paste the command into Claude Code):')}
           </p>
           <div className="flex items-center gap-1.5">
             <code className="flex-1 min-w-0 truncate rounded-md border bg-muted/50 px-2.5 py-1.5 text-[11px]" title={command}>
@@ -116,8 +115,7 @@ export function SkillCard({ licenseKey }: { licenseKey?: string }) {
           </div>
           {!key && (
             <p className="text-[11px] text-muted-foreground">
-              Senza chiave di licenza il comando installa la copia pubblica da GitHub; con la chiave
-              (inseriscila qui sopra) scarica l&apos;ultima versione impacchettata dal license server.
+              {t('Senza chiave di licenza il comando installa la copia pubblica da GitHub; con la chiave (inseriscila qui sopra) scarica l\'ultima versione impacchettata dal license server.', 'Without a license key the command installs the public copy from GitHub; with the key (enter it above) it downloads the latest packaged version from the license server.')}
             </p>
           )}
         </div>

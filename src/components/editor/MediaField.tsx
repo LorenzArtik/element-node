@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Image as ImageIcon, Upload, Loader2, X } from 'lucide-react';
+import { t } from '@/lib/admin-i18n';
 
 interface MediaItem {
   id: string;
@@ -42,11 +43,11 @@ export function MediaField({ value, onChange }: { value: string; onChange: (v: s
     <div className="space-y-2">
       <div className="flex gap-2">
         <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder="https://..." className="flex-1" />
-        <Button variant="outline" size="icon" onClick={() => setOpen(true)} title="Sfoglia libreria">
+        <Button variant="outline" size="icon" onClick={() => setOpen(true)} title={t('Sfoglia libreria', 'Browse library')}>
           <ImageIcon className="h-4 w-4" />
         </Button>
         {value && (
-          <Button variant="outline" size="icon" onClick={() => onChange('')} title="Rimuovi">
+          <Button variant="outline" size="icon" onClick={() => onChange('')} title={t('Rimuovi', 'Remove')}>
             <X className="h-4 w-4" />
           </Button>
         )}
@@ -58,12 +59,12 @@ export function MediaField({ value, onChange }: { value: string; onChange: (v: s
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-3xl">
           <DialogHeader>
-            <DialogTitle>Libreria media</DialogTitle>
+            <DialogTitle>{t('Libreria media', 'Media library')}</DialogTitle>
           </DialogHeader>
           <div className="flex justify-end">
             <input ref={inputRef} type="file" className="hidden" accept="image/*" onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])} />
             <Button onClick={() => inputRef.current?.click()} disabled={loading}>
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />} Carica nuovo
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />} {t('Carica nuovo', 'Upload new')}
             </Button>
           </div>
           <div className="grid grid-cols-4 gap-2 max-h-[60vh] overflow-y-auto">

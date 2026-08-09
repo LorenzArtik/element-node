@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Search, LayoutGrid, Globe, Sparkles, ChevronDown, Grip, Lock } from 'lucide-react';
 import { isWidgetLocked, requiredPlanFor, type LicenseTier } from '@/lib/license-features';
+import { t } from '@/lib/admin-i18n';
 import { useEditor } from '@/lib/editor-store';
 import { PropertyPanelContent } from './PropertyPanel';
 import { GlobalsPanel } from './GlobalsPanel';
@@ -27,7 +28,7 @@ function WidgetCard({ type, tier }: { type: WidgetType; tier: LicenseTier }) {
       <button
         onClick={() => window.open('https://elementnode.cloud/it/pricing', '_blank', 'noopener')}
         className="group relative flex flex-col items-center justify-center gap-1.5 p-3 rounded-md bg-card border border-transparent opacity-60 hover:opacity-100 hover:border-amber-300/60 transition-all select-none"
-        title={`${w.label} — disponibile dal piano ${requiredPlanFor(type)}. Clicca per i piani.`}
+        title={t(`${w.label} — disponibile dal piano ${requiredPlanFor(type)}. Clicca per i piani.`, `${w.label} — available from the ${requiredPlanFor(type)} plan. Click to see plans.`)}
       >
         <Lock className="absolute right-1.5 top-1.5 h-3 w-3 text-amber-500" />
         <Icon className="h-6 w-6 text-muted-foreground" strokeWidth={1.5} />
@@ -44,7 +45,7 @@ function WidgetCard({ type, tier }: { type: WidgetType; tier: LicenseTier }) {
       className={`group cursor-grab active:cursor-grabbing flex flex-col items-center justify-center gap-1.5 p-3 rounded-md bg-card border border-transparent hover:border-[#92003b]/30 hover:shadow-[0_2px_8px_rgba(146,0,59,0.15)] transition-all select-none ${
         isDragging ? 'opacity-30' : ''
       }`}
-      title={`${w.label} — trascina sul canvas`}
+      title={t(`${w.label} — trascina sul canvas`, `${w.label} — drag onto the canvas`)}
     >
       <Icon className="h-6 w-6 text-muted-foreground group-hover:text-[#92003b] transition-colors" strokeWidth={1.5} />
       <div className="text-[11px] font-medium text-center leading-tight text-muted-foreground group-hover:text-foreground">{w.label}</div>
@@ -96,11 +97,11 @@ export function Sidebar() {
           <button
             onClick={() => setForceList(true)}
             className="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b border-border bg-card hover:bg-accent transition-colors group"
-            title="Torna alla lista widget"
+            title={t('Torna alla lista widget', 'Back to the widget list')}
           >
             <Grip className="h-3.5 w-3.5 text-[#92003b]" />
             <span className="text-foreground">Widget</span>
-            <span className="ml-auto text-[10px] uppercase tracking-wider text-muted-foreground group-hover:text-foreground">← Indietro</span>
+            <span className="ml-auto text-[10px] uppercase tracking-wider text-muted-foreground group-hover:text-foreground">{t('← Indietro', '← Back')}</span>
           </button>
           <PropertyPanelContent />
         </>
@@ -135,7 +136,7 @@ function WidgetsListView() {
               : 'text-muted-foreground hover:text-foreground'
           }`}
         >
-          <LayoutGrid className="h-3.5 w-3.5" /> Elementi
+          <LayoutGrid className="h-3.5 w-3.5" /> {t('Elementi', 'Elements')}
         </button>
         <button
           onClick={() => setTab('globals')}
@@ -145,7 +146,7 @@ function WidgetsListView() {
               : 'text-muted-foreground hover:text-foreground'
           }`}
         >
-          <Globe className="h-3.5 w-3.5" /> Globali
+          <Globe className="h-3.5 w-3.5" /> {t('Globali', 'Globals')}
         </button>
       </div>
 
@@ -157,7 +158,7 @@ function WidgetsListView() {
               <Input
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                placeholder="Cerca widget..."
+                placeholder={t('Cerca widget...', 'Search widgets...')}
                 className="pl-8 h-9 bg-muted/50 border-border text-sm"
               />
             </div>
@@ -165,11 +166,11 @@ function WidgetsListView() {
 
           {!q && (
             <div className="p-3 border-b border-border bg-card">
-              <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Struttura</div>
+              <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">{t('Struttura', 'Structure')}</div>
               <div className="grid grid-cols-4 gap-1.5">
                 {[1, 2, 3, 4].map((n) => <SectionCard key={n} cols={n} />)}
               </div>
-              <p className="text-[10px] text-muted-foreground mt-1.5">Click o trascina sul canvas</p>
+              <p className="text-[10px] text-muted-foreground mt-1.5">{t('Click o trascina sul canvas', 'Click or drag onto the canvas')}</p>
             </div>
           )}
 
@@ -178,7 +179,7 @@ function WidgetsListView() {
               <div className="p-px grid grid-cols-2 gap-px bg-border">
                 {filtered.map((w) => <WidgetCard key={w.type} type={w.type} tier={tier} />)}
                 {filtered.length === 0 && (
-                  <div className="col-span-2 p-8 text-center text-xs text-muted-foreground">Nessun risultato per &ldquo;{q}&rdquo;</div>
+                  <div className="col-span-2 p-8 text-center text-xs text-muted-foreground">{t(`Nessun risultato per “${q}”`, `No results for “${q}”`)}</div>
                 )}
               </div>
             ) : (
@@ -220,7 +221,7 @@ function SectionCard({ cols }: { cols: number }) {
       {...listeners}
       onClick={() => addSection(cols)}
       className={`aspect-square flex items-center justify-center rounded border border-border hover:border-[#92003b] hover:bg-[#92003b]/5 transition-colors cursor-grab active:cursor-grabbing ${isDragging ? 'opacity-30' : ''}`}
-      title={`Trascina o clicca per aggiungere ${cols} colonn${cols === 1 ? 'a' : 'e'}`}
+      title={t(`Trascina o clicca per aggiungere ${cols} colonn${cols === 1 ? 'a' : 'e'}`, `Drag or click to add ${cols} column${cols === 1 ? '' : 's'}`)}
     >
       <StructureIcon cols={cols} />
     </button>
