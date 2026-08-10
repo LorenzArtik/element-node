@@ -2,15 +2,16 @@
 
 import { useEffect, useState } from 'react';
 import { Sparkles, CheckCircle2, Database, User, Globe, Bot, Loader2, AlertTriangle, ArrowRight } from 'lucide-react';
+import { t } from '@/lib/admin-i18n';
 
 type StepKey = 'db' | 'admin' | 'site' | 'ai' | 'done';
 
 const STEPS: Array<{ key: StepKey; label: string; icon: React.ComponentType<{ className?: string }> }> = [
   { key: 'db', label: 'Database', icon: Database },
   { key: 'admin', label: 'Admin', icon: User },
-  { key: 'site', label: 'Sito', icon: Globe },
+  { key: 'site', label: t('Sito', 'Site'), icon: Globe },
   { key: 'ai', label: 'AI', icon: Bot },
-  { key: 'done', label: 'Fine', icon: CheckCircle2 },
+  { key: 'done', label: t('Fine', 'Done'), icon: CheckCircle2 },
 ];
 
 export function InstallWizard() {
@@ -37,7 +38,7 @@ export function InstallWizard() {
           </div>
           <div>
             <div className="font-bold text-lg leading-none">Element Node</div>
-            <div className="text-[11px] uppercase tracking-wider text-white/50">Installazione guidata</div>
+            <div className="text-[11px] uppercase tracking-wider text-white/50">{t('Installazione guidata', 'Guided setup')}</div>
           </div>
         </div>
 
@@ -77,13 +78,13 @@ export function InstallWizard() {
 
           {busy && (
             <div className="mt-4 text-xs text-muted-foreground flex items-center gap-2">
-              <Loader2 className="h-3 w-3 animate-spin" /> Operazione in corso…
+              <Loader2 className="h-3 w-3 animate-spin" /> {t('Operazione in corso…', 'Working…')}
             </div>
           )}
         </div>
 
         <p className="text-center text-[11px] text-white/40 mt-6">
-          Una volta completata l&apos;installazione viene creato il file <code>.install.lock</code> e questa pagina non sarà più accessibile.
+          {t('Una volta completata l\u2019installazione viene creato il file .install.lock e questa pagina non sarà più accessibile.', 'Once setup completes, a .install.lock file is created and this page will no longer be accessible.')}
         </p>
       </div>
     </div>
@@ -104,7 +105,7 @@ function StepDb({ onDone, setBusy, setError, status, reload }: {
     const r = await fetch('/api/install/test-db', { method: 'POST' });
     const d = await r.json();
     setBusy(false);
-    if (!d.ok) { setError(d.message ?? d.error ?? 'Connessione fallita'); return; }
+    if (!d.ok) { setError(d.message ?? d.error ?? t('Connessione fallita', 'Connection failed')); return; }
     setDbInfo({ url: d.url, ok: true });
     reload();
   }
@@ -121,31 +122,30 @@ function StepDb({ onDone, setBusy, setError, status, reload }: {
   return (
     <div className="space-y-5">
       <header>
-        <h2 className="text-2xl font-bold">Connessione al database</h2>
+        <h2 className="text-2xl font-bold">{t('Connessione al database', 'Database connection')}</h2>
         <p className="text-sm text-muted-foreground mt-1">
-          Verifica la connessione e crea le tabelle. Le credenziali devono essere già state impostate nelle variabili ambiente di Plesk
-          (<code className="font-mono text-xs">DATABASE_URL</code>).
+          {t('Verifica la connessione e crea le tabelle. Le credenziali devono essere già impostate nelle variabili ambiente', 'Test the connection and create the tables. Credentials must already be set in the environment variables')} (<code className="font-mono text-xs">DATABASE_URL</code>).
         </p>
       </header>
 
       <div className="space-y-2 text-sm">
-        <Row ok={status?.dbConfigured} label="DATABASE_URL configurato" hint={!status?.dbConfigured ? 'Impostalo nel pannello Plesk → Node.js → Custom env' : undefined} />
-        <Row ok={status?.authSecretSet} label="AUTH_SECRET configurato" hint={!status?.authSecretSet ? 'Genera con `openssl rand -base64 32` e mettilo in env' : undefined} />
-        <Row ok={dbInfo.ok || status?.dbOk} label="Connessione al MySQL funzionante" />
-        <Row ok={migrated} label="Schema database creato" />
+        <Row ok={status?.dbConfigured} label={t('DATABASE_URL configurato', 'DATABASE_URL configured')} hint={!status?.dbConfigured ? t('Impostalo nel pannello Plesk → Node.js → Custom env', 'Set it in Plesk → Node.js → Custom env (or your .env)') : undefined} />
+        <Row ok={status?.authSecretSet} label={t('AUTH_SECRET configurato', 'AUTH_SECRET configured')} hint={!status?.authSecretSet ? t('Genera con `openssl rand -base64 32` e mettilo in env', 'Generate with `openssl rand -base64 32` and add it to env') : undefined} />
+        <Row ok={dbInfo.ok || status?.dbOk} label={t('Connessione al MySQL funzionante', 'MySQL connection working')} />
+        <Row ok={migrated} label={t('Schema database creato', 'Database schema created')} />
       </div>
 
       {dbInfo.url && <div className="text-xs font-mono px-3 py-2 bg-muted rounded">{dbInfo.url}</div>}
 
       <div className="flex flex-wrap gap-2 pt-2">
         <button onClick={testDb} className="px-4 py-2 rounded-lg bg-secondary hover:bg-secondary/80 text-sm font-medium">
-          1. Testa connessione
+          {t('1. Testa connessione', '1. Test connection')}
         </button>
         <button onClick={migrate} disabled={!status?.dbConfigured} className="px-4 py-2 rounded-lg bg-secondary hover:bg-secondary/80 text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed">
-          2. Crea tabelle (db push)
+          {t('2. Crea tabelle (db push)', '2. Create tables (db push)')}
         </button>
         <button onClick={onDone} disabled={!migrated && !(status?.dbOk && status?.adminExists === false)} className="ml-auto px-5 py-2 rounded-lg bg-[#92003b] hover:bg-[#7a0030] text-white text-sm font-medium flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed">
-          Continua <ArrowRight className="h-4 w-4" />
+          {t('Continua', 'Continue')} <ArrowRight className="h-4 w-4" />
         </button>
       </div>
     </div>
@@ -162,7 +162,7 @@ function StepAdmin({ onDone, onBack, setBusy, setError }: {
   const [created, setCreated] = useState(false);
 
   async function submit() {
-    if (password.length < 8) { setError('Password min 8 caratteri'); return; }
+    if (password.length < 8) { setError(t('Password min 8 caratteri', 'Password: 8 characters minimum')); return; }
     setBusy(true); setError(null);
     const r = await fetch('/api/install/admin', {
       method: 'POST', headers: { 'content-type': 'application/json' },
@@ -170,7 +170,7 @@ function StepAdmin({ onDone, onBack, setBusy, setError }: {
     });
     const d = await r.json();
     setBusy(false);
-    if (!r.ok) { setError(d.error === 'admin_exists' ? 'Esiste già un admin' : d.issues?.[0]?.message ?? d.hint ?? d.error); return; }
+    if (!r.ok) { setError(d.error === 'admin_exists' ? t('Esiste già un admin', 'An admin already exists') : d.issues?.[0]?.message ?? d.hint ?? d.error); return; }
     setCreated(true);
     onDone();
   }
@@ -178,20 +178,20 @@ function StepAdmin({ onDone, onBack, setBusy, setError }: {
   return (
     <div className="space-y-5">
       <header>
-        <h2 className="text-2xl font-bold">Crea il primo utente</h2>
-        <p className="text-sm text-muted-foreground mt-1">Sarà l&apos;amministratore del CMS con accesso completo.</p>
+        <h2 className="text-2xl font-bold">{t('Crea il primo utente', 'Create the first user')}</h2>
+        <p className="text-sm text-muted-foreground mt-1">{t('Sarà l\u2019amministratore del CMS con accesso completo.', 'This will be the CMS administrator with full access.')}</p>
       </header>
 
       <div className="space-y-3">
-        <Field label="Nome" value={name} onChange={setName} />
-        <Field label="Email" type="email" value={email} onChange={setEmail} placeholder="tu@esempio.com" />
-        <Field label="Password" type="password" value={password} onChange={setPassword} placeholder="min 8 caratteri" />
+        <Field label={t('Nome', 'Name')} value={name} onChange={setName} />
+        <Field label="Email" type="email" value={email} onChange={setEmail} placeholder={t('tu@esempio.com', 'you@example.com')} />
+        <Field label="Password" type="password" value={password} onChange={setPassword} placeholder={t('min 8 caratteri', '8 characters minimum')} />
       </div>
 
       <div className="flex gap-2 pt-2">
-        <button onClick={onBack} className="px-4 py-2 rounded-lg bg-secondary hover:bg-secondary/80 text-sm">Indietro</button>
+        <button onClick={onBack} className="px-4 py-2 rounded-lg bg-secondary hover:bg-secondary/80 text-sm">{t('Indietro', 'Back')}</button>
         <button onClick={submit} disabled={!email || !password || created} className="ml-auto px-5 py-2 rounded-lg bg-[#92003b] hover:bg-[#7a0030] text-white text-sm font-medium flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed">
-          Crea admin <ArrowRight className="h-4 w-4" />
+          {t('Crea admin', 'Create admin')} <ArrowRight className="h-4 w-4" />
         </button>
       </div>
     </div>
@@ -202,7 +202,7 @@ function StepAdmin({ onDone, onBack, setBusy, setError }: {
 function StepSite({ onDone, onBack, setBusy, setError }: {
   onDone: () => void; onBack: () => void; setBusy: (b: boolean) => void; setError: (e: string | null) => void;
 }) {
-  const [name, setName] = useState('Il mio sito');
+  const [name, setName] = useState(t('Il mio sito', 'My website'));
   const [tagline, setTagline] = useState('');
   const [primaryColor, setPrimaryColor] = useState('#92003b');
 
@@ -214,22 +214,22 @@ function StepSite({ onDone, onBack, setBusy, setError }: {
     });
     const d = await r.json();
     setBusy(false);
-    if (!r.ok) { setError(d.error ?? 'Errore'); return; }
+    if (!r.ok) { setError(d.error ?? t('Errore', 'Error')); return; }
     onDone();
   }
 
   return (
     <div className="space-y-5">
       <header>
-        <h2 className="text-2xl font-bold">Configurazione sito</h2>
-        <p className="text-sm text-muted-foreground mt-1">Brand iniziale: nome, tagline, colore primario. Modificabili in seguito da Site Settings.</p>
+        <h2 className="text-2xl font-bold">{t('Configurazione sito', 'Site setup')}</h2>
+        <p className="text-sm text-muted-foreground mt-1">{t('Brand iniziale: nome, tagline, colore primario. Modificabili in seguito da Site Settings.', 'Initial brand: name, tagline, primary color. You can change these later in Site Settings.')}</p>
       </header>
 
       <div className="space-y-3">
-        <Field label="Nome sito" value={name} onChange={setName} />
-        <Field label="Tagline" value={tagline} onChange={setTagline} placeholder="(opzionale)" />
+        <Field label={t('Nome sito', 'Site name')} value={name} onChange={setName} />
+        <Field label="Tagline" value={tagline} onChange={setTagline} placeholder={t('(opzionale)', '(optional)')} />
         <div>
-          <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Colore primario</label>
+          <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{t('Colore primario', 'Primary color')}</label>
           <div className="flex gap-2 items-center mt-1">
             <input type="color" value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} className="h-10 w-14 rounded border cursor-pointer" />
             <input type="text" value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} className="flex-1 px-3 py-2 rounded-lg border bg-background text-sm font-mono" />
@@ -238,9 +238,9 @@ function StepSite({ onDone, onBack, setBusy, setError }: {
       </div>
 
       <div className="flex gap-2 pt-2">
-        <button onClick={onBack} className="px-4 py-2 rounded-lg bg-secondary hover:bg-secondary/80 text-sm">Indietro</button>
+        <button onClick={onBack} className="px-4 py-2 rounded-lg bg-secondary hover:bg-secondary/80 text-sm">{t('Indietro', 'Back')}</button>
         <button onClick={submit} className="ml-auto px-5 py-2 rounded-lg bg-[#92003b] hover:bg-[#7a0030] text-white text-sm font-medium flex items-center gap-1.5">
-          Continua <ArrowRight className="h-4 w-4" />
+          {t('Continua', 'Continue')} <ArrowRight className="h-4 w-4" />
         </button>
       </div>
     </div>
@@ -265,24 +265,24 @@ function StepAi({ onDone, onBack, setBusy, setError }: {
     const r = await fetch('/api/install/finalize', { method: 'POST' });
     const d = await r.json();
     setBusy(false);
-    if (!r.ok) { setError(d.error ?? 'Errore finalizzazione'); return; }
+    if (!r.ok) { setError(d.error ?? t('Errore finalizzazione', 'Finalize error')); return; }
     onDone();
   }
 
   return (
     <div className="space-y-5">
       <header>
-        <h2 className="text-2xl font-bold">AI Anthropic <span className="text-sm font-normal text-muted-foreground">(opzionale)</span></h2>
-        <p className="text-sm text-muted-foreground mt-1">Aggiungi la chiave per abilitare la generazione AI di contenuti e widget. Puoi farlo anche dopo da Site Settings.</p>
+        <h2 className="text-2xl font-bold">AI Anthropic <span className="text-sm font-normal text-muted-foreground">{t('(opzionale)', '(optional)')}</span></h2>
+        <p className="text-sm text-muted-foreground mt-1">{t('Aggiungi la chiave per abilitare la generazione AI di contenuti e widget. Puoi farlo anche dopo da Site Settings.', 'Add your key to enable AI generation of content and widgets. You can also do this later in Site Settings.')}</p>
       </header>
 
       <Field label="Anthropic API Key" type="password" value={anthropicKey} onChange={setAnthropicKey} placeholder="sk-ant-..." />
 
       <div className="flex flex-wrap gap-2 pt-2">
-        <button onClick={onBack} className="px-4 py-2 rounded-lg bg-secondary hover:bg-secondary/80 text-sm">Indietro</button>
-        <button onClick={() => { setSkipping(true); finalize(); }} className="px-4 py-2 rounded-lg bg-secondary hover:bg-secondary/80 text-sm">Salta</button>
+        <button onClick={onBack} className="px-4 py-2 rounded-lg bg-secondary hover:bg-secondary/80 text-sm">{t('Indietro', 'Back')}</button>
+        <button onClick={() => { setSkipping(true); finalize(); }} className="px-4 py-2 rounded-lg bg-secondary hover:bg-secondary/80 text-sm">{t('Salta', 'Skip')}</button>
         <button onClick={finalize} disabled={skipping} className="ml-auto px-5 py-2 rounded-lg bg-[#92003b] hover:bg-[#7a0030] text-white text-sm font-medium flex items-center gap-1.5 disabled:opacity-40">
-          Completa installazione <ArrowRight className="h-4 w-4" />
+          {t('Completa installazione', 'Complete setup')} <ArrowRight className="h-4 w-4" />
         </button>
       </div>
     </div>
@@ -297,11 +297,11 @@ function StepDone() {
         <CheckCircle2 className="h-8 w-8 text-emerald-500" />
       </div>
       <div>
-        <h2 className="text-2xl font-bold">Installazione completata</h2>
-        <p className="text-sm text-muted-foreground mt-1">Ora puoi accedere al pannello admin.</p>
+        <h2 className="text-2xl font-bold">{t('Installazione completata', 'Setup complete')}</h2>
+        <p className="text-sm text-muted-foreground mt-1">{t('Ora puoi accedere al pannello admin.', 'You can now sign in to the admin panel.')}</p>
       </div>
       <a href="/login" className="inline-block px-6 py-3 bg-[#92003b] hover:bg-[#7a0030] text-white rounded-lg font-medium">
-        Vai al login
+        {t('Vai al login', 'Go to login')}
       </a>
     </div>
   );

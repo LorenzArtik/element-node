@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2 } from 'lucide-react';
+import { t } from '@/lib/admin-i18n';
 
 export default function ResetPasswordPage() {
   const { token } = useParams<{ token: string }>();
@@ -20,7 +21,7 @@ export default function ResetPasswordPage() {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (password !== confirm) { toast.error('Le password non corrispondono'); return; }
+    if (password !== confirm) { toast.error(t('Le password non corrispondono', 'Passwords do not match')); return; }
     setLoading(true);
     const res = await fetch('/api/auth/reset-password', {
       method: 'POST', headers: { 'content-type': 'application/json' },
@@ -29,10 +30,10 @@ export default function ResetPasswordPage() {
     setLoading(false);
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      toast.error('Errore', { description: err?.error?.message });
+      toast.error(t('Errore', 'Error'), { description: err?.error?.message });
       return;
     }
-    toast.success(isInvite ? 'Password creata, ora puoi accedere.' : 'Password aggiornata.');
+    toast.success(isInvite ? t('Password creata, ora puoi accedere.', 'Password created — you can now sign in.') : t('Password aggiornata.', 'Password updated.'));
     router.push('/login');
   }
 
@@ -40,9 +41,9 @@ export default function ResetPasswordPage() {
     <div className="min-h-screen flex items-center justify-center p-8">
       <div className="w-full max-w-md space-y-6">
         <div>
-          <h1 className="text-3xl font-bold">{isInvite ? 'Crea la tua password' : 'Reimposta password'}</h1>
+          <h1 className="text-3xl font-bold">{isInvite ? t('Crea la tua password', 'Create your password') : t('Reimposta password', 'Reset password')}</h1>
           <p className="text-muted-foreground mt-1">
-            {isInvite ? 'Imposta una password per il tuo nuovo account.' : 'Scegli una nuova password.'}
+            {isInvite ? t('Imposta una password per il tuo nuovo account.', 'Set a password for your new account.') : t('Scegli una nuova password.', 'Choose a new password.')}
           </p>
         </div>
         <form onSubmit={onSubmit} className="space-y-4">
@@ -55,7 +56,7 @@ export default function ResetPasswordPage() {
             <Input type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} required minLength={8} />
           </div>
           <Button type="submit" className="w-full" disabled={loading} size="lg">
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Salva password'}
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : t('Salva password', 'Save password')}
           </Button>
         </form>
         <div className="text-sm text-center text-muted-foreground">
