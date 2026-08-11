@@ -311,7 +311,7 @@ export function SiteSettingsForm({ initial, defaultTab }: { initial: SiteSetting
                 <CardTitle className="flex items-center gap-2"><Key className="h-4 w-4 text-primary" /> {t('Licenza Element Node', 'Element Node license')}</CardTitle>
                 <CardDescription>
                   {t('La licenza attiva aggiornamenti gestiti, patch di sicurezza e supporto.', 'The license enables managed updates, security patches and support.')}{' '}
-                  <a href="https://elementnode.cloud/it/pricing" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">{t('Acquista o gestisci →', 'Buy or manage →')}</a>
+                  <a href="/admin/license" className="font-medium underline underline-offset-2">{t('Gestiscila dalla pagina Licenza →', 'Manage it on the License page →')}</a>
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4 max-w-2xl">

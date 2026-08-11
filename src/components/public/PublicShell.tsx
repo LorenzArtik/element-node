@@ -54,6 +54,37 @@ export async function PublicShell({ content, page, path, post }: Props) {
           <PageRenderer content={footer.content} tier={tier} />
         </footer>
       )}
+      {tier === 'free' && (
+        <div style={{ textAlign: 'center', padding: '14px 12px' }}>
+          <a
+            href="https://elementnode.cloud"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Made with Element Node"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '5px 12px',
+              borderRadius: '9999px',
+              background: 'rgba(139,92,246,0.12)',
+              border: '1px solid rgba(139,92,246,0.28)',
+              color: '#8b5cf6',
+              fontSize: '12px',
+              lineHeight: '1',
+              fontWeight: 600,
+              textDecoration: 'none',
+              fontFamily:
+                "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+            }}
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="#8b5cf6" />
+            </svg>
+            Made with Element Node
+          </a>
+        </div>
+      )}
       <PopupRunner path={path} tier={tier} />
       {(site.integrations as { cookieBanner?: CookieBannerSettings }).cookieBanner?.enabled && (
         <CookieBanner settings={(site.integrations as { cookieBanner: CookieBannerSettings }).cookieBanner} path={path} />

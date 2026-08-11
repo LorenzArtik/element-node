@@ -3,10 +3,12 @@ import { prisma } from '@/lib/db';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { FileText, Image as ImageIcon, Newspaper, Plus, Sparkles, TrendingUp, Activity, Users, Inbox, MessageSquare } from 'lucide-react';
+import { FileText, Image as ImageIcon, Newspaper, Plus, Sparkles, TrendingUp, Activity, Users, Inbox, MessageSquare, KeyRound, ArrowRight } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { t } from '@/lib/admin-i18n';
 import { HealthWidget } from './health-widget';
+import { getLicenseInfo } from '@/lib/license-client';
+import { tierForPlan } from '@/lib/license-features';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,6 +22,9 @@ export default async function DashboardPage() {
     prisma.popup.count(),
     prisma.page.findMany({ orderBy: { updatedAt: 'desc' }, take: 5, include: { author: true } }),
   ]);
+
+  const licenseInfo = await getLicenseInfo().catch(() => ({ key: '', valid: false, plan: '', reason: '', checkedAt: '', currentPeriodEnd: null }));
+  const tier = tierForPlan(licenseInfo.plan, licenseInfo.valid);
 
   const stats = [
     { label: t('Pagine', 'Pages'), value: pageCount, icon: FileText, color: 'from-blue-500 to-cyan-500' },
@@ -41,6 +46,33 @@ export default async function DashboardPage() {
           <Link href="/admin/pages/new"><Plus className="h-4 w-4" /> {t('Nuova pagina', 'New page')}</Link>
         </Button>
       </div>
+
+      {tier !== 'full' && (
+        <Link href="/admin/license" className="block">
+          <Card className="border-violet-200 bg-gradient-to-br from-violet-50 to-fuchsia-50 transition-shadow hover:shadow-md dark:border-violet-900 dark:from-violet-950/40 dark:to-fuchsia-950/20">
+            <CardContent className="flex flex-wrap items-center gap-4 p-5">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 text-white">
+                <KeyRound className="h-5 w-5" />
+              </div>
+              <div className="min-w-[200px] flex-1">
+                <div className="font-semibold">
+                  {tier === 'free'
+                    ? t('Sei sulla versione Free', 'You’re on the Free version')
+                    : t('Piano Essential attivo', 'Essential plan active')}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  {tier === 'free'
+                    ? t('Sblocca tutti i widget Pro, gli aggiornamenti 1-click e togli il badge “Made with Element Node”.', 'Unlock all Pro widgets, 1-click updates and remove the “Made with Element Node” badge.')
+                    : t('Passa a un piano superiore per usare tutti i 51 widget.', 'Upgrade to use all 51 widgets.')}
+                </div>
+              </div>
+              <div className="flex items-center gap-1 font-medium text-violet-700 dark:text-violet-300">
+                {t('Gestisci licenza', 'Manage license')} <ArrowRight className="h-4 w-4" />
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
+      )}
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         {stats.map((s) => {

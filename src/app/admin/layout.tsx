@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { auth } from '@/lib/auth';
 import {
   LayoutDashboard, FileText, Image as ImageIcon, Settings, Sparkles,
-  Palette, PanelTop, Newspaper, Database, MessageSquare, Users, ArrowRightLeft, Inbox,
+  Palette, PanelTop, Newspaper, Database, MessageSquare, Users, ArrowRightLeft, Inbox, KeyRound,
 } from 'lucide-react';
 import { AuthProvider } from '@/components/providers/session';
 import { ThemeProvider } from '@/components/providers/theme';
@@ -11,6 +11,7 @@ import { NavigationProgress } from '@/components/admin/NavigationProgress';
 import { UserMenu } from '@/components/admin/UserMenu';
 import { ROLE_LABELS } from '@/lib/permissions';
 import { getLicenseInfo } from '@/lib/license-client';
+import { tierForPlan } from '@/lib/license-features';
 import { getLatestVersion, semverGt, currentVersion } from '@/lib/update-status';
 import { t } from '@/lib/admin-i18n';
 
@@ -41,6 +42,7 @@ const NAV_GROUPS = [
   {
     label: t('Sito', 'Site'),
     items: [
+      { href: '/admin/license', label: t('Licenza', 'License'), icon: KeyRound },
       { href: '/admin/users', label: t('Utenti', 'Users'), icon: Users },
       { href: '/admin/redirects', label: t('Redirect', 'Redirects'), icon: ArrowRightLeft },
       { href: '/admin/settings/site', label: 'Site Settings', icon: Palette },
@@ -55,6 +57,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const license = await getLicenseInfo().catch(() => ({ key: '', valid: true, plan: '', reason: '', checkedAt: '', currentPeriodEnd: null }));
   const latest = license.valid ? await getLatestVersion().catch(() => null) : null;
   const updateAvailable = !!latest && semverGt(latest, currentVersion());
+  const tier = tierForPlan(license.plan, license.valid);
 
   const roleLabel = ROLE_LABELS[session.user.role as keyof typeof ROLE_LABELS] ?? session.user.role;
 
@@ -136,6 +139,24 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             ))}
           </nav>
 
+          {/* Badge tier licenza (sempre visibile; per Free/Essential invita a sbloccare) */}
+          <div className="px-3 pb-1 shrink-0">
+            <Link
+              href="/admin/license"
+              className={`flex items-center justify-between rounded-lg border px-3 py-2 text-xs transition-colors ${
+                tier === 'full'
+                  ? 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-300'
+                  : 'border-violet-200 bg-violet-50 text-violet-700 hover:bg-violet-100 dark:border-violet-900 dark:bg-violet-950/40 dark:text-violet-300'
+              }`}
+            >
+              <span className="flex items-center gap-1.5 font-medium">
+                <KeyRound className="h-3.5 w-3.5" />
+                {tier === 'full' ? 'Full' : tier === 'essential' ? 'Essential' : t('Versione Free', 'Free version')}
+              </span>
+              {tier !== 'full' && <span className="font-semibold">{t('Sblocca', 'Unlock')}</span>}
+            </Link>
+          </div>
+
           {/* Footer: user menu (profile + theme + logout in dropdown) */}
           <div className="p-3 border-t shrink-0">
             <UserMenu
@@ -155,11 +176,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             </div>
           )}
           {!license.valid && (
-            <div className="border-b border-amber-200 bg-amber-50 px-8 py-2 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-200">
+            <div className="border-b border-violet-200 bg-violet-50 px-8 py-2 text-sm text-violet-900 dark:border-violet-900 dark:bg-violet-950 dark:text-violet-200">
               {license.key
-                ? t('Licenza non attiva: aggiornamenti e supporto sospesi. ', 'License not active: updates and support suspended. ')
-                : t('Aggiornamenti non attivi: inserisci la licenza per ricevere update e patch di sicurezza. ', 'Updates not active: enter your license to receive updates and security patches. ')}
-              <Link href="/admin/settings/site?tab=integrations" className="font-medium underline underline-offset-2">{t('Gestisci licenza', 'Manage license')}</Link>
+                ? t('Licenza non attiva: widget Pro, aggiornamenti 1-click e supporto sono sospesi. ', 'License not active: Pro widgets, 1-click updates and support are suspended. ')
+                : t('Sei sulla versione Free. Sblocca i widget Pro, gli aggiornamenti 1-click e togli il badge dal sito. ', 'You’re on the Free version. Unlock Pro widgets, 1-click updates and remove the site badge. ')}
+              <Link href="/admin/license" className="font-medium underline underline-offset-2">{license.key ? t('Gestisci licenza', 'Manage license') : t('Attiva licenza', 'Activate license')}</Link>
             </div>
           )}
           {children}
