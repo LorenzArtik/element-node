@@ -3,7 +3,8 @@ import { getSiteSettings } from '@/lib/site-settings';
 import { resolveActiveThemeBlock } from '@/lib/theme-blocks';
 import type { PageContent } from '@/lib/widgets-schema';
 import { PageRenderer } from './PageRenderer';
-import { getLicenseTier } from '@/lib/license-client';
+import { getLicenseInfo } from '@/lib/license-client';
+import { tierForPlan, type LicenseTier } from '@/lib/license-features';
 import { PublicProviderClient } from './PublicProviderClient';
 import { PopupRunner } from './PopupRunner';
 import { CookieBanner, type CookieBannerSettings } from './CookieBanner';
@@ -33,7 +34,19 @@ export async function PublicShell({ content, page, path, post }: Props) {
 
   // Pagine con chrome proprio (landing): settings.hideHeader / hideFooter
   const ps = (page.settings ?? {}) as { hideHeader?: boolean; hideFooter?: boolean };
-  const tier = await getLicenseTier();
+  // Tier per il gate widget + flag badge "Made with" FAIL-SAFE: il badge compare solo
+  // se non c'è NESSUNA chiave licenza. Un sito con licenza (anche durante la finestra
+  // di warm-up post-restart o su errore di validazione) non lo mostra MAI.
+  let tier: LicenseTier = 'free';
+  let showMadeWith = false;
+  try {
+    const li = await getLicenseInfo();
+    tier = tierForPlan(li.plan, li.valid);
+    showMadeWith = !li.key;
+  } catch {
+    tier = 'free';
+    showMadeWith = false;
+  }
   const [header, footer] = await Promise.all([
     ps.hideHeader ? null : resolveActiveThemeBlock('HEADER', ctx),
     ps.hideFooter ? null : resolveActiveThemeBlock('FOOTER', ctx),
@@ -54,7 +67,7 @@ export async function PublicShell({ content, page, path, post }: Props) {
           <PageRenderer content={footer.content} tier={tier} />
         </footer>
       )}
-      {tier === 'free' && (
+      {showMadeWith && (
         <div style={{ textAlign: 'center', padding: '14px 12px' }}>
           <a
             href="https://elementnode.cloud"
