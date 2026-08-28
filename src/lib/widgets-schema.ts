@@ -50,7 +50,8 @@ export type WidgetType =
   | 'lottie'
   | 'mailchimp'
   | 'marquee'
-  | 'nav-drawer';
+  | 'nav-drawer'
+  | 'language-switcher';
 
 export interface ElementNode {
   id: string;
@@ -681,6 +682,36 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
       { key: 'homeLabel', label: 'Label Home', control: 'text' },
       { key: 'separator', label: 'Separatore', control: 'text' },
       { key: 'color', label: 'Colore', control: 'color' },
+    ],
+  },
+  'language-switcher': {
+    type: 'language-switcher', label: t('Selettore Lingua', 'Language Switcher'), icon: 'Languages', category: 'general', order: 7,
+    defaults: {
+      itLabel: 'IT', enLabel: 'EN',
+      itHome: '/', enHome: '/en',
+      itHomeSlug: 'home', enPrefix: 'en',
+      map: [],
+      activeBg: '#DC7000', activeColor: '#FFFFFF', inactiveColor: '#CFC8C0',
+      radius: '6px', fontSize: '12px', gap: '8px', padding: '3px 10px', weight: '600',
+    },
+    fields: [
+      { key: 'itLabel', label: 'Etichetta IT', control: 'text' },
+      { key: 'enLabel', label: 'Etichetta EN', control: 'text' },
+      { key: 'itHome', label: 'Home IT (fallback)', control: 'url' },
+      { key: 'enHome', label: 'Home EN (fallback)', control: 'url' },
+      { key: 'itHomeSlug', label: 'Slug home IT (→ /)', control: 'text', placeholder: 'home' },
+      { key: 'enPrefix', label: 'Prefisso lingua EN', control: 'text', placeholder: 'en' },
+      { key: 'map', label: 'Mappa pagine IT ↔ EN (slug)', control: 'list', itemTemplate: [
+        { key: 'it', label: 'Slug IT', control: 'text' },
+        { key: 'en', label: 'Slug EN', control: 'text' },
+      ] },
+      { key: 'activeBg', label: 'Sfondo lingua attiva', control: 'color' },
+      { key: 'activeColor', label: 'Testo lingua attiva', control: 'color' },
+      { key: 'inactiveColor', label: 'Testo lingua inattiva', control: 'color' },
+      { key: 'radius', label: 'Raggio bordo', control: 'text' },
+      { key: 'fontSize', label: 'Dimensione testo', control: 'text' },
+      { key: 'gap', label: 'Spazio tra i bottoni', control: 'text' },
+      { key: 'padding', label: 'Padding bottoni', control: 'text' },
     ],
   },
 

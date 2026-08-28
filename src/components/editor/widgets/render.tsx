@@ -651,6 +651,7 @@ function renderWidgetInner(el: ElementNode, opts: RenderOpts = {}): React.ReactN
     case 'search-form': return <SearchFormWidget settings={s} />;
     case 'page-title': return <PageTitleWidget settings={s} />;
     case 'breadcrumbs': return <BreadcrumbsWidget settings={s} />;
+    case 'language-switcher': return <LanguageSwitcher settings={s} />;
 
     case 'call-to-action': {
       const align = (s.align as 'left'|'center'|'right') || 'center';
@@ -671,6 +672,53 @@ function renderWidgetInner(el: ElementNode, opts: RenderOpts = {}): React.ReactN
     default:
       return <div style={{ padding: 12, background: '#fee', color: '#900' }}>Widget sconosciuto: {el.type}</div>;
   }
+}
+
+/**
+ * Language switcher: resolves the CURRENT page (via render context) to its
+ * translated counterpart in each language, instead of always linking to the
+ * language home. Config-driven map of Page.slug pairs (IT <-> EN); pages not
+ * in the map fall back to the language home. Renders correctly at SSR (no-JS OK).
+ */
+type LangPair = { it?: string; en?: string };
+function LanguageSwitcher({ settings }: { settings: Record<string, unknown> }) {
+  const ctx = useRenderContext();
+  const slug = ctx?.page?.slug ?? '';
+  const s = settings as Record<string, unknown>;
+  const rawMap = s.map;
+  const map: LangPair[] = Array.isArray(rawMap) ? (rawMap as LangPair[]) : [];
+  const itHomeSlug = (s.itHomeSlug as string) || 'home';
+  const enPrefix = (s.enPrefix as string) || 'en';
+
+  const pair = map.find((p) => p && (p.it === slug || p.en === slug));
+  const onEn = slug === enPrefix || slug.startsWith(enPrefix + '/') || (pair ? pair.en === slug : false);
+  const itUrl = pair && pair.it != null ? (pair.it === itHomeSlug ? '/' : '/' + pair.it) : ((s.itHome as string) || '/');
+  const enUrl = pair && pair.en != null ? '/' + pair.en : ((s.enHome as string) || '/en');
+
+  const activeBg = (s.activeBg as string) || '#DC7000';
+  const activeColor = (s.activeColor as string) || '#FFFFFF';
+  const inactiveColor = (s.inactiveColor as string) || '#CFC8C0';
+  const radius = (s.radius as string) || '6px';
+  const fontSize = (s.fontSize as string) || '12px';
+  const gap = (s.gap as string) || '8px';
+  const padding = (s.padding as string) || '3px 10px';
+  const weight = (s.weight as string) || '600';
+
+  const linkStyle = (active: boolean): React.CSSProperties => ({
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+    padding, borderRadius: radius, fontSize,
+    fontWeight: weight as React.CSSProperties['fontWeight'],
+    lineHeight: 1.2, textDecoration: 'none',
+    background: active ? activeBg : 'transparent',
+    color: active ? activeColor : inactiveColor,
+  });
+
+  return (
+    <div className="en-w-language-switcher" style={{ display: 'inline-flex', alignItems: 'center', gap }}>
+      <a href={itUrl} hrefLang="it" aria-current={!onEn ? 'true' : undefined} style={linkStyle(!onEn)}>{(s.itLabel as string) || 'IT'}</a>
+      <a href={enUrl} hrefLang="en" aria-current={onEn ? 'true' : undefined} style={linkStyle(onEn)}>{(s.enLabel as string) || 'EN'}</a>
+    </div>
+  );
 }
 
 function HeroWidget({ settings }: { settings: Record<string, unknown> }) {
