@@ -162,6 +162,18 @@ export const integrationsSchema = z.object({
     accentColor: z.string().default(''),
     radius: z.string().default(''),
   }).default({}),
+  // Static Publish: pubblica una copia statica del sito su un hosting FTP (host PHP economico),
+  // tenendo il CMS come sorgente. Opt-in per installazione.
+  staticPublish: z.object({
+    enabled: z.boolean().default(false),
+    targetUrl: z.string().default(''),
+    ftpHost: z.string().default(''),
+    ftpUser: z.string().default(''),
+    ftpPass: z.string().default(''),
+    ftpRemotePath: z.string().default('/'),
+    ftpSsl: z.boolean().default(false),
+    mailTo: z.string().default(''),
+  }).default({}),
   licenseKey: z.string().default(''),
   licenseCache: z.object({
     valid: z.boolean().default(false),
