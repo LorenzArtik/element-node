@@ -49,18 +49,18 @@ export function StaticPublishCard() {
   }
 
   return (
-    <Card className="md:col-span-2">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
+    <Card>
+      <CardHeader className="flex flex-row items-start justify-between gap-3 pb-2">
         <div>
           <CardTitle className="flex items-center gap-2 text-base">
             <UploadCloud className="h-4 w-4" /> Pubblicazione statica
           </CardTitle>
           <p className="text-xs text-muted-foreground mt-1">
-            Pubblica una copia statica del sito su un hosting FTP economico, tenendo questo CMS come sorgente.
+            Pubblica una copia statica del sito su un hosting FTP, tenendo questo CMS come sorgente.
             Attivala solo se serve: quando è attiva compare la voce “Pubblica” nel menu.
           </p>
         </div>
-        <Switch checked={enabled} onCheckedChange={(v) => toggle(Boolean(v))} disabled={saving || !integrations} />
+        <Switch checked={enabled} onCheckedChange={(v) => toggle(Boolean(v))} disabled={saving || !integrations} className="mt-0.5 shrink-0" />
       </CardHeader>
       {enabled && (
         <CardContent>

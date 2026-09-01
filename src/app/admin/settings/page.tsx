@@ -57,11 +57,11 @@ export default async function SettingsPage() {
             </CardHeader>
           </Card>
         </Link>
+        <StaticPublishCard />
       </div>
 
       {/* Status cards */}
       <div className="grid gap-4 md:grid-cols-2">
-        <StaticPublishCard />
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="flex items-center gap-2 text-base"><Database className="h-4 w-4" /> Database</CardTitle>
