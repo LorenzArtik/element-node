@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { auth } from '@/lib/auth';
 import {
   LayoutDashboard, FileText, Image as ImageIcon, Settings, Sparkles,
-  Palette, PanelTop, Newspaper, Database, MessageSquare, Users, ArrowRightLeft, Inbox, KeyRound,
+  Palette, PanelTop, Newspaper, Database, MessageSquare, Users, ArrowRightLeft, Inbox, KeyRound, UploadCloud,
 } from 'lucide-react';
 import { AuthProvider } from '@/components/providers/session';
 import { ThemeProvider } from '@/components/providers/theme';
@@ -42,6 +42,7 @@ const NAV_GROUPS = [
   {
     label: t('Sito', 'Site'),
     items: [
+      { href: '/admin/publish', label: t('Pubblica', 'Publish'), icon: UploadCloud },
       { href: '/admin/license', label: t('Licenza', 'License'), icon: KeyRound },
       { href: '/admin/users', label: t('Utenti', 'Users'), icon: Users },
       { href: '/admin/redirects', label: t('Redirect', 'Redirects'), icon: ArrowRightLeft },
