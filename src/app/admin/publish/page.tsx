@@ -89,17 +89,20 @@ export default function PublishPage() {
         </p>
       </div>
 
+      {integrations && !sp.enabled && (
+        <div className="rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          La pubblicazione statica non è attiva. Attivala in{' '}
+          <a href="/admin/settings" className="font-medium underline">Impostazioni → Sistema</a>{' '}
+          per mostrarla nel menu e poter pubblicare.
+        </div>
+      )}
+
       <Card>
         <CardHeader>
           <CardTitle>Configurazione hosting</CardTitle>
           <CardDescription>Dove viene caricata la copia statica del sito.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-5">
-          <div className="flex items-center gap-3">
-            <Switch id="sp-enabled" checked={sp.enabled} onCheckedChange={(v) => upd('enabled', Boolean(v))} />
-            <Label htmlFor="sp-enabled">Pubblicazione statica attiva</Label>
-          </div>
-
           <div className="space-y-1.5">
             <Label htmlFor="sp-target">Dominio pubblico (target)</Label>
             <Input id="sp-target" placeholder="https://iltuosito.it" value={sp.targetUrl} onChange={(e) => upd('targetUrl', e.target.value)} />

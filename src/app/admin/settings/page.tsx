@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Sparkles, Database, Lock, Zap, Palette, ChevronRight, Key } from 'lucide-react';
 import { t } from '@/lib/admin-i18n';
+import { StaticPublishCard } from './static-publish-card';
 
 export const dynamic = 'force-dynamic';
 
@@ -60,6 +61,7 @@ export default async function SettingsPage() {
 
       {/* Status cards */}
       <div className="grid gap-4 md:grid-cols-2">
+        <StaticPublishCard />
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="flex items-center gap-2 text-base"><Database className="h-4 w-4" /> Database</CardTitle>

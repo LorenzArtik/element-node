@@ -14,6 +14,7 @@ import { getLicenseInfo } from '@/lib/license-client';
 import { tierForPlan } from '@/lib/license-features';
 import { getLatestVersion, semverGt, currentVersion } from '@/lib/update-status';
 import { t } from '@/lib/admin-i18n';
+import { getSiteSettings } from '@/lib/site-settings';
 
 const NAV_GROUPS = [
   {
@@ -61,6 +62,14 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const tier = tierForPlan(license.plan, license.valid);
 
   const roleLabel = ROLE_LABELS[session.user.role as keyof typeof ROLE_LABELS] ?? session.user.role;
+
+  // La voce "Pubblica" compare solo se la Pubblicazione statica è attiva (Impostazioni → Sistema).
+  const site = await getSiteSettings().catch(() => null);
+  const publishEnabled = !!site?.integrations?.staticPublish?.enabled;
+  const navGroups = NAV_GROUPS.map((g) => ({
+    ...g,
+    items: g.items.filter((it) => it.href !== '/admin/publish' || publishEnabled),
+  }));
 
   return (
     <AuthProvider session={session}>
@@ -114,7 +123,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
           {/* Nav */}
           <nav className="flex-1 px-3 py-4 space-y-5 overflow-y-auto">
-            {NAV_GROUPS.map((group, gi) => (
+            {navGroups.map((group, gi) => (
               <div key={gi}>
                 {group.label && (
                   <div className="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/80">
