@@ -23,6 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ type: str
   return {
     title: page.seoTitle || page.title,
     description: page.seoDesc || undefined,
+    robots: (page.settings as { noindex?: boolean } | null)?.noindex ? { index: false, follow: false } : undefined,
     openGraph: {
       title: page.seoTitle || page.title,
       description: page.seoDesc || undefined,

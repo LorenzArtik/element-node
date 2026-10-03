@@ -482,6 +482,14 @@ export function SaLogoMarquee({ settings }: { settings: S }) {
     const img = <img src={str(it.src)} alt={hidden ? '' : str(it.alt)} style={{ maxHeight: h - 24, maxWidth: 190, objectFit: 'contain' }} />;
     return <span key={`${hidden}-${i}`} className="sa-lg" style={{ height: h }} aria-hidden={hidden}>{it.link ? <a href={it.link}>{img}</a> : img}</span>;
   });
+  if (settings.static) {
+    return (
+      <div className="sa-marq-static">
+        <style>{MARQ_CSS}</style>
+        {tiles(false)}
+      </div>
+    );
+  }
   return (
     <div className="sa-marq">
       <style>{MARQ_CSS}</style>
@@ -677,6 +685,7 @@ const MARQ_CSS = `
 .sa-marq{overflow:hidden;width:0;min-width:100%;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
 .sa-mv{display:flex;gap:14px;width:max-content;animation:sa-mq 38s linear infinite}
 .sa-marq:hover .sa-mv{animation-play-state:paused}
+.sa-marq-static{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
 .sa-lg{background:#fff;border:1px solid rgba(43,42,51,.08);border-radius:14px;padding:10px 18px;display:grid;place-items:center}
 .sa-lg a{display:grid;place-items:center}
 @keyframes sa-mq{to{transform:translateX(calc(-50% - 7px))}}

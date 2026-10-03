@@ -16,7 +16,7 @@ export async function GET() {
 
   // Pagine pubbliche
   const [pages, posts, postTypes] = await Promise.all([
-    prisma.page.findMany({ where: { status: 'PUBLISHED' }, select: { slug: true, isHomepage: true, updatedAt: true } }),
+    prisma.page.findMany({ where: { status: 'PUBLISHED' }, select: { slug: true, isHomepage: true, updatedAt: true, settings: true } }),
     prisma.post.findMany({ where: { status: 'PUBLISHED', noindex: false }, select: { slug: true, updatedAt: true, postType: { select: { slug: true, publicSingle: true } } } }),
     prisma.postType.findMany({ where: { publicArchive: true }, select: { slug: true } }),
   ]);
@@ -28,6 +28,7 @@ export async function GET() {
 
   for (const p of pages) {
     if (p.isHomepage) continue;
+    if ((p.settings as { noindex?: boolean } | null)?.noindex) continue;
     urls.push({ loc: `${baseUrl}/${p.slug}`, lastmod: p.updatedAt.toISOString(), changefreq: 'weekly', priority: 0.8 });
   }
 

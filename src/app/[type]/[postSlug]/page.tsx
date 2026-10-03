@@ -20,6 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ type: str
     return {
       title: nested.seoTitle || nested.title,
       description: nested.seoDesc || undefined,
+      robots: (nested.settings as { noindex?: boolean } | null)?.noindex ? { index: false, follow: false } : undefined,
       openGraph: {
         title: nested.seoTitle || nested.title,
         description: nested.seoDesc || undefined,

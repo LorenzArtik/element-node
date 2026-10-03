@@ -1318,6 +1318,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
         { key: 'alt', label: 'Testo alternativo', control: 'text' },
         { key: 'link', label: 'Link', control: 'url' },
       ]},
+      { key: 'static', label: 'Fermo (senza scorrimento)', control: 'switch' },
       { key: 'speed', label: 'Secondi per giro', control: 'number' },
       { key: 'tileHeight', label: 'Altezza riquadro (px)', control: 'number' },
     ],
