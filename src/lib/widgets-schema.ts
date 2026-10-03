@@ -1298,6 +1298,8 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
       { key: 'text', label: 'Testo', control: 'textarea' },
       { key: 'role', label: 'Ruolo (citazione)', control: 'text' },
       { key: 'num', label: 'Numero (passo)', control: 'text' },
+      { key: 'image', label: 'Foto (citazione)', control: 'media' },
+      { key: 'dark', label: 'Su sfondo scuro (nodo)', control: 'switch' },
       { key: 'label', label: 'Etichetta (nodo)', control: 'text' },
       { key: 'tint', label: 'Pastello', control: 'select', options: [
         { value: 'none', label: 'Nessuno (bianco)' }, { value: 'blue', label: 'Azzurro' }, { value: 'violet', label: 'Viola' }, { value: 'green', label: 'Menta' },
@@ -1339,7 +1341,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     fields: [
       { key: 'eyebrow', label: 'Etichetta', control: 'text' }, { key: 'title', label: 'Titolo (a capo con invio)', control: 'textarea' }, { key: 'lead', label: 'Testo (HTML ammesso)', control: 'textarea' },
       { key: 'cta1Text', label: 'Pulsante 1', control: 'text' }, { key: 'cta1Url', label: 'Link 1', control: 'url' }, { key: 'cta2Text', label: 'Pulsante 2', control: 'text' }, { key: 'cta2Url', label: 'Link 2', control: 'url' },
-      { key: 'reassure', label: 'Rassicurazioni (separate da |)', control: 'text' }, { key: 'avatar', label: 'Icona Charlie', control: 'media' }, { key: 'address', label: 'Indirizzo finestra', control: 'text' }, { key: 'mode', label: 'Etichetta modulo', control: 'text' },
+      { key: 'chips', label: 'Etichette colorate (Icona:Testo|Icona:Testo)', control: 'text' }, { key: 'reassure', label: 'Rassicurazioni (separate da |)', control: 'text' }, { key: 'avatar', label: 'Icona Charlie', control: 'media' }, { key: 'address', label: 'Indirizzo finestra', control: 'text' }, { key: 'mode', label: 'Etichetta modulo', control: 'text' },
       { key: 'question', label: 'Domanda', control: 'text' }, { key: 'answerIntro', label: 'Risposta (intro, HTML ammesso)', control: 'textarea' },
       { key: 'rows', label: 'Righe tabella (Voce|Valore, oppure Voce|Valore|no per evidenziare)', control: 'textarea' }, { key: 'source', label: 'Fonte', control: 'text' },
     ],

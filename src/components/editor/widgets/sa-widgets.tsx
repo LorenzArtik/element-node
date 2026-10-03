@@ -427,7 +427,7 @@ export function SaFeatureCard({ settings }: { settings: S }) {
       <figure className="sa-quote" style={vars}>
         <style>{AG_CSS}</style>
         <blockquote>“{str(settings.text)}”</blockquote>
-        <figcaption><b>{str(settings.title)}</b><span>{str(settings.role)}</span></figcaption>
+        <figcaption className={settings.image ? 'withimg' : ''}>{!!settings.image && <img src={str(settings.image)} alt={str(settings.title)} />}<span className="fc"><b>{str(settings.title)}</b><span>{str(settings.role)}</span></span></figcaption>
       </figure>
     );
   } else if (v === 'check') {
@@ -684,7 +684,7 @@ const CHAT_CSS = `
 .sa-chat-note{font-size:.78rem;color:#6b6a7c;margin:0}
 `;
 const AG_CSS = `
-.sa-ag{background:linear-gradient(150deg,var(--t),color-mix(in srgb,var(--t) 55%,#fff));border-radius:22px;padding:26px 26px 28px;display:grid;gap:10px;align-content:start;min-height:200px;transition:transform .2s,box-shadow .2s;position:relative;overflow:hidden}
+.sa-ag{flex:1 1 auto;background:linear-gradient(150deg,var(--t),color-mix(in srgb,var(--t) 55%,#fff));border-radius:22px;padding:26px 26px 28px;display:grid;gap:10px;align-content:start;min-height:200px;transition:transform .2s,box-shadow .2s;position:relative;overflow:hidden}
 .sa-ag::after{content:"";position:absolute;right:-34px;top:-34px;width:120px;height:120px;border-radius:50%;background:color-mix(in srgb,var(--c) 10%,transparent)}
 .sa-ag:hover{transform:translateY(-3px);box-shadow:0 2px 6px rgba(34,30,60,.05),0 22px 48px -16px rgba(34,30,60,.22)}
 .sa-agic{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:rgba(255,255,255,.78);color:var(--c);box-shadow:0 6px 16px -8px color-mix(in srgb,var(--c) 60%,transparent);position:relative;z-index:1}
@@ -693,7 +693,8 @@ const AG_CSS = `
 .sa-tlink{display:inline-flex;align-items:center;gap:6px;color:var(--c);font-weight:600;font-size:.95rem;position:relative;z-index:1}
 .sa-quote{margin:0;padding:26px 28px;border-radius:18px;background:linear-gradient(150deg,var(--t),color-mix(in srgb,var(--t) 50%,#fff));position:relative;overflow:hidden}
 .sa-quote::before{content:"\\201C";position:absolute;right:18px;top:-6px;font-size:7rem;line-height:1;color:var(--c);opacity:.16;font-family:Georgia,serif}
-.sa-quote blockquote{margin:0;font-size:1.04rem;line-height:1.65}.sa-quote figcaption{margin-top:14px;display:grid}.sa-quote figcaption b{color:var(--c)}.sa-quote figcaption span{color:#6b6a7c;font-size:.9rem}
+.sa-quote blockquote{margin:0;font-size:1.04rem;line-height:1.65}.sa-quote figcaption.withimg{display:flex;align-items:center;gap:14px}.sa-quote figcaption img{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid #fff;box-shadow:0 4px 12px rgba(16,24,40,.15);flex:none}.sa-quote figcaption .fc{display:grid}
+.sa-quote figcaption{margin-top:14px;display:grid}.sa-quote figcaption b{color:var(--c)}.sa-quote figcaption span{color:#6b6a7c;font-size:.9rem}
 .sa-check{display:flex;gap:12px;align-items:center;background:var(--t);border-radius:16px;padding:14px 18px;font-weight:500;font-size:1.02rem}
 .sa-ckb{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#fff;color:var(--c);flex:none;box-shadow:0 4px 10px -6px var(--c)}
 .sa-linkrow{display:flex;gap:12px;align-items:center;padding:20px 18px;font-weight:600;font-size:.95rem}.sa-linkrow svg{color:#0c75c6}
@@ -769,6 +770,7 @@ export function SaLandHero({ settings }: { settings: S }) {
             {!!g('cta1Text') && <a className="sl-btn sl-btn-p lg" href={g('cta1Url', '#')}>{g('cta1Text')}</a>}
             {!!g('cta2Text') && <a className="sl-btn sl-btn-g lg" href={g('cta2Url', '#')}>{g('cta2Text')}</a>}
           </div>
+          {!!g('chips') && <div className="sl-chipsrow">{g('chips').split('|').map((x) => x.trim()).filter(Boolean).map((x, i) => { const [ic, tx] = x.split(':'); return <span key={i}><Ico name={ic} size={16} />{tx}</span>; })}</div>}
           <div className="sl-reassure">{g('reassure').split('|').map((x) => x.trim()).filter(Boolean).map((x, i) => <span key={i}><Ico name="Check" size={15} />{x}</span>)}</div>
         </div>
         <div className="sl-device" aria-label="Charlie al lavoro">
@@ -847,12 +849,12 @@ export function SaLandCard({ settings }: { settings: S }) {
   else if (v === 'node') body = <><span className="loc">{str(settings.label)}</span><h3>{str(settings.title)}</h3><p>{str(settings.text)}</p></>;
   else if (v === 'feat') body = <>{ic}<div><h3>{str(settings.title)}</h3><p>{str(settings.text)}</p></div></>;
   else body = <>{ic}<h3>{str(settings.title)}</h3><p>{str(settings.text)}</p></>;
-  return <div className={`sl sl-card ${v}`} style={{ height: '100%' }}><style>{LAND_CSS + LCARD_CSS}</style>{body}</div>;
+  return <div className={`sl sl-card ${v}${settings.dark ? ' dark' : ''}`} style={{ flex: '1 1 auto' }}><style>{LAND_CSS + LCARD_CSS}</style>{body}</div>;
 }
 
 const LAND_HERO_CSS = `
-.sl-hero{position:relative;overflow:hidden;padding-block:72px;background:linear-gradient(180deg,var(--brand-soft2),#fff 72%)}
-.sl-hero::before{content:"";position:absolute;inset:-20% -10% auto auto;width:62%;height:120%;background:radial-gradient(60% 60% at 70% 20%,rgba(0,120,212,.14),transparent 70%),radial-gradient(50% 50% at 90% 40%,rgba(91,99,199,.12),transparent 70%);pointer-events:none}
+.sl-hero{position:relative;overflow:hidden;padding-block:72px;background:linear-gradient(180deg,#e3f0fc,#f4f1fd 55%,#fff 100%)}
+.sl-hero::before{content:"";position:absolute;inset:-20% -10% auto auto;width:62%;height:120%;-webkit-mask-image:linear-gradient(90deg,transparent,#000 35%),linear-gradient(180deg,#000 70%,transparent);-webkit-mask-composite:source-in;mask-composite:intersect;mask-image:linear-gradient(90deg,transparent,#000 35%),linear-gradient(180deg,#000 70%,transparent);background:radial-gradient(closest-side at 70% 30%,rgba(0,120,212,.22),transparent),radial-gradient(closest-side at 88% 50%,rgba(91,99,199,.20),transparent);pointer-events:none}
 .sl-hero-in{position:relative;max-width:1140px;margin-inline:auto;padding:66px 22px 58px;display:grid;grid-template-columns:1.04fr .96fr;gap:52px;align-items:center}
 .sl-eyebrow{display:inline-flex;align-items:center;font-family:var(--disp);font-size:12.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:6px 13px;border-radius:999px}
 .sl-h1{font-size:clamp(32px,5vw,52px)!important;line-height:1.04!important;margin-top:20px!important;font-weight:800!important}
@@ -862,6 +864,9 @@ const LAND_HERO_CSS = `
 .sl-btn.lg{padding:15px 26px;font-size:16.5px;border-radius:13px}
 .sl-btn-p{background:var(--brand);color:#fff;box-shadow:0 1px 1px rgba(0,0,0,.04),0 8px 20px rgba(0,120,212,.28)}.sl-btn-p:hover{background:var(--brand-ink)}
 .sl-btn-g{background:#fff;color:var(--brand-ink);border-color:#cfe2f5}.sl-btn-g:hover{background:var(--brand-soft2);border-color:var(--brand)}
+.sl-chipsrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.sl-chipsrow span{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:var(--brand-700);background:linear-gradient(135deg,#e6f2fd,#eceefb);border:1px solid #cfe2f5;border-radius:999px;padding:8px 14px}
+.sl-chipsrow svg{color:var(--brand)}
 .sl-reassure{display:flex;gap:7px 16px;flex-wrap:wrap;margin-top:18px;font-size:13.5px;color:var(--muted)}
 .sl-reassure span{display:inline-flex;align-items:center;gap:7px}.sl-reassure svg{color:var(--ok)}
 .sl-device{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow-lg);overflow:hidden}
@@ -942,5 +947,6 @@ const LCARD_CSS = `
 .sl-card.ben .ic{width:34px;height:34px;border-radius:10px;background:var(--ok-soft);color:var(--ok)}.sl-card.ben h3{font-size:15.5px!important}.sl-card.ben p{font-size:13.8px;margin-top:4px}
 .sl-card.node{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadow-s)}
 .sl-card.node .loc{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}.sl-card.node h3{font-size:16.5px!important;margin-top:9px!important}.sl-card.node p{font-size:14px;margin-top:7px}
+.sl-card.node.dark{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);box-shadow:none;backdrop-filter:blur(8px)}.sl-card.node.dark .loc{color:#9ad0ff}.sl-card.node.dark h3{color:#fff}.sl-card.node.dark p{color:rgba(255,255,255,.82)}
 .sl-card.feat{display:flex;gap:14px;margin-top:6px}.sl-card.feat .ic{width:40px;height:40px;border-radius:11px;background:var(--brand-soft);color:var(--brand-ink)}.sl-card.feat h3{font-size:16.5px!important}.sl-card.feat p{margin-top:4px}
 `;

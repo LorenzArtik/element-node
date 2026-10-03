@@ -194,7 +194,7 @@ export function PageRenderer({ content, tier = 'full' }: { content: PageContent;
                     {col.elements.map((el) => {
                       // Widget fuori piano: visibili nell'editor, MAI sul sito pubblico
                       if (isWidgetLocked(el.type as WidgetType, tier)) return null;
-                      return <div key={el.id}>{renderWidget(el)}</div>;
+                      return <div key={el.id} style={(c as Record<string, unknown>).stretchContent ? { flex: '1 1 auto', display: 'flex', flexDirection: 'column' } : undefined}>{renderWidget(el)}</div>;
                     })}
                   </div>
                 );
