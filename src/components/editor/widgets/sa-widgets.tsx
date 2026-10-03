@@ -419,6 +419,7 @@ export function SaChatDemo({ settings }: { settings: S }) {
 /* ------------------------------------------------------------------ */
 export function SaFeatureCard({ settings }: { settings: S }) {
   const v = str(settings.variant, 'card');
+  if (['plain', 'step', 'ben', 'node', 'feat'].includes(v)) return <SaLandCard settings={settings} />;
   const vars = tintVars(settings.tint, num(settings.tintIndex, 0));
   let body: React.ReactNode;
   if (v === 'quote') {
@@ -717,4 +718,229 @@ const MARQ_CSS = `
 .sa-lg a{display:grid;place-items:center}
 @keyframes sa-mq{to{transform:translateX(calc(-50% - 7px))}}
 @media (prefers-reduced-motion:reduce){.sa-mv{animation:none}}
+`;
+
+/* ================================================================== */
+/* LANDING (stile "Figtree", card bianche bordate) — widget nativi      */
+/* ================================================================== */
+const LAND_CSS = `
+@import url("https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap");
+.sl{--brand:#0078d4;--brand-ink:#005a9e;--brand-700:#0a4e86;--brand-soft:#e6f2fd;--brand-soft2:#f3f9fe;--accent:#5b63c7;--accent-soft:#eceefb;--ok:#1f8a5b;--ok-soft:#e7f6ee;--warn:#c2410c;--warn-soft:#fdeee5;--ink:#121725;--ink-2:#39404f;--muted:#64708a;--line:#e7eaf0;--line-2:#eef1f6;--bg-alt:#f5f8fc;--shadow-s:0 1px 2px rgba(16,24,40,.05);--shadow:0 2px 6px rgba(16,24,40,.05),0 14px 36px rgba(16,24,40,.08);--shadow-lg:0 10px 24px rgba(0,88,158,.10),0 30px 60px rgba(16,24,40,.12);--disp:"Figtree","Segoe UI",system-ui,sans-serif;font-family:"Segoe UI",-apple-system,system-ui,"Helvetica Neue",Arial,sans-serif;color:var(--ink-2);line-height:1.55}
+.sl h1,.sl h2,.sl h3{font-family:var(--disp);color:var(--ink);margin:0;letter-spacing:-.02em;font-weight:700;line-height:1.1;text-wrap:balance}
+.sl p{margin:0}.sl svg{display:block}
+`;
+
+export function SaLandHero({ settings }: { settings: S }) {
+  const g = (k: string, d = '') => str(settings[k], d);
+  const rows = lines(g('rows')).map((l) => l.split('|').map((c) => c.trim()));
+  const q = g('question'), intro = g('answerIntro'), src = g('source');
+  const [phase, setPhase] = useState(3);          // 0 vuoto · 1 digita · 2 typing · 3 risposta
+  const [typed, setTyped] = useState(q.length);
+  const [shown, setShown] = useState(rows.length + 2);
+  useEffect(() => {
+    if (prefersReduced() || !q) return;
+    let alive = true;
+    const w = (ms: number) => new Promise((r) => setTimeout(r, ms));
+    (async () => {
+      await w(2600);
+      while (alive) {
+        setPhase(0); setTyped(0); setShown(0); await w(650); if (!alive) return;
+        setPhase(1);
+        for (let i = 0; i < q.length && alive; i++) { setTyped(i + 1); await w(9 + Math.random() * 13); }
+        await w(350); setPhase(2); await w(1700); if (!alive) return;
+        setPhase(3);
+        for (let i = 1; i <= rows.length + 2 && alive; i++) { setShown(i); await w(300); }
+        await w(4800);
+      }
+    })();
+    return () => { alive = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [q, rows.length]);
+  const on = (i: number) => ({ opacity: shown >= i ? 1 : 0, transform: shown >= i ? 'none' : 'translateY(7px)', transition: 'opacity .4s ease, transform .4s ease' } as React.CSSProperties);
+  return (
+    <div className="sl sl-hero">
+      <style>{LAND_CSS + LAND_HERO_CSS}</style>
+      <div className="sl-hero-in">
+        <div>
+          {!!g('eyebrow') && <span className="sl-eyebrow">{g('eyebrow')}</span>}
+          <h1 className="sl-h1">{g('title').split('\n').map((l, i) => <Fragment key={i}>{i > 0 && <br />}{l}</Fragment>)}</h1>
+          <p className="sl-lead" dangerouslySetInnerHTML={{ __html: g('lead') }} />
+          <div className="sl-cta">
+            {!!g('cta1Text') && <a className="sl-btn sl-btn-p lg" href={g('cta1Url', '#')}>{g('cta1Text')}</a>}
+            {!!g('cta2Text') && <a className="sl-btn sl-btn-g lg" href={g('cta2Url', '#')}>{g('cta2Text')}</a>}
+          </div>
+          <div className="sl-reassure">{g('reassure').split('|').map((x) => x.trim()).filter(Boolean).map((x, i) => <span key={i}><Ico name="Check" size={15} />{x}</span>)}</div>
+        </div>
+        <div className="sl-device" aria-label="Charlie al lavoro">
+          <div className="sl-chrome"><i /><i /><i /><span className="sl-addr">{g('address', 'app.smartagency.cloud · Charlie')}</span></div>
+          <div className="sl-dbar">{settings.avatar ? <img className="sl-ava" src={g('avatar')} alt="" /> : null}<b>Charlie</b><span className="sl-tag">{g('mode', 'Analisi CGA')}</span></div>
+          <div className="sl-dbody">
+            <div className="sl-q" style={{ opacity: phase >= 2 || (phase === 1 && false) ? 1 : phase === 3 ? 1 : 0, transform: phase >= 2 ? 'none' : 'translateY(9px)', transition: 'opacity .3s, transform .3s' }}>{q}</div>
+            {phase === 2 && <div className="sl-typing"><span /><span /><span /></div>}
+            {phase === 3 && (
+              <div className="sl-a">
+                <p style={on(1)} dangerouslySetInnerHTML={{ __html: intro }} />
+                <table className="sl-cmp"><thead><tr><th>Voce</th><th>Condizione</th></tr></thead><tbody>
+                  {rows.map((r, i) => <tr key={i} style={on(i + 2)}><td>{r[0]}</td><td>{r[2] === 'no' ? <span className="sl-pill no">{r[1]}</span> : r[1]}</td></tr>)}
+                </tbody></table>
+                <span className="sl-src" style={on(rows.length + 2)}><Ico name="Link" size={14} />{src}</span>
+              </div>
+            )}
+          </div>
+          <div className="sl-comp"><span className={`sl-ct${phase === 1 ? ' caret' : ''}${phase !== 1 ? ' empty' : ''}`}>{phase === 1 ? q.slice(0, typed) : ''}</span><span className={`sl-send${phase === 1 ? ' ready' : ''}`}><Ico name="Send" size={16} /></span></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function SaVs({ settings }: { settings: S }) {
+  const col = (k: 'gen' | 'ch') => ({ lbl: str(settings[`${k}Label`]), title: str(settings[`${k}Title`]), items: lines(str(settings[`${k}Items`])) });
+  const gen = col('gen'), ch = col('ch');
+  return (
+    <div className="sl sl-vs"><style>{LAND_CSS + VS_CSS}</style>
+      <div className="col gen"><span className="lbl">{gen.lbl}</span><h3>{gen.title}</h3><ul>{gen.items.map((x, i) => <li key={i}><Ico name="X" size={18} />{x}</li>)}</ul></div>
+      <div className="col ch"><span className="lbl">{ch.lbl}</span><h3>{ch.title}</h3><ul>{ch.items.map((x, i) => <li key={i}><Ico name="Check" size={18} />{x}</li>)}</ul></div>
+    </div>
+  );
+}
+
+export function SaDoc({ settings }: { settings: S }) {
+  return (
+    <div className="sl sl-doc"><style>{LAND_CSS + DOC_CSS}</style>
+      <div className="dh">{settings.avatar ? <img className="ava" src={str(settings.avatar)} alt="" /> : null}<b>{str(settings.title)}</b></div>
+      <p className="dq">{str(settings.quote)}</p>
+      <span className="sl-src"><Ico name="Link" size={14} />{str(settings.source)}</span>
+      <div className="page">{str(settings.page).split(/(\*[^*]+\*)/).map((p, i) => (p.startsWith('*') && p.endsWith('*') ? <span key={i} className="hl">{p.slice(1, -1)}</span> : <Fragment key={i}>{p}</Fragment>))}</div>
+    </div>
+  );
+}
+
+export function SaFaq({ settings }: { settings: S }) {
+  const items = (settings.items as { q?: string; a?: string }[]) || [];
+  return (
+    <div className="sl sl-faq"><style>{LAND_CSS + FAQ_CSS}</style>
+      {items.map((it, i) => (
+        <details key={i} open={i === num(settings.openIndex, 0)}><summary>{it.q}<span className="plus">+</span></summary><p>{it.a}</p></details>
+      ))}
+    </div>
+  );
+}
+
+export function SaChips({ settings }: { settings: S }) {
+  const items = (settings.items as { icon?: string; text?: string }[]) || [];
+  const v = str(settings.variant, 'trust');
+  return (
+    <div className={`sl sl-chips ${v}`}><style>{LAND_CSS + CHIPS_CSS}</style>
+      {items.map((it, i) => <span key={i}><Ico name={str(it.icon, 'Check')} size={v === 'pill' ? 17 : 18} />{it.text}</span>)}
+    </div>
+  );
+}
+
+/* varianti landing di sa-feature-card (richiamate da SaFeatureCard) */
+export function SaLandCard({ settings }: { settings: S }) {
+  const v = str(settings.variant);
+  const ic = <span className={`ic ${v}`}><Ico name={str(settings.icon, 'Search')} size={v === 'ben' ? 18 : 21} /></span>;
+  let body: React.ReactNode;
+  if (v === 'step') body = <><div className="n">{str(settings.num, '1')}</div><h3>{str(settings.title)}</h3><p>{str(settings.text)}</p></>;
+  else if (v === 'ben') body = <>{ic}<div><h3>{str(settings.title)}</h3><p>{str(settings.text)}</p></div></>;
+  else if (v === 'node') body = <><span className="loc">{str(settings.label)}</span><h3>{str(settings.title)}</h3><p>{str(settings.text)}</p></>;
+  else if (v === 'feat') body = <>{ic}<div><h3>{str(settings.title)}</h3><p>{str(settings.text)}</p></div></>;
+  else body = <>{ic}<h3>{str(settings.title)}</h3><p>{str(settings.text)}</p></>;
+  return <div className={`sl sl-card ${v}`} style={{ height: '100%' }}><style>{LAND_CSS + LCARD_CSS}</style>{body}</div>;
+}
+
+const LAND_HERO_CSS = `
+.sl-hero{position:relative;overflow:hidden;padding-block:72px;background:linear-gradient(180deg,var(--brand-soft2),#fff 72%)}
+.sl-hero::before{content:"";position:absolute;inset:-20% -10% auto auto;width:62%;height:120%;background:radial-gradient(60% 60% at 70% 20%,rgba(0,120,212,.14),transparent 70%),radial-gradient(50% 50% at 90% 40%,rgba(91,99,199,.12),transparent 70%);pointer-events:none}
+.sl-hero-in{position:relative;max-width:1140px;margin-inline:auto;padding:66px 22px 58px;display:grid;grid-template-columns:1.04fr .96fr;gap:52px;align-items:center}
+.sl-eyebrow{display:inline-flex;align-items:center;font-family:var(--disp);font-size:12.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:6px 13px;border-radius:999px}
+.sl-h1{font-size:clamp(32px,5vw,52px)!important;line-height:1.04!important;margin-top:20px!important;font-weight:800!important}
+.sl-lead{font-size:clamp(16.5px,1.7vw,19.5px);color:var(--ink-2);margin-top:18px!important;max-width:40ch}
+.sl-cta{display:flex;gap:13px;flex-wrap:wrap;margin-top:28px}
+.sl-btn{display:inline-flex;align-items:center;gap:9px;font-family:var(--disp);font-weight:600;font-size:15px;border-radius:12px;padding:12px 20px;border:1.5px solid transparent;text-decoration:none}
+.sl-btn.lg{padding:15px 26px;font-size:16.5px;border-radius:13px}
+.sl-btn-p{background:var(--brand);color:#fff;box-shadow:0 1px 1px rgba(0,0,0,.04),0 8px 20px rgba(0,120,212,.28)}.sl-btn-p:hover{background:var(--brand-ink)}
+.sl-btn-g{background:#fff;color:var(--brand-ink);border-color:#cfe2f5}.sl-btn-g:hover{background:var(--brand-soft2);border-color:var(--brand)}
+.sl-reassure{display:flex;gap:7px 16px;flex-wrap:wrap;margin-top:18px;font-size:13.5px;color:var(--muted)}
+.sl-reassure span{display:inline-flex;align-items:center;gap:7px}.sl-reassure svg{color:var(--ok)}
+.sl-device{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow-lg);overflow:hidden}
+.sl-chrome{display:flex;align-items:center;gap:7px;padding:11px 14px;background:var(--bg-alt);border-bottom:1px solid var(--line)}
+.sl-chrome i{width:9px;height:9px;border-radius:50%;background:#d7dce6}
+.sl-addr{margin-left:8px;font-size:11.5px;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:7px;padding:3px 10px}
+.sl-dbar{display:flex;align-items:center;gap:9px;padding:13px 16px 4px}
+.sl-ava{width:30px;height:30px;object-fit:contain}
+.sl-dbar b{font-size:14.5px;color:var(--ink);font-family:var(--disp)}
+.sl-tag{margin-left:auto;font-size:11px;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:3px 10px;font-weight:600}
+.sl-dbody{padding:10px 16px 16px;display:flex;flex-direction:column;gap:12px;min-height:292px}
+.sl-q{align-self:flex-end;max-width:86%;background:var(--brand);color:#fff;padding:10px 14px;border-radius:14px 14px 4px 14px;font-size:14px;box-shadow:0 4px 12px rgba(0,120,212,.22)}
+.sl-a{align-self:flex-start;max-width:97%;background:var(--bg-alt);border:1px solid var(--line);padding:12px 14px;border-radius:14px 14px 14px 4px;font-size:14px;color:var(--ink-2)}
+.sl-cmp{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+.sl-cmp th,.sl-cmp td{text-align:left;padding:8px 9px;border-bottom:1px solid var(--line)}
+.sl-cmp tr:last-child td{border-bottom:0}
+.sl-cmp th{font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.sl-cmp td:first-child{color:var(--muted)}
+.sl-pill{display:inline-flex;font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px}.sl-pill.no{background:var(--warn-soft);color:var(--warn)}
+.sl-src{display:inline-flex;align-items:center;gap:7px;margin-top:11px;font-size:12.5px;color:var(--accent);background:var(--accent-soft);padding:6px 11px;border-radius:9px;font-weight:600}
+.sl-typing{display:inline-flex;gap:5px;align-self:flex-start;background:var(--bg-alt);border:1px solid var(--line);padding:13px 15px;border-radius:14px 14px 14px 4px}
+.sl-typing span{width:7px;height:7px;border-radius:50%;background:var(--muted);opacity:.5;animation:sl-tb 1.1s infinite ease-in-out}
+.sl-typing span:nth-child(2){animation-delay:.16s}.sl-typing span:nth-child(3){animation-delay:.32s}
+@keyframes sl-tb{0%,65%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+.sl-comp{display:flex;align-items:center;gap:9px;margin:2px 16px 16px;background:var(--bg-alt);border:1px solid var(--line);border-radius:13px;padding:8px 8px 8px 15px}
+.sl-ct{flex:1;font-size:14px;color:var(--ink);min-height:21px;line-height:1.5}
+.sl-ct.empty::before{content:"Scrivi a Charlie…";color:var(--muted)}
+.sl-ct.caret::after{content:"";display:inline-block;width:2px;height:15px;background:var(--brand);margin-left:2px;vertical-align:-2px;animation:sl-ct 1s step-end infinite}
+@keyframes sl-ct{50%{opacity:0}}
+.sl-send{width:32px;height:32px;flex:none;border-radius:9px;background:#c7cdd8;color:#fff;display:grid;place-items:center}.sl-send.ready{background:var(--brand)}
+@media (max-width:900px){.sl-hero{padding-block:52px}.sl-hero-in{grid-template-columns:1fr;gap:36px;padding-block:40px 34px}}
+@media (prefers-reduced-motion:reduce){.sl-typing span{animation:none}.sl-comp{display:none}}
+`;
+const VS_CSS = `
+.sl-vs{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow-s)}
+.sl-vs .col{padding:26px 24px}.sl-vs .gen{background:var(--bg-alt)}.sl-vs .ch{background:linear-gradient(180deg,var(--brand-soft),#fff);border-left:1px solid var(--line)}
+.sl-vs h3{font-size:16px!important}
+.sl-vs .lbl{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px}
+.sl-vs ul{list-style:none;padding:0;margin:14px 0 0;display:flex;flex-direction:column;gap:11px}
+.sl-vs li{display:flex;gap:10px;font-size:14.5px;color:var(--ink-2)}.sl-vs li svg{flex:none;margin-top:1px}
+.sl-vs .gen li svg{color:var(--muted)}.sl-vs .ch li svg{color:var(--ok)}
+@media (max-width:700px){.sl-vs{grid-template-columns:1fr}.sl-vs .ch{border-left:0;border-top:1px solid var(--line)}}
+`;
+const DOC_CSS = `
+.sl-doc{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:20px}
+.sl-doc .dh{display:flex;align-items:center;gap:9px;padding:4px 2px 12px;border-bottom:1px solid var(--line)}.sl-doc .ava{width:30px;height:30px;object-fit:contain}.sl-doc .dh b{font-family:var(--disp);font-size:14.5px;color:var(--ink)}
+.sl-doc .dq{font-size:14.5px;margin:14px 0 10px;color:var(--ink-2)}
+.sl-doc .sl-src{margin:0 0 12px}
+.sl-doc .page{background:var(--bg-alt);border:1px solid var(--line);border-radius:12px;padding:15px;font-size:13.5px;color:var(--muted)}
+.sl-doc .hl{background:rgba(0,120,212,.16);color:var(--ink);border-radius:4px;padding:0 3px;font-weight:600}
+.sl-src{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--accent);background:var(--accent-soft);padding:6px 11px;border-radius:9px;font-weight:600}
+`;
+const FAQ_CSS = `
+.sl-faq{display:grid;gap:12px;max-width:820px}
+.sl-faq details{background:#fff;border:1px solid var(--line);border-radius:14px;padding:4px 20px;box-shadow:var(--shadow-s)}.sl-faq details[open]{box-shadow:var(--shadow)}
+.sl-faq summary{list-style:none;cursor:pointer;font-family:var(--disp);font-weight:600;font-size:16px;color:var(--ink);padding:16px 0;display:flex;align-items:center;gap:12px}
+.sl-faq summary::-webkit-details-marker{display:none}
+.sl-faq .plus{margin-left:auto;flex:none;width:22px;height:22px;border-radius:50%;background:var(--brand-soft);color:var(--brand-ink);display:grid;place-items:center;font-weight:700;transition:transform .2s}
+.sl-faq details[open] .plus{transform:rotate(45deg)}
+.sl-faq details p{color:var(--muted);font-size:14.5px;padding:0 0 18px;max-width:66ch}
+`;
+const CHIPS_CSS = `
+.sl-chips{display:flex;gap:14px 34px;flex-wrap:wrap;align-items:center}
+.sl-chips.trust{justify-content:center;font-size:13.5px;color:var(--ink-2);font-weight:600}.sl-chips.trust span{display:inline-flex;align-items:center;gap:9px}.sl-chips.trust svg{color:var(--brand)}
+.sl-chips.pill{gap:12px}.sl-chips.pill span{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:11px 16px;font-size:14.5px;font-weight:600;color:var(--ink);box-shadow:var(--shadow-s)}.sl-chips.pill svg{color:var(--brand)}
+`;
+const LCARD_CSS = `
+.sl-card h3{font-size:17.5px!important}.sl-card p{color:var(--muted);font-size:14.5px}
+.sl-card.plain,.sl-card.step{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px;box-shadow:var(--shadow-s);transition:transform .15s,box-shadow .2s}
+.sl-card.plain:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.sl-card.step{padding:26px 24px}
+.sl-card .ic{flex:none;display:grid;place-items:center}
+.sl-card.plain .ic{width:42px;height:42px;border-radius:12px;background:var(--brand-soft);color:var(--brand-ink)}
+.sl-card.plain h3{margin-top:16px!important}.sl-card.plain p{margin-top:8px}
+.sl-card.step .n{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--accent));color:#fff;display:grid;place-items:center;font-family:var(--disp);font-weight:800;font-size:16px;box-shadow:0 6px 14px rgba(0,120,212,.3)}
+.sl-card.step h3{font-size:18px!important;margin-top:16px!important}.sl-card.step p{margin-top:8px}
+.sl-card.ben{display:flex;gap:13px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px}
+.sl-card.ben .ic{width:34px;height:34px;border-radius:10px;background:var(--ok-soft);color:var(--ok)}.sl-card.ben h3{font-size:15.5px!important}.sl-card.ben p{font-size:13.8px;margin-top:4px}
+.sl-card.node{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadow-s)}
+.sl-card.node .loc{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}.sl-card.node h3{font-size:16.5px!important;margin-top:9px!important}.sl-card.node p{font-size:14px;margin-top:7px}
+.sl-card.feat{display:flex;gap:14px;margin-top:6px}.sl-card.feat .ic{width:40px;height:40px;border-radius:11px;background:var(--brand-soft);color:var(--brand-ink)}.sl-card.feat h3{font-size:16.5px!important}.sl-card.feat p{margin-top:4px}
 `;

@@ -58,7 +58,12 @@ export type WidgetType =
   | 'sa-chat-demo'
   | 'sa-feature-card'
   | 'sa-compare-table'
-  | 'sa-logo-marquee';
+  | 'sa-logo-marquee'
+  | 'sa-land-hero'
+  | 'sa-vs'
+  | 'sa-doc'
+  | 'sa-faq'
+  | 'sa-chips';
 
 export interface ElementNode {
   id: string;
@@ -149,6 +154,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
       { key: 'size', label: 'Dimensione', control: 'text' },
       { key: 'weight', label: 'Peso', control: 'select', options: ['300','400','500','600','700','800','900'].map(v => ({ value: v, label: v })) },
       { key: 'letterSpacing', label: 'Letter spacing', control: 'text', placeholder: 'es. 0.2em / 2.4px' },
+      { key: 'fontFamily', label: 'Font (override)', control: 'text', placeholder: 'es. Figtree, sans-serif' },
       { key: 'transform', label: 'Trasformazione', control: 'select', options: [
         { value: 'none', label: 'Nessuna' },
         { value: 'uppercase', label: 'MAIUSCOLO' },
@@ -1286,11 +1292,13 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     type: 'sa-feature-card', label: t('Card pastello', 'Pastel card'), icon: 'LayoutGrid', category: 'pro', order: 9.8,
     defaults: { variant: 'card', icon: 'Sparkles', title: 'Titolo', text: 'Descrizione breve.', role: '', tint: 'blue', tintIndex: 0, link: '', linkText: '' },
     fields: [
-      { key: 'variant', label: 'Variante', control: 'select', options: [{ value: 'card', label: 'Card con icona' }, { value: 'quote', label: 'Citazione' }, { value: 'check', label: 'Voce con spunta' }, { value: 'link', label: 'Link rapido (icona + testo)' }, { value: 'info', label: 'Contatto (icona + righe)' }] },
+      { key: 'variant', label: 'Variante', control: 'select', options: [{ value: 'card', label: 'Card con icona' }, { value: 'quote', label: 'Citazione' }, { value: 'check', label: 'Voce con spunta' }, { value: 'plain', label: 'Landing · scheda bianca' }, { value: 'step', label: 'Landing · passo numerato' }, { value: 'ben', label: 'Landing · beneficio' }, { value: 'node', label: 'Landing · nodo privacy' }, { value: 'feat', label: 'Landing · icona + testo' }, { value: 'link', label: 'Link rapido (icona + testo)' }, { value: 'info', label: 'Contatto (icona + righe)' }] },
       { key: 'icon', label: 'Icona', control: 'icon' },
       { key: 'title', label: 'Titolo / nome', control: 'text' },
       { key: 'text', label: 'Testo', control: 'textarea' },
       { key: 'role', label: 'Ruolo (citazione)', control: 'text' },
+      { key: 'num', label: 'Numero (passo)', control: 'text' },
+      { key: 'label', label: 'Etichetta (nodo)', control: 'text' },
       { key: 'tint', label: 'Pastello', control: 'select', options: [
         { value: 'none', label: 'Nessuno (bianco)' }, { value: 'blue', label: 'Azzurro' }, { value: 'violet', label: 'Viola' }, { value: 'green', label: 'Menta' },
         { value: 'peach', label: 'Pesca' }, { value: 'rose', label: 'Rosa' }, { value: 'teal', label: 'Turchese' }, { value: 'lemon', label: 'Giallo burro' },
@@ -1323,6 +1331,42 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
       { key: 'speed', label: 'Secondi per giro', control: 'number' },
       { key: 'tileHeight', label: 'Altezza riquadro (px)', control: 'number' },
     ],
+  },
+
+  'sa-land-hero': {
+    type: 'sa-land-hero', label: t('Landing · hero con chat', 'Landing · hero with chat'), icon: 'LayoutTemplate', category: 'pro', order: 9.1,
+    defaults: { eyebrow: 'Consulta CGA · Comparatore', title: 'Titolo della landing', lead: 'Testo di apertura.', cta1Text: 'Prova gratis', cta1Url: '#', cta2Text: '', cta2Url: '', reassure: '30 giorni di prova|Senza carta di credito', avatar: '', address: 'app.smartagency.cloud · Charlie', mode: 'Analisi CGA', question: '', answerIntro: '', rows: '', source: '' },
+    fields: [
+      { key: 'eyebrow', label: 'Etichetta', control: 'text' }, { key: 'title', label: 'Titolo (a capo con invio)', control: 'textarea' }, { key: 'lead', label: 'Testo (HTML ammesso)', control: 'textarea' },
+      { key: 'cta1Text', label: 'Pulsante 1', control: 'text' }, { key: 'cta1Url', label: 'Link 1', control: 'url' }, { key: 'cta2Text', label: 'Pulsante 2', control: 'text' }, { key: 'cta2Url', label: 'Link 2', control: 'url' },
+      { key: 'reassure', label: 'Rassicurazioni (separate da |)', control: 'text' }, { key: 'avatar', label: 'Icona Charlie', control: 'media' }, { key: 'address', label: 'Indirizzo finestra', control: 'text' }, { key: 'mode', label: 'Etichetta modulo', control: 'text' },
+      { key: 'question', label: 'Domanda', control: 'text' }, { key: 'answerIntro', label: 'Risposta (intro, HTML ammesso)', control: 'textarea' },
+      { key: 'rows', label: 'Righe tabella (Voce|Valore, oppure Voce|Valore|no per evidenziare)', control: 'textarea' }, { key: 'source', label: 'Fonte', control: 'text' },
+    ],
+  },
+  'sa-vs': {
+    type: 'sa-vs', label: t('Landing · confronto a due colonne', 'Landing · two-column compare'), icon: 'Columns2', category: 'pro', order: 9.2,
+    defaults: { genLabel: "Un'AI generica", genTitle: 'Risponde a memoria', genItems: 'Voce 1\nVoce 2', chLabel: 'Charlie', chTitle: 'Legge i tuoi documenti', chItems: 'Voce 1\nVoce 2' },
+    fields: [
+      { key: 'genLabel', label: 'Etichetta sinistra', control: 'text' }, { key: 'genTitle', label: 'Titolo sinistra', control: 'text' }, { key: 'genItems', label: 'Voci sinistra (una per riga)', control: 'textarea' },
+      { key: 'chLabel', label: 'Etichetta destra', control: 'text' }, { key: 'chTitle', label: 'Titolo destra', control: 'text' }, { key: 'chItems', label: 'Voci destra (una per riga)', control: 'textarea' },
+    ],
+  },
+  'sa-doc': {
+    type: 'sa-doc', label: t('Landing · risposta con fonte', 'Landing · answer with source'), icon: 'FileSearch', category: 'pro', order: 9.3,
+    defaults: { avatar: '', title: 'Risposta con fonte', quote: '', source: '', page: '' },
+    fields: [{ key: 'avatar', label: 'Icona', control: 'media' }, { key: 'title', label: 'Titolo', control: 'text' }, { key: 'quote', label: 'Risposta', control: 'textarea' }, { key: 'source', label: 'Fonte', control: 'text' }, { key: 'page', label: 'Estratto (*parola* = evidenziata)', control: 'textarea' }],
+  },
+  'sa-faq': {
+    type: 'sa-faq', label: t('Landing · domande frequenti', 'Landing · FAQ'), icon: 'HelpCircle', category: 'pro', order: 9.4,
+    defaults: { openIndex: 0, items: [{ q: 'Domanda', a: 'Risposta.' }] },
+    fields: [{ key: 'openIndex', label: 'Voce aperta (indice, -1 nessuna)', control: 'number' }, { key: 'items', label: 'Domande', control: 'list', itemTemplate: [{ key: 'q', label: 'Domanda', control: 'text' }, { key: 'a', label: 'Risposta', control: 'textarea' }] }],
+  },
+  'sa-chips': {
+    type: 'sa-chips', label: t('Landing · riga di voci con icona', 'Landing · icon chips'), icon: 'Tags', category: 'pro', order: 9.5,
+    defaults: { variant: 'trust', items: [{ icon: 'Check', text: 'Voce' }] },
+    fields: [{ key: 'variant', label: 'Stile', control: 'select', options: [{ value: 'trust', label: 'Barra di fiducia' }, { value: 'pill', label: 'Etichette con bordo' }] },
+             { key: 'items', label: 'Voci', control: 'list', itemTemplate: [{ key: 'icon', label: 'Icona', control: 'icon' }, { key: 'text', label: 'Testo', control: 'text' }] }],
   },
 };
 

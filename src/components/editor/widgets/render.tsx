@@ -7,7 +7,7 @@ import useEmblaCarousel from 'embla-carousel-react';
 import { useRenderContext } from '@/components/public/render-context';
 import { InlineEditable } from './InlineEditable';
 import { t } from '@/lib/admin-i18n';
-import { SaHeroCarousel, SaCardCarousel, SaPrivacyShield, SaChatDemo, SaFeatureCard, SaCompareTable, SaLogoMarquee } from './sa-widgets';
+import { SaHeroCarousel, SaCardCarousel, SaPrivacyShield, SaChatDemo, SaFeatureCard, SaCompareTable, SaLogoMarquee, SaLandHero, SaVs, SaDoc, SaFaq, SaChips } from './sa-widgets';
 
 export interface RenderOpts {
   /** Se true, abilita edit inline su heading/text/button */
@@ -142,7 +142,7 @@ function renderWidgetInner(el: ElementNode, opts: RenderOpts = {}): React.ReactN
         textAlign: (s.align as 'left'|'center'|'right') || 'left',
         fontSize: (s.size as string) || undefined,
         fontWeight: (s.weight as string) || undefined,
-        fontFamily: 'var(--en-font-heading)',
+        fontFamily: (s.fontFamily as string) || 'var(--en-font-heading)',
         margin: 0,
         lineHeight: (s.lineHeight as string) || 'var(--en-heading-line-height)',
         letterSpacing: (s.letterSpacing as string) || undefined,
@@ -654,6 +654,11 @@ function renderWidgetInner(el: ElementNode, opts: RenderOpts = {}): React.ReactN
     case 'page-title': return <PageTitleWidget settings={s} />;
     case 'breadcrumbs': return <BreadcrumbsWidget settings={s} />;
     case 'language-switcher': return <LanguageSwitcher settings={s} />;
+    case 'sa-land-hero': return <SaLandHero settings={{ ...(WIDGETS['sa-land-hero'].defaults as Record<string, unknown>), ...s }} />;
+    case 'sa-vs': return <SaVs settings={{ ...(WIDGETS['sa-vs'].defaults as Record<string, unknown>), ...s }} />;
+    case 'sa-doc': return <SaDoc settings={{ ...(WIDGETS['sa-doc'].defaults as Record<string, unknown>), ...s }} />;
+    case 'sa-faq': return <SaFaq settings={{ ...(WIDGETS['sa-faq'].defaults as Record<string, unknown>), ...s }} />;
+    case 'sa-chips': return <SaChips settings={{ ...(WIDGETS['sa-chips'].defaults as Record<string, unknown>), ...s }} />;
     case 'sa-hero-carousel': return <SaHeroCarousel settings={{ ...(WIDGETS['sa-hero-carousel'].defaults as Record<string, unknown>), ...s }} />;
     case 'sa-card-carousel': return <SaCardCarousel settings={{ ...(WIDGETS['sa-card-carousel'].defaults as Record<string, unknown>), ...s }} />;
     case 'sa-privacy-shield': return <SaPrivacyShield settings={{ ...(WIDGETS['sa-privacy-shield'].defaults as Record<string, unknown>), ...s }} />;
