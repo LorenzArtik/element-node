@@ -1,12 +1,13 @@
 'use client';
 
 import * as LucideIcons from 'lucide-react';
-import type { ElementNode } from '@/lib/widgets-schema';
+import { WIDGETS, type ElementNode } from '@/lib/widgets-schema';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { useRenderContext } from '@/components/public/render-context';
 import { InlineEditable } from './InlineEditable';
 import { t } from '@/lib/admin-i18n';
+import { SaHeroCarousel, SaCardCarousel, SaPrivacyShield, SaChatDemo, SaFeatureCard, SaCompareTable, SaLogoMarquee } from './sa-widgets';
 
 export interface RenderOpts {
   /** Se true, abilita edit inline su heading/text/button */
@@ -492,6 +493,7 @@ function renderWidgetInner(el: ElementNode, opts: RenderOpts = {}): React.ReactN
         boxShadow: (s.boxShadow as string) && s.boxShadow !== 'none' ? (s.boxShadow as string) : undefined,
         minHeight: (s.minHeight as string) || undefined,
         overflow: (s.overflow as string) || undefined,
+        ...(s.backdropBlur ? { backdropFilter: `blur(${Number(s.backdropBlur)}px) saturate(1.2)`, WebkitBackdropFilter: `blur(${Number(s.backdropBlur)}px) saturate(1.2)` } : {}),
         ...(s.sticky ? { position: 'sticky' as const, top: (s.stickyTop as string) || '96px' } : {}),
       };
       const boxInner = (
@@ -652,6 +654,13 @@ function renderWidgetInner(el: ElementNode, opts: RenderOpts = {}): React.ReactN
     case 'page-title': return <PageTitleWidget settings={s} />;
     case 'breadcrumbs': return <BreadcrumbsWidget settings={s} />;
     case 'language-switcher': return <LanguageSwitcher settings={s} />;
+    case 'sa-hero-carousel': return <SaHeroCarousel settings={{ ...(WIDGETS['sa-hero-carousel'].defaults as Record<string, unknown>), ...s }} />;
+    case 'sa-card-carousel': return <SaCardCarousel settings={{ ...(WIDGETS['sa-card-carousel'].defaults as Record<string, unknown>), ...s }} />;
+    case 'sa-privacy-shield': return <SaPrivacyShield settings={{ ...(WIDGETS['sa-privacy-shield'].defaults as Record<string, unknown>), ...s }} />;
+    case 'sa-chat-demo': return <SaChatDemo settings={{ ...(WIDGETS['sa-chat-demo'].defaults as Record<string, unknown>), ...s }} />;
+    case 'sa-feature-card': return <SaFeatureCard settings={{ ...(WIDGETS['sa-feature-card'].defaults as Record<string, unknown>), ...s }} />;
+    case 'sa-compare-table': return <SaCompareTable settings={{ ...(WIDGETS['sa-compare-table'].defaults as Record<string, unknown>), ...s }} />;
+    case 'sa-logo-marquee': return <SaLogoMarquee settings={{ ...(WIDGETS['sa-logo-marquee'].defaults as Record<string, unknown>), ...s }} />;
 
     case 'call-to-action': {
       const align = (s.align as 'left'|'center'|'right') || 'center';
@@ -1436,20 +1445,64 @@ function SiteTitleWidget({ settings }: { settings: Record<string, unknown> }) {
 }
 
 function NavMenuWidget({ settings }: { settings: Record<string, unknown> }) {
-  const items = (settings.items as { label: string; url: string }[]) || [];
+  const items = (settings.items as { label: string; url: string; children?: string }[]) || [];
   const align = (settings.align as 'left'|'center'|'right') || 'left';
   const justify = align === 'left' ? 'flex-start' : align === 'right' ? 'flex-end' : 'center';
   const color = (settings.color as string) || 'var(--en-color-text, #0f172a)';
+  const ctx = useRenderContext();
+  const curPath = ctx?.page ? (ctx.page.isHomepage ? '/' : '/' + ctx.page.slug) : '';
+  const isActive = (url: string) => !!curPath && (url === '/' ? curPath === '/' : curPath === url || curPath.startsWith(url + '/'));
+  const col = settings.direction === 'column';
+  const linkStyleBase: React.CSSProperties = { color, textDecoration: 'none', fontWeight: 500, fontSize: (settings.fontSize as string) || '15px' };
+  const linkStyleFor = (url: string): React.CSSProperties => (settings.activeUnderline && isActive(url)
+    ? { ...linkStyleBase, fontWeight: 600, color: (settings.activeColor as string) || color, borderBottom: `2px solid ${(settings.activeBorder as string) || '#0078d4'}`, paddingBottom: 4 }
+    : linkStyleBase);
+  const hasDd = items.some((it) => it.children && String(it.children).trim());
   return (
-    <nav style={{ display: 'flex', justifyContent: justify, gap: (settings.gap as number) || 24, flexWrap: 'wrap' }}>
-      {items.map((it, i) => (
-        <a key={i} href={it.url} style={{ color, textDecoration: 'none', fontWeight: 500, fontSize: '15px' }}>
-          {it.label}
-        </a>
-      ))}
+    <nav className="en-navmenu" style={{ display: 'flex', flexDirection: col ? 'column' : 'row', justifyContent: col ? 'flex-start' : justify, gap: (settings.gap as number) || 24, flexWrap: col ? 'nowrap' : 'wrap', alignItems: col ? 'flex-start' : 'center' }}>
+      {hasDd && <style>{NAVMENU_DD_CSS}</style>}
+      {items.map((it, i) => {
+        const kids = String(it.children || '').split('\n').map((l) => l.trim()).filter(Boolean).map((l) => {
+          const [label, url, icon] = l.split('|').map((x) => x.trim());
+          return { label, url: url || '#', icon };
+        });
+        if (!kids.length) {
+          return <a key={i} href={it.url} style={linkStyleFor(it.url)}>{it.label}</a>;
+        }
+        return (
+          <span key={i} className="en-dd">
+            <a href={it.url} style={{ ...linkStyleFor(it.url), display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              {it.label}
+              <LucideIcons.ChevronDown size={14} strokeWidth={1.8} />
+            </a>
+            <div className="en-ddm" role="menu">
+              {kids.map((k, j) => {
+                const IconC = k.icon ? (LucideIcons as unknown as Record<string, React.ComponentType<{ size?: number; strokeWidth?: number }>>)[k.icon] : null;
+                return (
+                  <a key={j} href={k.url} className={k.icon === 'ArrowRight' ? 'all' : ''}>
+                    {IconC ? <IconC size={18} strokeWidth={1.7} /> : null}
+                    {k.label}
+                  </a>
+                );
+              })}
+            </div>
+          </span>
+        );
+      })}
     </nav>
   );
 }
+
+const NAVMENU_DD_CSS = `
+.en-navmenu .en-dd{position:relative;display:inline-flex}
+.en-navmenu .en-ddm{position:absolute;left:0;top:100%;min-width:300px;background:#fff;border:1px solid rgba(43,42,51,.14);border-radius:14px;box-shadow:0 2px 6px rgba(34,30,60,.05),0 22px 48px -16px rgba(34,30,60,.22);padding:8px;display:none;z-index:50;margin-top:6px}
+.en-navmenu .en-dd:hover .en-ddm,.en-navmenu .en-dd:focus-within .en-ddm{display:grid}
+.en-navmenu .en-dd::after{content:"";position:absolute;left:0;right:0;top:100%;height:8px}
+.en-navmenu .en-ddm a{display:flex;gap:12px;align-items:center;padding:.6rem .8rem;border-radius:8px;text-decoration:none;font-size:.93rem;color:#1f1e26;font-weight:500}
+.en-navmenu .en-ddm a svg{color:#0c75c6;flex:none}
+.en-navmenu .en-ddm a:hover{background:#f4f4fb}
+.en-navmenu .en-ddm a.all{color:#0c75c6;font-weight:600;border-top:1px solid rgba(43,42,51,.08);border-radius:0 0 8px 8px;margin-top:4px}
+`;
 
 function SearchFormWidget({ settings }: { settings: Record<string, unknown> }) {
   return (
@@ -1503,7 +1556,8 @@ function BreadcrumbsWidget({ settings }: { settings: Record<string, unknown> }) 
   const ctx = useRenderContext();
   const items: { label: string; url: string | null }[] = [{ label: (settings.homeLabel as string) || 'Home', url: '/' }];
   if (ctx?.page && !ctx.page.isHomepage) {
-    items.push({ label: ctx.page.title, url: null });
+    if (settings.parentLabel) items.push({ label: settings.parentLabel as string, url: (settings.parentUrl as string) || '/' });
+    items.push({ label: (settings.currentLabel as string) || ctx.page.title, url: null });
   }
   const sep = (settings.separator as string) || '/';
   return (

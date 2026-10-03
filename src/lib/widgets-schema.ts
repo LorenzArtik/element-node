@@ -51,7 +51,14 @@ export type WidgetType =
   | 'mailchimp'
   | 'marquee'
   | 'nav-drawer'
-  | 'language-switcher';
+  | 'language-switcher'
+  | 'sa-hero-carousel'
+  | 'sa-card-carousel'
+  | 'sa-privacy-shield'
+  | 'sa-chat-demo'
+  | 'sa-feature-card'
+  | 'sa-compare-table'
+  | 'sa-logo-marquee';
 
 export interface ElementNode {
   id: string;
@@ -495,6 +502,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
       { key: 'border', label: 'Bordo', control: 'border-style', placeholder: 'es. 1px solid #e5e7eb' },
       { key: 'boxShadow', label: 'Ombra', control: 'shadow-style', placeholder: 'es. 0 2px 12px rgba(0,0,0,0.08)' },
       { key: 'minHeight', label: 'Altezza minima', control: 'text', placeholder: 'es. 200px' },
+      { key: 'backdropBlur', label: 'Sfocatura sfondo (vetro, px)', control: 'number' },
       { key: 'sticky', label: 'Fisso allo scroll (sidebar)', control: 'switch' },
       { key: 'stickyTop', label: 'Offset sticky', control: 'text', placeholder: '96px' },
       { key: 'consentGate', label: 'Richiedi consenso cookie (terze parti)', control: 'toggle' },
@@ -648,9 +656,15 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
       { key: 'align', label: 'Allineamento', control: 'select', options: ALIGN_OPTIONS },
       { key: 'gap', label: 'Spaziatura', control: 'slider', min: 4, max: 60, step: 1, unit: 'px' },
       { key: 'color', label: 'Colore link', control: 'color' },
+      { key: 'direction', label: 'Direzione', control: 'select', options: [{ value: 'row', label: 'Orizzontale' }, { value: 'column', label: 'Verticale' }] },
+      { key: 'fontSize', label: 'Dimensione testo', control: 'text', placeholder: '15px' },
+      { key: 'activeUnderline', label: 'Sottolinea la voce della pagina corrente', control: 'switch' },
+      { key: 'activeColor', label: 'Colore voce attiva', control: 'color' },
+      { key: 'activeBorder', label: 'Colore sottolineatura', control: 'color' },
       { key: 'items', label: 'Voci menu', control: 'list', itemTemplate: [
         { key: 'label', label: 'Etichetta', control: 'text' },
         { key: 'url', label: 'URL', control: 'url' },
+        { key: 'children', label: 'Sotto-voci a tendina (Etichetta|/url|Icona, una per riga)', control: 'textarea' },
       ]},
     ],
   },
@@ -680,6 +694,9 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     defaults: { separator: '/', color: '', homeLabel: 'Home' },
     fields: [
       { key: 'homeLabel', label: 'Label Home', control: 'text' },
+      { key: 'parentLabel', label: 'Pagina padre (facoltativa)', control: 'text' },
+      { key: 'parentUrl', label: 'Link pagina padre', control: 'url' },
+      { key: 'currentLabel', label: 'Titolo pagina corrente (se diverso)', control: 'text' },
       { key: 'separator', label: 'Separatore', control: 'text' },
       { key: 'color', label: 'Colore', control: 'color' },
     ],
@@ -1138,6 +1155,171 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
         ]},
         { key: 'url', label: 'URL', control: 'url' },
       ]},
+    ],
+  },
+
+  // ===== SMART AGENCY (widget nativi) =====
+  'sa-hero-carousel': {
+    type: 'sa-hero-carousel', label: t('Hero carosello (vetro)', 'Hero carousel (glass)'), icon: 'GalleryHorizontalEnd', category: 'pro', order: 0.6,
+    defaults: {
+      slides: [
+        { chip: 'Charlie AI', chipTone: 'violet', title: 'Conosci *Charlie*, il collega AI della tua agenzia.', text: 'Conosce polizze e documenti, lavora sui dati dei tuoi clienti e ti dice da quale pagina prende la risposta.', pills: '', cta1Text: 'Prova Charlie', cta1Url: '#', cta2Text: 'Prenota una demo', cta2Url: '#', image: '', imageWidth: '84%', visual: 'none', visualData: '', bgFrom: '#e9f1fb', bgTo: '#f1ecfb' },
+      ],
+      autoplay: true, autoplayMs: 7000, showArrows: true, minHeight: 'clamp(480px,46vw,600px)',
+    },
+    fields: [
+      { key: 'slides', label: 'Slide', control: 'list', itemTemplate: [
+        { key: 'chip', label: 'Etichetta (chip)', control: 'text' },
+        { key: 'chipTone', label: 'Colore chip', control: 'select', options: [{ value: 'violet', label: 'Viola' }, { value: 'blue', label: 'Azzurro' }, { value: 'green', label: 'Verde' }] },
+        { key: 'title', label: 'Titolo (*parola* = evidenziata)', control: 'text' },
+        { key: 'text', label: 'Testo', control: 'textarea' },
+        { key: 'pills', label: 'Pillole (separate da virgola)', control: 'text' },
+        { key: 'cta1Text', label: 'Pulsante 1', control: 'text' },
+        { key: 'cta1Url', label: 'Link pulsante 1', control: 'url' },
+        { key: 'cta2Text', label: 'Pulsante 2', control: 'text' },
+        { key: 'cta2Url', label: 'Link pulsante 2', control: 'url' },
+        { key: 'image', label: 'Immagine a destra', control: 'media' },
+        { key: 'imageWidth', label: 'Larghezza immagine', control: 'text', placeholder: '84%' },
+        { key: 'visual', label: 'Finestra sopra l\'immagine', control: 'select', options: [{ value: 'none', label: 'Nessuna' }, { value: 'chat', label: 'Chat dimostrativa' }] },
+        { key: 'visualData', label: 'Contenuto finestra (name=, mode=, q=, a=, src=, input=, chip= per riga)', control: 'textarea' },
+        { key: 'bgFrom', label: 'Sfondo da', control: 'color' },
+        { key: 'bgTo', label: 'Sfondo a', control: 'color' },
+      ]},
+      { key: 'minHeight', label: 'Altezza minima', control: 'text' },
+      { key: 'autoplay', label: 'Autoplay', control: 'switch' },
+      { key: 'autoplayMs', label: 'Velocità (ms)', control: 'number' },
+      { key: 'showArrows', label: 'Frecce', control: 'switch' },
+    ],
+  },
+  'sa-card-carousel': {
+    type: 'sa-card-carousel', label: t('Carosello schede', 'Card carousel'), icon: 'GalleryHorizontalEnd', category: 'pro', order: 9.5,
+    defaults: {
+      eyebrow: 'Servizi', heading: 'Titolo del carosello', subheading: '', showArrows: true, cardWidth: 'clamp(270px,26vw,340px)', wideWidth: 'min(1060px,88vw)',
+      items: [
+        { kind: 'card', image: '', tag: '', title: 'Scheda 1', quote: '', text: 'Descrizione della scheda.', ctaText: 'Scopri di più', ctaUrl: '#', tint: 'none', mock: 'none', mockTitle: '', mockBadge: '', mockData: '', stage: '' },
+      ],
+    },
+    fields: [
+      { key: 'eyebrow', label: 'Etichetta sopra il titolo', control: 'text' },
+      { key: 'heading', label: 'Titolo', control: 'text' },
+      { key: 'subheading', label: 'Sottotitolo', control: 'textarea' },
+      { key: 'layout', label: 'Disposizione', control: 'select', options: [{ value: 'carousel', label: 'Carosello' }, { value: 'grid', label: 'Griglia' }] },
+      { key: 'columns', label: 'Colonne (griglia)', control: 'number' },
+      { key: 'items', label: 'Schede', control: 'list', itemTemplate: [
+        { key: 'kind', label: 'Tipo', control: 'select', options: [{ value: 'card', label: 'Scheda con immagine' }, { value: 'wide', label: 'Scheda larga con finestra' }] },
+        { key: 'image', label: 'Immagine (scheda)', control: 'media' },
+        { key: 'tag', label: 'Etichetta', control: 'text' },
+        { key: 'title', label: 'Titolo', control: 'text' },
+        { key: 'quote', label: 'Frase tra virgolette', control: 'text' },
+        { key: 'text', label: 'Testo', control: 'textarea' },
+        { key: 'ctaText', label: 'Testo link', control: 'text' },
+        { key: 'ctaUrl', label: 'Link', control: 'url' },
+        { key: 'cta2Text', label: 'Secondo pulsante', control: 'text' },
+        { key: 'cta2Url', label: 'Link secondo pulsante', control: 'url' },
+        { key: 'chips', label: 'Etichette (separate da virgola)', control: 'text' },
+        { key: 'date', label: 'Data (evento)', control: 'text' },
+        { key: 'imageTag', label: "Etichetta sull'immagine", control: 'text' },
+        { key: 'tint', label: 'Pastello', control: 'select', options: [
+        { value: 'none', label: 'Nessuno (bianco)' }, { value: 'blue', label: 'Azzurro' }, { value: 'violet', label: 'Viola' }, { value: 'green', label: 'Menta' },
+        { value: 'peach', label: 'Pesca' }, { value: 'rose', label: 'Rosa' }, { value: 'teal', label: 'Turchese' }, { value: 'lemon', label: 'Giallo burro' },
+        { value: 'lilac', label: 'Lilla' }, { value: 'sand', label: 'Sabbia' },
+      ] },
+        { key: 'stage', label: 'Sfondo finestra (scheda larga)', control: 'media' },
+        { key: 'mock', label: 'Finestra (scheda larga)', control: 'select', options: [{ value: 'none', label: 'Nessuna' }, { value: 'table', label: 'Tabella di confronto' }, { value: 'chat', label: 'Chat con documento' }, { value: 'points', label: 'Punti chiave' }, { value: 'steps', label: 'Passaggi' }] },
+        { key: 'mockTitle', label: 'Titolo finestra', control: 'text' },
+        { key: 'mockBadge', label: 'Badge finestra', control: 'text' },
+        { key: 'mockData', label: 'Contenuto finestra (vedi guida del widget)', control: 'textarea' },
+      ]},
+      { key: 'showArrows', label: 'Frecce', control: 'switch' },
+      { key: 'cardWidth', label: 'Larghezza scheda', control: 'text' },
+      { key: 'wideWidth', label: 'Larghezza scheda larga', control: 'text' },
+    ],
+  },
+  'sa-privacy-shield': {
+    type: 'sa-privacy-shield', label: t('Privacy: offuscamento', 'Privacy: obfuscation'), icon: 'ShieldCheck', category: 'pro', order: 9.6,
+    defaults: {
+      stepMs: 6200,
+      steps: [
+        { title: 'Offuscamento in Italia', sub: 'Sui nostri server, prima di uscire' },
+        { title: "L'AI in Europa", sub: 'Vertex AI vede solo segnaposto' },
+        { title: 'La risposta torna a casa', sub: 'I nomi li rimettiamo noi' },
+      ],
+      rows: 'Cliente|Mario Bianchi|[PERSONA_1]\nCodice fiscale|BNCMRA80A01H501X|[CF_1]\nTarga|GK 482 TX|[TARGA_1]\nTelefono|+39 333 123 4567|[TELEFONO_1]\nEmail|mario.bianchi@esempio.it|[EMAIL_1]\nPolizza|n. 4471-22-A|[POLIZZA_1]',
+      leftTitle: 'Smart Agency', leftBadge: 'SERVER IN ITALIA', rightTitle: 'Vertex AI', rightBadge: 'EUROPA',
+    },
+    fields: [
+      { key: 'steps', label: 'Passaggi (3)', control: 'list', itemTemplate: [
+        { key: 'title', label: 'Titolo', control: 'text' },
+        { key: 'sub', label: 'Sottotitolo', control: 'text' },
+      ]},
+      { key: 'rows', label: 'Dati di esempio (Etichetta|Valore|Segnaposto, una per riga)', control: 'textarea' },
+      { key: 'leftTitle', label: 'Titolo riquadro sinistro', control: 'text' },
+      { key: 'leftBadge', label: 'Badge sinistro', control: 'text' },
+      { key: 'rightTitle', label: 'Titolo riquadro destro', control: 'text' },
+      { key: 'rightBadge', label: 'Badge destro', control: 'text' },
+      { key: 'stepMs', label: 'Durata passaggio (ms)', control: 'number' },
+    ],
+  },
+  'sa-chat-demo': {
+    type: 'sa-chat-demo', label: t('Chat dimostrativa', 'Demo chat'), icon: 'MessagesSquare', category: 'pro', order: 9.7,
+    defaults: {
+      name: 'Charlie', sub: 'Smart Agency', avatar: '', note: 'Esempio dimostrativo con dati di prova.',
+      items: [
+        { q: 'Cosa copre questa polizza?', a: 'La polizza n. 4471-22-A di Mario Bianchi copre la responsabilità civile auto e il furto. Non risultano infortuni del conducente né tutela legale.', src: 'Fonte: condizioni generali, sezione Garanzie, pag. 12' },
+        { q: 'Confronta le due polizze', a: 'La polizza A include la tutela legale con massimale più alto. La B ha una franchigia più bassa sul furto.', src: 'Fonte: CGA Polizza A pag. 9 · CGA Polizza B pag. 14' },
+      ],
+    },
+    fields: [
+      { key: 'name', label: 'Nome', control: 'text' },
+      { key: 'sub', label: 'Sottotitolo', control: 'text' },
+      { key: 'avatar', label: 'Icona', control: 'media' },
+      { key: 'items', label: 'Domande e risposte', control: 'list', itemTemplate: [
+        { key: 'q', label: 'Domanda', control: 'text' },
+        { key: 'a', label: 'Risposta', control: 'textarea' },
+        { key: 'src', label: 'Fonte', control: 'text' },
+      ]},
+      { key: 'note', label: 'Nota sotto la chat', control: 'text' },
+    ],
+  },
+  'sa-feature-card': {
+    type: 'sa-feature-card', label: t('Card pastello', 'Pastel card'), icon: 'LayoutGrid', category: 'pro', order: 9.8,
+    defaults: { variant: 'card', icon: 'Sparkles', title: 'Titolo', text: 'Descrizione breve.', role: '', tint: 'blue', tintIndex: 0, link: '', linkText: '' },
+    fields: [
+      { key: 'variant', label: 'Variante', control: 'select', options: [{ value: 'card', label: 'Card con icona' }, { value: 'quote', label: 'Citazione' }, { value: 'check', label: 'Voce con spunta' }, { value: 'link', label: 'Link rapido (icona + testo)' }, { value: 'info', label: 'Contatto (icona + righe)' }] },
+      { key: 'icon', label: 'Icona', control: 'icon' },
+      { key: 'title', label: 'Titolo / nome', control: 'text' },
+      { key: 'text', label: 'Testo', control: 'textarea' },
+      { key: 'role', label: 'Ruolo (citazione)', control: 'text' },
+      { key: 'tint', label: 'Pastello', control: 'select', options: [
+        { value: 'none', label: 'Nessuno (bianco)' }, { value: 'blue', label: 'Azzurro' }, { value: 'violet', label: 'Viola' }, { value: 'green', label: 'Menta' },
+        { value: 'peach', label: 'Pesca' }, { value: 'rose', label: 'Rosa' }, { value: 'teal', label: 'Turchese' }, { value: 'lemon', label: 'Giallo burro' },
+        { value: 'lilac', label: 'Lilla' }, { value: 'sand', label: 'Sabbia' },
+      ] },
+      { key: 'link', label: 'Link (facoltativo)', control: 'url' },
+      { key: 'linkText', label: 'Testo link', control: 'text' },
+    ],
+  },
+  'sa-compare-table': {
+    type: 'sa-compare-table', label: t('Tabella confronto', 'Comparison table'), icon: 'Table', category: 'pro', order: 9.9,
+    defaults: { leftTitle: 'AI generica', rightTitle: 'Charlie', rightIcon: '', rows: 'Conoscenza del settore|Risponde a domande di ogni genere|Conosce polizze, condizioni generali e documentazione tecnica' },
+    fields: [
+      { key: 'leftTitle', label: 'Titolo colonna sinistra', control: 'text' },
+      { key: 'rightTitle', label: 'Titolo colonna destra', control: 'text' },
+      { key: 'rightIcon', label: 'Icona colonna destra', control: 'media' },
+      { key: 'rows', label: 'Righe (Etichetta|Sinistra|Destra, una per riga)', control: 'textarea' },
+    ],
+  },
+  'sa-logo-marquee': {
+    type: 'sa-logo-marquee', label: t('Striscia loghi', 'Logo marquee'), icon: 'MoveRight', category: 'pro', order: 16.5,
+    defaults: { speed: 38, tileHeight: 68, items: [{ src: '', alt: 'Logo', link: '' }] },
+    fields: [
+      { key: 'items', label: 'Loghi', control: 'list', itemTemplate: [
+        { key: 'src', label: 'Logo', control: 'media' },
+        { key: 'alt', label: 'Testo alternativo', control: 'text' },
+        { key: 'link', label: 'Link', control: 'url' },
+      ]},
+      { key: 'speed', label: 'Secondi per giro', control: 'number' },
+      { key: 'tileHeight', label: 'Altezza riquadro (px)', control: 'number' },
     ],
   },
 };
