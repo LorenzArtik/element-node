@@ -950,13 +950,11 @@ const LCARD_CSS = `
 .sl-card.node{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadow-s)}
 .sl-card.node .loc{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}.sl-card.node h3{font-size:16.5px!important;margin-top:9px!important}.sl-card.node p{font-size:14px;margin-top:7px}
 .sl-card.node.dark{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);box-shadow:none;backdrop-filter:blur(8px)}.sl-card.node.dark .loc{color:#9ad0ff}.sl-card.node.dark h3{color:#fff}.sl-card.node.dark p{color:rgba(255,255,255,.82)}
-.sl-card.tinted.plain,.sl-card.tinted.step,.sl-card.tinted.ben{background:linear-gradient(160deg,var(--t),color-mix(in srgb,var(--t) 35%,#fff));border-color:color-mix(in srgb,var(--c) 16%,#fff)}
-.sl-card.tinted .ic{background:rgba(255,255,255,.8);color:var(--c);box-shadow:0 6px 14px -8px var(--c)}
-.sl-card.tinted h3{color:color-mix(in srgb,var(--c) 70%,#121725)}
-.sl-card.tinted.step .n{background:var(--c);box-shadow:0 6px 14px -6px var(--c)}
-.sl-card.mini{display:flex;gap:13px;align-items:flex-start;border-radius:16px;padding:16px 18px;background:#fff;border:1px solid var(--line)}
-.sl-card.mini.tinted{background:linear-gradient(160deg,var(--t),color-mix(in srgb,var(--t) 40%,#fff));border-color:color-mix(in srgb,var(--c) 16%,#fff)}
+.sl-card.tinted .ic{background:var(--t);color:var(--c)}
+.sl-card.tinted.step .n{background:var(--c);box-shadow:0 6px 14px -8px var(--c)}
+.sl-card.mini{display:flex;gap:13px;align-items:flex-start;border-radius:16px;padding:16px 18px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow-s)}
 .sl-card.mini .ic{width:38px;height:38px;border-radius:11px;background:var(--brand-soft);color:var(--brand-ink)}
 .sl-card.mini h3{font-size:15.5px!important}.sl-card.mini p{font-size:13.5px;margin-top:3px}
+.sl-card.ben.tinted,.sl-card.plain.tinted{box-shadow:var(--shadow-s)}
 .sl-card.feat{display:flex;gap:14px;margin-top:6px}.sl-card.feat .ic{width:40px;height:40px;border-radius:11px;background:var(--brand-soft);color:var(--brand-ink)}.sl-card.feat h3{font-size:16.5px!important}.sl-card.feat p{margin-top:4px}
 `;
