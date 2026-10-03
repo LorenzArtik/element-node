@@ -145,7 +145,7 @@ export function SaHeroCarousel({ settings }: { settings: S }) {
   const minH = str(settings.minHeight, 'clamp(480px,46vw,600px)');
 
   return (
-    <div className="sa-hero" style={{ ['--sa-dur' as string]: `${ms}ms` } as React.CSSProperties}
+    <div className={`sa-hero${settings.compact ? " sa-compact" : ""}`} style={{ ['--sa-dur' as string]: `${ms}ms` } as React.CSSProperties}
       onTouchStart={(e) => { touchX.current = e.touches[0].clientX; }}
       onTouchEnd={(e) => { if (touchX.current == null) return; const dx = e.changedTouches[0].clientX - touchX.current; if (Math.abs(dx) > 50) go(cur + (dx < 0 ? 1 : -1)); touchX.current = null; }}>
       <style>{HERO_CSS}</style>
@@ -249,13 +249,28 @@ export function SaCardCarousel({ settings }: { settings: S }) {
       <div className={`sa-cd-track${grid ? " sa-grid" : ""}`} ref={tr} onScroll={upd} style={grid ? ({ ['--cols' as string]: cols } as React.CSSProperties) : undefined}>
         {items.map((it, i) => {
           const wide = it.kind === 'wide';
-          const linkWhole = !!it.ctaUrl && !wide && !it.cta2Text;
+          const feat = it.kind === 'feature';
+          const prod = it.kind === 'prod';
+          const linkWhole = !!it.ctaUrl && !wide && !feat && !prod && !it.cta2Text;
           const Tag = linkWhole ? 'a' : 'div';
           const props = linkWhole ? { href: it.ctaUrl } : {};
           const tinted = it.tint && it.tint !== 'none';
           return (
-            <Tag key={i} {...props} className={`sa-cd${wide ? ' sa-wide' : ''}${tinted ? ' tint' : ''}`} style={{ flexBasis: grid ? undefined : wide ? wideW : cardW, ...(tinted ? tintVars(it.tint, i) : {}) }}>
-              {wide ? (
+            <Tag key={i} {...props} className={`sa-cd${wide ? ' sa-wide' : ''}${feat ? ' sa-feat' : ''}${prod ? ' sa-prod' : ''}${tinted ? ' tint' : ''}`} style={{ flexBasis: grid ? undefined : (wide || feat) ? wideW : cardW, ...(tinted ? tintVars(it.tint, i) : {}) }}>
+              {feat ? (
+                <>
+                  <div className="sa-tx">
+                    {it.tag && <span className="sa-fchip">{it.tag}</span>}
+                    <h2 className="sa-fh">{it.title}</h2>
+                    {it.text && <p>{it.text}</p>}
+                    <div className="sa-ctas">
+                      {it.ctaText && <a className="sa-btn sa-btn-p" href={str(it.ctaUrl, '#')}>{it.ctaText}<Ico name="ArrowRight" size={16} /></a>}
+                      {it.cta2Text && <a className="sa-btn sa-btn-o" href={str(it.cta2Url, '#')}>{it.cta2Text}<Ico name="ArrowRight" size={16} /></a>}
+                    </div>
+                  </div>
+                  <div className="sa-fim" style={{ backgroundImage: it.stage ? `url(${it.stage})` : undefined }} />
+                </>
+              ) : wide ? (
                 <>
                   <div className="sa-tx">
                     {!!it.tag && <span className="sa-tag">{it.tag}</span>}
@@ -278,10 +293,10 @@ export function SaCardCarousel({ settings }: { settings: S }) {
                     {!!it.quote && <p className="sa-q">{it.quote}</p>}
                     {!!it.text && <p>{it.text}</p>}
                     {!!it.chips && <div className="sa-pchips">{str(it.chips).split(',').map((x) => x.trim()).filter(Boolean).map((x, k) => <span key={k}>{x}</span>)}</div>}
-                    {it.cta2Text ? (
+                    {(it.cta2Text || prod) ? (
                       <div className="sa-ctas">
                         <a className="sa-btn sa-btn-p" href={str(it.ctaUrl, '#')}>{it.ctaText}<Ico name="ArrowRight" size={16} /></a>
-                        <a className="sa-btn sa-btn-o" href={str(it.cta2Url, '#')}>{it.cta2Text}</a>
+                        {!!it.cta2Text && <a className="sa-btn sa-btn-o" href={str(it.cta2Url, '#')}>{it.cta2Text}</a>}
                       </div>
                     ) : it.ctaText ? <span className="sa-tlink">{it.ctaText} <Ico name="ArrowRight" size={16} /></span> : null}
                   </div>
@@ -515,7 +530,7 @@ const BASE = `
 .sa-input{border:1px solid rgba(43,42,51,.14);background:#fff;border-radius:999px;padding:.55rem 1rem;color:#6b6a7c;font-size:.88rem}
 .sa-circ{width:36px;height:36px;border-radius:50%;border:1px solid rgba(43,42,51,.14);background:rgba(255,255,255,.92);display:grid;place-items:center;cursor:pointer;color:#1f1e26;padding:0}
 .sa-circ:hover{background:#fff;box-shadow:0 8px 24px -10px rgba(34,30,60,.2)}
-.sa-btn{display:inline-flex;align-items:center;gap:.5rem;border-radius:6px;padding:.74rem 1.35rem;font-weight:600;font-size:.95rem;text-decoration:none;border:1px solid transparent}
+.sa-btn{display:inline-flex;align-items:center;gap:.5rem;white-space:nowrap;border-radius:6px;padding:.74rem 1.2rem;font-weight:600;font-size:.95rem;text-decoration:none;border:1px solid transparent}
 .sa-btn-p{background:#0078d4;color:#fff}.sa-btn-p:hover{background:#106ebe}
 .sa-btn-o{background:#fff;color:#0078d4;border-color:#0078d4}.sa-btn-o:hover{background:#e3f2fd}
 .sa-tlink{display:inline-flex;align-items:center;gap:6px;color:#0c75c6;font-weight:600;text-decoration:none;font-size:.95rem}
@@ -528,9 +543,9 @@ const HERO_CSS = BASE + `
 .sa-bgi{display:block;position:absolute;right:0;top:0;height:100%;background-size:cover;background-position:center;background-repeat:no-repeat;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 34%);mask-image:linear-gradient(90deg,transparent 0,#000 34%)}
 .sa-wrap{width:100%;max-width:1320px;margin-inline:auto;padding-inline:clamp(16px,3vw,40px)}
 .sa-slide>.sa-wrap{flex:1}
-.sa-panel{width:min(520px,100%);padding:clamp(26px,3vw,40px);background:color-mix(in srgb,#fff 72%,transparent);backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2);border:1px solid rgba(255,255,255,.7);border-radius:18px;box-shadow:0 2px 6px rgba(34,30,60,.05),0 22px 48px -16px rgba(34,30,60,.22);margin-block:32px 68px}
+.sa-panel{width:min(540px,100%);padding:clamp(26px,3vw,40px);background:color-mix(in srgb,#fff 72%,transparent);backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2);border:1px solid rgba(255,255,255,.7);border-radius:18px;box-shadow:0 2px 6px rgba(34,30,60,.05),0 22px 48px -16px rgba(34,30,60,.22);margin-block:32px 68px}
 .sa-chip{display:inline-flex;align-items:center;font-size:.74rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.25rem .6rem;border-radius:999px}
-.sa-h{font-size:clamp(1.9rem,3.2vw,2.7rem);margin:14px 0 0;font-weight:600;letter-spacing:-.018em;line-height:1.14;color:#1f1e26}
+.sa-h{text-wrap:balance;font-size:clamp(1.9rem,3.2vw,2.7rem);margin:14px 0 0;font-weight:600;letter-spacing:-.018em;line-height:1.14;color:#1f1e26}
 .sa-h em{font-style:normal;color:#6b4ecc}
 .sa-lead{margin:14px 0 0;color:#4d4c58;font-size:1.05rem;line-height:1.6}
 .sa-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
@@ -539,6 +554,7 @@ const HERO_CSS = BASE + `
 .sa-vchat{position:absolute;right:clamp(16px,7vw,130px);top:50%;transform:translateY(-50%);width:min(500px,40vw);z-index:-1}
 .sa-vc-f{position:absolute;display:inline-flex;align-items:center;gap:8px;padding:.5rem .9rem;border-radius:999px;background:#fff;border:1px solid rgba(43,42,51,.08);box-shadow:0 1px 2px rgba(34,30,60,.06),0 8px 24px -10px rgba(34,30,60,.14);font-size:.85rem;font-weight:600}
 .sa-vc-f svg{color:#5c4b9e}.sa-vc-f.f1{left:-46px;top:-18px}.sa-vc-f.f2{right:-30px;bottom:-20px}.sa-vc-f.f3{right:-30px;top:-20px}
+.sa-compact .sa-panel{margin-block:32px}
 .sa-arrows{position:absolute;inset:0;pointer-events:none;z-index:4}
 .sa-arrows .sa-circ{pointer-events:auto;position:absolute;top:50%;transform:translateY(-50%)}
 .sa-arrows .l{left:14px}.sa-arrows .r{right:14px}
@@ -602,6 +618,17 @@ a.sa-cd:hover{box-shadow:0 2px 6px rgba(34,30,60,.05),0 22px 48px -16px rgba(34,
 .sa-pchips{display:flex;gap:8px;flex-wrap:wrap}.sa-pchips span{background:rgba(255,255,255,.75);color:var(--c,#0c75c6);font-weight:600;font-size:.8rem;padding:.25rem .7rem;border-radius:999px}
 .sa-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}
 @media (max-width:1000px){.sa-cd-track.sa-grid{grid-template-columns:1fr 1fr}}@media (max-width:620px){.sa-cd-track.sa-grid{grid-template-columns:1fr}}
+.sa-cd.sa-feat{display:grid;grid-template-columns:1.1fr .9fr;border-radius:24px;background:#f4f4fb;box-shadow:none;flex:none}
+.sa-feat .sa-tx{padding:clamp(24px,4vw,52px);display:flex;flex-direction:column;gap:14px;justify-content:center}
+.sa-fchip{align-self:flex-start;display:inline-flex;align-items:center;font-size:.74rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.25rem .6rem;border-radius:999px;background:var(--t,#e3f6ee);color:var(--c,#1f8f6b)}
+.sa-fh{margin:0;font-size:clamp(1.7rem,3vw,2.3rem);font-weight:600;letter-spacing:-.018em;line-height:1.14}
+.sa-feat .sa-tx p{font-size:1.04rem;margin:0}
+.sa-fim{background-size:cover;background-position:center;min-height:300px}
+.sa-cd.sa-prod{border-radius:26px;background:linear-gradient(160deg,var(--t,#fff),color-mix(in srgb,var(--t,#fff) 50%,#fff));box-shadow:none}
+.sa-prod .sa-im{aspect-ratio:16/8}
+.sa-prod .sa-bd{padding:clamp(22px,3vw,34px);gap:12px}
+.sa-prod .sa-tag{color:var(--c)}.sa-prod h3{font-size:clamp(1.3rem,2vw,1.6rem);color:color-mix(in srgb,var(--c) 60%,#1f1e26)}.sa-prod p{font-size:1rem}
+@media (max-width:900px){.sa-cd.sa-feat{grid-template-columns:1fr}}
 .sa-bar{height:3px;background:rgba(43,42,51,.08);border-radius:2px;margin-top:18px;overflow:hidden}.sa-bar i{display:block;height:100%;background:#1f1e26;border-radius:2px}
 @media (max-width:900px){.sa-cd.sa-wide{grid-template-columns:1fr}.sa-stg{min-height:0}}
 `;
@@ -679,7 +706,7 @@ const CMP_CSS = `
 .sa-cmp th,.sa-cmp td{padding:15px 20px;text-align:left;border-bottom:1px solid rgba(43,42,51,.08);font-size:.97rem;vertical-align:top}
 .sa-cmp tr:last-child td{border-bottom:0}.sa-cmp thead th{background:#f4f4fb;font-weight:600}.sa-cmp thead th.ch{background:#f0eefe;color:#5c4b9e}
 .sa-cmp thead th img{display:inline-block;width:20px;vertical-align:-4px;margin-right:8px}
-.sa-cmp td:first-child{width:24%;font-weight:600}.sa-cmp td.no{color:#6b6a7c}.sa-cmp td svg{vertical-align:-3px;margin-right:8px}.sa-cmp td.yes svg{color:#5c4b9e}
+.sa-cmp td:first-child{width:24%;font-weight:600}.sa-cmp td.no{color:#6b6a7c}.sa-cmp td svg{display:inline-block;vertical-align:-3px;margin-right:8px}.sa-cmp td.yes svg{color:#5c4b9e}
 `;
 const MARQ_CSS = `
 .sa-marq{overflow:hidden;width:0;min-width:100%;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}

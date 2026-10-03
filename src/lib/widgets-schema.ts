@@ -1186,6 +1186,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
         { key: 'bgTo', label: 'Sfondo a', control: 'color' },
       ]},
       { key: 'minHeight', label: 'Altezza minima', control: 'text' },
+      { key: 'compact', label: 'Compatto (pagine interne)', control: 'switch' },
       { key: 'autoplay', label: 'Autoplay', control: 'switch' },
       { key: 'autoplayMs', label: 'Velocità (ms)', control: 'number' },
       { key: 'showArrows', label: 'Frecce', control: 'switch' },
@@ -1206,7 +1207,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
       { key: 'layout', label: 'Disposizione', control: 'select', options: [{ value: 'carousel', label: 'Carosello' }, { value: 'grid', label: 'Griglia' }] },
       { key: 'columns', label: 'Colonne (griglia)', control: 'number' },
       { key: 'items', label: 'Schede', control: 'list', itemTemplate: [
-        { key: 'kind', label: 'Tipo', control: 'select', options: [{ value: 'card', label: 'Scheda con immagine' }, { value: 'wide', label: 'Scheda larga con finestra' }] },
+        { key: 'kind', label: 'Tipo', control: 'select', options: [{ value: 'card', label: 'Scheda con immagine' }, { value: 'wide', label: 'Scheda larga con finestra' }, { value: 'prod', label: 'Scheda prodotto (grande)' }, { value: 'feature', label: 'In evidenza (testo + immagine)' }] },
         { key: 'image', label: 'Immagine (scheda)', control: 'media' },
         { key: 'tag', label: 'Etichetta', control: 'text' },
         { key: 'title', label: 'Titolo', control: 'text' },
