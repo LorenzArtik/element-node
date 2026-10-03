@@ -1292,7 +1292,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     type: 'sa-feature-card', label: t('Card pastello', 'Pastel card'), icon: 'LayoutGrid', category: 'pro', order: 9.8,
     defaults: { variant: 'card', icon: 'Sparkles', title: 'Titolo', text: 'Descrizione breve.', role: '', tint: 'blue', tintIndex: 0, link: '', linkText: '' },
     fields: [
-      { key: 'variant', label: 'Variante', control: 'select', options: [{ value: 'card', label: 'Card con icona' }, { value: 'quote', label: 'Citazione' }, { value: 'check', label: 'Voce con spunta' }, { value: 'plain', label: 'Landing · scheda bianca' }, { value: 'step', label: 'Landing · passo numerato' }, { value: 'ben', label: 'Landing · beneficio' }, { value: 'node', label: 'Landing · nodo privacy' }, { value: 'feat', label: 'Landing · icona + testo' }, { value: 'link', label: 'Link rapido (icona + testo)' }, { value: 'info', label: 'Contatto (icona + righe)' }] },
+      { key: 'variant', label: 'Variante', control: 'select', options: [{ value: 'card', label: 'Card con icona' }, { value: 'quote', label: 'Citazione' }, { value: 'check', label: 'Voce con spunta' }, { value: 'plain', label: 'Landing · scheda bianca' }, { value: 'step', label: 'Landing · passo numerato' }, { value: 'ben', label: 'Landing · beneficio' }, { value: 'node', label: 'Landing · nodo privacy' }, { value: 'feat', label: 'Landing · icona + testo' }, { value: 'mini', label: 'Landing · scheda compatta (agenti)' }, { value: 'link', label: 'Link rapido (icona + testo)' }, { value: 'info', label: 'Contatto (icona + righe)' }] },
       { key: 'icon', label: 'Icona', control: 'icon' },
       { key: 'title', label: 'Titolo / nome', control: 'text' },
       { key: 'text', label: 'Testo', control: 'textarea' },
