@@ -1201,7 +1201,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
   'sa-card-carousel': {
     type: 'sa-card-carousel', label: t('Carosello schede', 'Card carousel'), icon: 'GalleryHorizontalEnd', category: 'pro', order: 9.5,
     defaults: {
-      eyebrow: 'Servizi', heading: 'Titolo del carosello', subheading: '', showArrows: true, cardWidth: 'clamp(270px,26vw,340px)', wideWidth: 'min(1060px,88vw)',
+      eyebrow: 'Servizi', heading: 'Titolo del carosello', subheading: '', showArrows: true, autoplay: false, autoplayMs: 5000, cardWidth: 'clamp(270px,26vw,340px)', wideWidth: 'min(1060px,88vw)',
       items: [
         { kind: 'card', image: '', tag: '', title: 'Scheda 1', quote: '', text: 'Descrizione della scheda.', ctaText: 'Scopri di più', ctaUrl: '#', tint: 'none', mock: 'none', mockTitle: '', mockBadge: '', mockData: '', stage: '' },
       ],
@@ -1238,6 +1238,8 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
         { key: 'mockData', label: 'Contenuto finestra (vedi guida del widget)', control: 'textarea' },
       ]},
       { key: 'showArrows', label: 'Frecce', control: 'switch' },
+      { key: 'autoplay', label: 'Scorrimento automatico', control: 'switch' },
+      { key: 'autoplayMs', label: 'Velocità (ms)', control: 'number' },
       { key: 'cardWidth', label: 'Larghezza scheda', control: 'text' },
       { key: 'wideWidth', label: 'Larghezza scheda larga', control: 'text' },
     ],

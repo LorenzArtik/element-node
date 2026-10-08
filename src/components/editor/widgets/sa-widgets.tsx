@@ -230,8 +230,41 @@ export function SaCardCarousel({ settings }: { settings: S }) {
   const cols = num(settings.columns, 3);
   const cardW = str(settings.cardWidth, 'clamp(270px,26vw,340px)');
   const wideW = str(settings.wideWidth, 'min(1060px,88vw)');
+  /* Scorrimento automatico (08/10/2026): solo se acceso nel widget. Una scheda alla volta,
+   * dall'ultima riparte dalla prima. Si ferma col mouse sopra o il fuoco dentro, per 10 s
+   * dopo un tocco, fuori dallo schermo, a scheda del browser nascosta e con «riduci movimento». */
+  const auto = !!settings.autoplay && !grid && items.length > 1;
+  const ms = Math.max(2500, Math.round(num(settings.autoplayMs, 5000)));
+  const [fermo, setFermo] = useState(false);
+  const riprendi = useRef<number | undefined>(undefined);
+  useEffect(() => {
+    const el = tr.current;
+    if (!el || !auto || fermo) return;
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+    let visibile = false;
+    const io = new IntersectionObserver(([e]) => { visibile = e.isIntersecting; }, { threshold: 0.4 });
+    io.observe(el);
+    const id = window.setInterval(() => {
+      if (!visibile || document.hidden) return;
+      const max = el.scrollWidth - el.clientWidth;
+      if (el.scrollLeft >= max - 8) el.scrollTo({ left: 0, behavior: 'smooth' });
+      else step(1);
+    }, ms);
+    return () => { window.clearInterval(id); io.disconnect(); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- step legge solo il ref del binario
+  }, [auto, ms, fermo]);
+  useEffect(() => () => window.clearTimeout(riprendi.current), []);
+  const tocco = () => {
+    setFermo(true);
+    window.clearTimeout(riprendi.current);
+    riprendi.current = window.setTimeout(() => setFermo(false), 10000);
+  };
+  const pausa = auto ? {
+    onMouseEnter: () => setFermo(true), onMouseLeave: () => setFermo(false),
+    onFocus: () => setFermo(true), onBlur: () => setFermo(false), onTouchStart: tocco,
+  } : {};
   return (
-    <div className="sa-car">
+    <div className="sa-car" {...pausa}>
       <style>{CARD_CSS}</style>
       <div className="sa-car-head">
         <div>
