@@ -1644,13 +1644,17 @@ function SocialIcons({ settings }: { settings: Record<string, unknown> }) {
 
 function Countdown({ settings }: { settings: Record<string, unknown> }) {
   const due = settings.dueDate as string;
-  const [now, setNow] = useState(() => Date.now());
+  // Render iniziale deterministico (server = browser, niente errore di idratazione #418): le cifre
+  // compaiono dopo il montaggio.
+  const [now, setNow] = useState<number | null>(null);
   useEffect(() => {
+    setNow(Date.now());
     const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
   }, []);
   if (!due) return <div style={{ padding: 20, color: '#9ca3af', textAlign: 'center', background: '#f9fafb', borderRadius: 8 }}>{t('Imposta una data di scadenza', 'Set an end date')}</div>;
-  const diff = Math.max(0, new Date(due).getTime() - now);
+  const ready = now !== null;
+  const diff = Math.max(0, new Date(due).getTime() - (now ?? 0));
   const d = Math.floor(diff / 86400000);
   const h = Math.floor((diff % 86400000) / 3600000);
   const m = Math.floor((diff % 3600000) / 60000);
@@ -1659,7 +1663,7 @@ function Countdown({ settings }: { settings: Record<string, unknown> }) {
   const color = (settings.color as string) || '#0f172a';
   const Cell = ({ value, label }: { value: number; label: string }) => (
     <div style={{ textAlign: 'center', padding: '20px 24px', background: 'rgba(0,0,0,0.04)', borderRadius: 12, minWidth: 96 }}>
-      <div style={{ fontSize: '3rem', fontWeight: 800, color, lineHeight: 1, fontVariantNumeric: 'tabular-nums' }}>{String(value).padStart(2, '0')}</div>
+      <div style={{ fontSize: '3rem', fontWeight: 800, color, lineHeight: 1, fontVariantNumeric: 'tabular-nums' }}>{ready ? String(value).padStart(2, '0') : '--'}</div>
       <div style={{ marginTop: 4, fontSize: 12, color, opacity: 0.7, textTransform: 'uppercase', letterSpacing: 1 }}>{label}</div>
     </div>
   );

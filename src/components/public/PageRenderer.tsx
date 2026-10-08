@@ -57,6 +57,17 @@ type ColumnSettings = {
 const px = (v: number | string | undefined): string | undefined =>
   v == null ? undefined : typeof v === 'number' ? `${v}px` : v;
 
+// Dopo un errore di idratazione (React #418) il browser rifà il render da zero e applica gli stili
+// uno a uno: un longhand `undefined` dopo lo shorthand `padding` lo azzera (padding = 0 su tutta la
+// pagina). Quindi allo style non si passano chiavi vuote.
+const prune = (style: CSSProperties): CSSProperties => {
+  const out: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(style)) {
+    if (v !== undefined && v !== null && v !== '') out[k] = v;
+  }
+  return out as CSSProperties;
+};
+
 function bgToCss(bg: string | BgObj | undefined): string | undefined {
   if (!bg) return undefined;
   if (typeof bg === 'string') return bg;
@@ -151,7 +162,7 @@ export function PageRenderer({ content, tier = 'full' }: { content: PageContent;
         };
 
         return (
-          <section key={section.id} id={s.anchor} style={sectionStyle}>
+          <section key={section.id} id={s.anchor} style={prune(sectionStyle)}>
             <div className="el-container" style={containerStyle}>
               {section.columns.map((col) => {
                 const c = col.settings as ColumnSettings;
@@ -190,7 +201,7 @@ export function PageRenderer({ content, tier = 'full' }: { content: PageContent;
                   colStyle.padding = '20px';
                 }
                 return (
-                  <div key={col.id} className={`en-col${(c as Record<string, unknown>).hideOnMobile ? ' en-hide-mobile' : ''}${(c as Record<string, unknown>).hideOnDesktop ? ' en-hide-desktop' : ''}`} style={colStyle}>
+                  <div key={col.id} className={`en-col${(c as Record<string, unknown>).hideOnMobile ? ' en-hide-mobile' : ''}${(c as Record<string, unknown>).hideOnDesktop ? ' en-hide-desktop' : ''}`} style={prune(colStyle)}>
                     {col.elements.map((el) => {
                       // Widget fuori piano: visibili nell'editor, MAI sul sito pubblico
                       if (isWidgetLocked(el.type as WidgetType, tier)) return null;

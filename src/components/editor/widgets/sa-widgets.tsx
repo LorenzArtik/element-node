@@ -353,7 +353,10 @@ export function SaPrivacyShield({ settings }: { settings: S }) {
   const DUR = num(settings.stepMs, 6200);
   const [cur, setCur] = useState(0);
   const [maskedN, setMaskedN] = useState(0);
-  const [playing, setPlaying] = useState(!prefersReduced());
+  // Render iniziale identico su server e browser (altrimenti errore di idratazione #418): la preferenza
+  // «riduci animazioni» si applica solo dopo il montaggio.
+  const [playing, setPlaying] = useState(true);
+  useEffect(() => { if (prefersReduced()) setPlaying(false); }, []);
   const [bumpKey, setBumpKey] = useState(0);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
