@@ -785,7 +785,7 @@ export function SaLandHero({ settings }: { settings: S }) {
                 <table className="sl-cmp"><thead><tr><th>Voce</th><th>Condizione</th></tr></thead><tbody>
                   {rows.map((r, i) => <tr key={i} style={on(i + 2)}><td>{r[0]}</td><td>{r[2] === 'no' ? <span className="sl-pill no">{r[1]}</span> : r[1]}</td></tr>)}
                 </tbody></table>
-                <span className="sl-src" style={on(rows.length + 2)}><Ico name="Link" size={14} />{src}</span>
+                {!!src && <span className="sl-src" style={on(rows.length + 2)}><Ico name="Link" size={14} />{src}</span>}
               </div>
             )}
           </div>
