@@ -783,17 +783,17 @@ export function SaLandHero({ settings }: { settings: S }) {
       while (alive) {
         setPhase(0); setTyped(0); setShown(0); await w(650); if (!alive) return;
         setPhase(1);
-        for (let i = 0; i < q.length && alive; i++) { setTyped(i + 1); await w(9 + Math.random() * 13); }
-        await w(350); setPhase(2); await w(1700); if (!alive) return;
+        for (let i = 0; i < q.length && alive; i++) { setTyped(i + 1); await w(24 + Math.random() * 18); }
+        await w(600); setPhase(2); await w(2400); if (!alive) return;
         setPhase(3);
-        for (let i = 1; i <= rows.length + 2 && alive; i++) { setShown(i); await w(300); }
-        await w(4800);
+        for (let i = 1; i <= rows.length + 2 && alive; i++) { setShown(i); await w(750); }
+        await w(8000);
       }
     })();
     return () => { alive = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [q, rows.length]);
-  const on = (i: number) => ({ opacity: shown >= i ? 1 : 0, transform: shown >= i ? 'none' : 'translateY(7px)', transition: 'opacity .4s ease, transform .4s ease' } as React.CSSProperties);
+  const on = (i: number) => ({ opacity: shown >= i ? 1 : 0, transform: shown >= i ? 'none' : 'translateY(7px)', transition: 'opacity .7s ease, transform .7s ease' } as React.CSSProperties);
   return (
     <div className="sl sl-hero">
       <style>{LAND_CSS + LAND_HERO_CSS}</style>
