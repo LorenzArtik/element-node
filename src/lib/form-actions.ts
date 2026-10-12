@@ -24,7 +24,7 @@ export async function runActions(actions: FormAction[], ctx: RunActionsContext):
 
   // Se non ci sono actions ma c'è recipientFallback, manda mail base
   const effectiveActions = actions.length > 0 ? actions : (
-    ctx.recipientFallback ? [{ type: 'email' as const, to: ctx.recipientFallback, subject: `Submission da ${ctx.formName}`, template: undefined, cc: undefined, replyToField: undefined } as FormAction] : []
+    ctx.recipientFallback ? [{ type: 'email' as const, to: ctx.recipientFallback, subject: `Submission da ${ctx.formName}`, template: undefined, cc: undefined, replyToField: 'email' } as FormAction] : []
   );
 
   for (const a of effectiveActions) {
@@ -34,7 +34,9 @@ export async function runActions(actions: FormAction[], ctx: RunActionsContext):
         const subject = interpolateTemplate(a.subject || `Submission da {form}`, ctx.data, ctx.formName);
         const tpl = a.template ?? buildDefaultEmailBody(ctx.data);
         const html = emailLayout(siteName, `Nuova submission: ${ctx.formName}`, interpolateTemplate(tpl, ctx.data, ctx.formName));
-        const res = await sendEmail({ to: a.to, subject, html });
+        const rt = a.replyToField ? String(ctx.data[a.replyToField] ?? '').trim() : '';
+        const replyTo = /^[^\s@<>",;]+@[^\s@<>",;]+\.[^\s@<>",;]+$/.test(rt) ? rt : undefined;
+        const res = await sendEmail({ to: a.to, subject, html, replyTo });
         if (!res.ok) throw new Error(res.error ?? 'send fallito');
         log.push({ type: 'email', ok: true, durationMs: Date.now() - start });
       } else if (a.type === 'autoresponder') {

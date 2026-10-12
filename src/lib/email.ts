@@ -33,11 +33,17 @@ let smtpTransporter: unknown = null;
 
 async function getSmtpTransporter(siteSmtp: SiteSettings['integrations']['smtp']) {
   if (smtpTransporter !== null) return smtpTransporter;
+  const sendmailPath = process.env.MAIL_SENDMAIL_PATH || '';
   const host = siteSmtp.host || process.env.SMTP_HOST || '';
-  if (!host) { smtpTransporter = false; return smtpTransporter; }
+  if (!host && !sendmailPath) { smtpTransporter = false; return smtpTransporter; }
   try {
     const req = eval('require') as NodeRequire;
     const nodemailer = req('nodemailer');
+    // Binario sendmail del server (ha la precedenza su host): Postfix inoltra allo smarthost aziendale
+    if (sendmailPath) {
+      smtpTransporter = nodemailer.createTransport({ sendmail: true, newline: 'unix', path: sendmailPath });
+      return smtpTransporter;
+    }
     smtpTransporter = nodemailer.createTransport({
       host,
       port: Number(siteSmtp.port || process.env.SMTP_PORT || 587),
@@ -67,7 +73,7 @@ async function resolveProvider(): Promise<{ provider: 'console' | 'smtp' | 'brev
 
   // Auto-detect: brevo se ha apikey, smtp se ha host, altrimenti console
   if (site?.integrations.brevo.apiKey) return { provider: 'brevo', site };
-  if (site?.integrations.smtp.host || process.env.SMTP_HOST) return { provider: 'smtp', site };
+  if (site?.integrations.smtp.host || process.env.SMTP_HOST || process.env.MAIL_SENDMAIL_PATH) return { provider: 'smtp', site };
 
   return { provider: 'console', site };
 }
@@ -85,7 +91,7 @@ async function sendViaConsole(msg: EmailMessage): Promise<EmailResult> {
 async function sendViaSmtp(msg: EmailMessage, site: SiteSettings | null): Promise<EmailResult> {
   const t = await getSmtpTransporter(site?.integrations.smtp ?? { host: '', port: '', user: '', pass: '', from: '', secure: false });
   if (!t) return sendViaConsole(msg);
-  const from = site?.integrations.smtp.from || process.env.SMTP_FROM || `"${site?.name ?? 'Element Node'}" <noreply@example.com>`;
+  const from = site?.integrations.smtp.from || process.env.SMTP_FROM || (process.env.MAIL_SENDMAIL_PATH ? '"Smart Agency" <noreply@smartagency.cloud>' : `"${site?.name ?? 'Element Node'}" <noreply@example.com>`);
   try {
     await (t as { sendMail: (o: unknown) => Promise<unknown> }).sendMail({
       from, to: msg.to, subject: msg.subject, html: msg.html, text: msg.text,
