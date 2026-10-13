@@ -817,6 +817,8 @@ export function SaLandHero({ settings }: { settings: S }) {
           {!!g('chips') && <div className="sl-chipsrow">{g('chips').split('|').map((x) => x.trim()).filter(Boolean).map((x, i) => { const [ic, tx] = x.split(':'); return <span key={i}><Ico name={ic} size={16} />{tx}</span>; })}</div>}
           <div className="sl-reassure">{g('reassure').split('|').map((x) => x.trim()).filter(Boolean).map((x, i) => <span key={i}><Ico name="Check" size={15} />{x}</span>)}</div>
         </div>
+        {(() => {
+        const device = (
         <div className="sl-device" aria-label="Charlie al lavoro">
           <div className="sl-chrome"><i /><i /><i /><span className="sl-addr">{g('address', 'app.smartagency.cloud · Charlie')}</span></div>
           <div className="sl-dbar">{settings.avatar ? <img className="sl-ava" src={g('avatar')} alt="" /> : null}<b>Charlie</b><span className="sl-tag">{g('mode', 'Analisi CGA')}</span></div>
@@ -835,6 +837,10 @@ export function SaLandHero({ settings }: { settings: S }) {
           </div>
           <div className="sl-comp"><span className={`sl-ct${phase === 1 ? ' caret' : ''}${phase !== 1 ? ' empty' : ''}`}>{phase === 1 ? q.slice(0, typed) : ''}</span><span className={`sl-send${phase === 1 ? ' ready' : ''}`}><Ico name="Send" size={16} /></span></div>
         </div>
+        );
+        // con la foto la chat si sovrappone all'immagine in basso a sinistra
+        return g('photo') ? <div className="sl-vis"><img className="sl-photo" src={g('photo')} alt={g('photoAlt')} width={1600} height={1200} />{device}</div> : device;
+        })()}
       </div>
     </div>
   );
@@ -948,6 +954,11 @@ const LAND_HERO_CSS = `
 /* Grafica nuova 13/10/2026: occhiello senza pillola, pulsanti squadrati blu (l'apertura resta azzurrina, come chiesto da Lorenzo) */
 .sl-h1{font-weight:600!important;letter-spacing:-.02em}
 .sl-h1 em{font-style:normal;color:#0067b8}
+.sl-vis{position:relative;padding-bottom:72px}
+.sl-photo{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:22px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 24px 48px -20px rgba(16,24,40,.25)}
+.sl-vis .sl-device{position:absolute;left:clamp(-72px,-4vw,-24px);bottom:0;width:min(420px,70%);border-radius:16px;box-shadow:0 2px 6px rgba(16,24,40,.08),0 28px 56px -18px rgba(16,24,40,.35)}
+.sl-vis .sl-dbody{min-height:0}
+@media (max-width:900px){.sl-vis{padding-bottom:0}.sl-vis .sl-device{position:relative;left:auto;bottom:auto;width:calc(100% - 28px);margin:-56px auto 0}}
 .sl-eyebrow{background:none;padding:0;border-radius:0;color:#0067b8;font-weight:600;letter-spacing:.08em}
 .sl-btn,.sl-btn.lg{border-radius:6px}
 .sl-btn-p{background:#0067b8;box-shadow:0 1px 2px rgba(0,0,0,.08)}.sl-btn-p:hover{background:#005a9e}

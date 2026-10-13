@@ -1347,6 +1347,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
       { key: 'chips', label: 'Etichette colorate (Icona:Testo|Icona:Testo)', control: 'text' }, { key: 'reassure', label: 'Rassicurazioni (separate da |)', control: 'text' }, { key: 'avatar', label: 'Icona Charlie', control: 'media' }, { key: 'address', label: 'Indirizzo finestra', control: 'text' }, { key: 'mode', label: 'Etichetta modulo', control: 'text' },
       { key: 'question', label: 'Domanda', control: 'text' }, { key: 'answerIntro', label: 'Risposta (intro, HTML ammesso)', control: 'textarea' },
       { key: 'rows', label: 'Righe tabella (Voce|Valore, oppure Voce|Valore|no per evidenziare)', control: 'textarea' }, { key: 'source', label: 'Fonte', control: 'text' },
+      { key: 'photo', label: 'Foto (la chat si sovrappone in basso a sinistra)', control: 'media' }, { key: 'photoAlt', label: 'Descrizione della foto', control: 'text' },
     ],
   },
   'sa-vs': {
