@@ -1177,6 +1177,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
       { key: 'slides', label: 'Slide', control: 'list', itemTemplate: [
         { key: 'chip', label: 'Etichetta (chip)', control: 'text' },
         { key: 'chipTone', label: 'Colore chip', control: 'select', options: [{ value: 'violet', label: 'Viola' }, { value: 'blue', label: 'Azzurro' }, { value: 'green', label: 'Verde' }] },
+        { key: 'chipIcon', label: 'Logo nel chip (facoltativo)', control: 'media' },
         { key: 'title', label: 'Titolo (*parola* = evidenziata)', control: 'text' },
         { key: 'text', label: 'Testo', control: 'textarea' },
         { key: 'pills', label: 'Pillole (separate da virgola)', control: 'text' },
@@ -1187,7 +1188,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
         { key: 'image', label: 'Immagine a destra', control: 'media' },
         { key: 'imageWidth', label: 'Larghezza immagine', control: 'text', placeholder: '84%' },
         { key: 'visual', label: 'Finestra sopra l\'immagine', control: 'select', options: [{ value: 'none', label: 'Nessuna' }, { value: 'chat', label: 'Chat dimostrativa' }] },
-        { key: 'visualData', label: 'Contenuto finestra (name=, mode=, q=, a=, src=, input=, chip= per riga)', control: 'textarea' },
+        { key: 'visualData', label: 'Contenuto finestra (name=, logo=, mode=, q=, a=, src=, input=, chip= per riga)', control: 'textarea' },
         { key: 'bgFrom', label: 'Sfondo da', control: 'color' },
         { key: 'bgTo', label: 'Sfondo a', control: 'color' },
       ]},

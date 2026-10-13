@@ -120,7 +120,7 @@ function GlassMock({ kind, title, badge, data }: { kind: string; title: string; 
 /* 1. Carosello hero (pannello vetro)                                   */
 /* ------------------------------------------------------------------ */
 interface HeroSlide {
-  chip?: string; chipTone?: string; title?: string; text?: string; pills?: string;
+  chip?: string; chipTone?: string; chipIcon?: string; title?: string; text?: string; pills?: string;
   cta1Text?: string; cta1Url?: string; cta2Text?: string; cta2Url?: string;
   image?: string; imageWidth?: string; visual?: string; visualData?: string; bgFrom?: string; bgTo?: string;
 }
@@ -164,7 +164,7 @@ export function SaHeroCarousel({ settings }: { settings: S }) {
               {vis === 'chat' && (
                 <div className="sa-vchat" aria-hidden>
                   <div className="sa-gw">
-                    <div className="sa-gw-h"><b>{v.name?.[0] || 'Charlie'}</b><span className="sa-gw-r">{v.mode?.[0] || ''}</span></div>
+                    <div className="sa-gw-h"><b>{v.logo?.[0] && <img className="sa-gw-ava" src={v.logo[0]} alt="" />}{v.name?.[0] || 'Charlie'}</b><span className="sa-gw-r">{v.mode?.[0] || ''}</span></div>
                     {v.q?.[0] && <div className="sa-bub sa-me">{v.q[0]}</div>}
                     {v.a?.[0] && <div className="sa-bub sa-ch">{v.a[0]}{v.src?.[0] && <small>{v.src[0]}</small>}</div>}
                     {v.input?.[0] && <div className="sa-input">{v.input[0]}</div>}
@@ -173,7 +173,7 @@ export function SaHeroCarousel({ settings }: { settings: S }) {
                 </div>
               )}
               <div className="sa-wrap"><div className="sa-panel">
-                {!!s.chip && <span className="sa-chip" style={{ background: tbg, color: tc }}>{s.chip}</span>}
+                {!!s.chip && <span className="sa-chip" style={{ background: tbg, color: tc }}>{!!s.chipIcon && <img className="sa-chip-ico" src={str(s.chipIcon)} alt="" />}{s.chip}</span>}
                 <h2 className="sa-h">{str(s.title).split(/(\*[^*]+\*)/).map((p, k) => (p.startsWith('*') && p.endsWith('*') ? <em key={k}>{p.slice(1, -1)}</em> : <Fragment key={k}>{p}</Fragment>))}</h2>
                 {!!s.text && <p className="sa-lead">{str(s.text)}</p>}
                 {pills.length > 0 && <div className="sa-pills">{pills.map((p, k) => <span key={k} className="sa-pill">{p}</span>)}</div>}
@@ -582,6 +582,8 @@ const HERO_CSS = BASE + `
 .sa-slide>.sa-wrap{flex:1}
 .sa-panel{width:min(540px,100%);padding:clamp(26px,3vw,40px);background:color-mix(in srgb,#fff 72%,transparent);backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2);border:1px solid rgba(255,255,255,.7);border-radius:18px;box-shadow:0 2px 6px rgba(34,30,60,.05),0 22px 48px -16px rgba(34,30,60,.22);margin-block:32px 68px}
 .sa-chip{display:inline-flex;align-items:center;font-size:.74rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.25rem .6rem;border-radius:999px}
+.sa-chip-ico{width:1.7em;height:1.7em;object-fit:contain;margin:-.2em .5em -.2em -.25em;flex:none}
+.sa-gw-h b{display:inline-flex;align-items:center;gap:8px}.sa-gw-ava{width:26px;height:26px;object-fit:contain;flex:none}
 .sa-h{text-wrap:balance;font-size:clamp(1.9rem,3.2vw,2.7rem);margin:14px 0 0;font-weight:600;letter-spacing:-.018em;line-height:1.14;color:#1f1e26}
 .sa-h em{font-style:normal;color:#6b4ecc}
 .sa-lead{margin:14px 0 0;color:#4d4c58;font-size:1.05rem;line-height:1.6}
