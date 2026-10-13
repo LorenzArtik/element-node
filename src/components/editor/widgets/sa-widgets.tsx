@@ -770,6 +770,9 @@ const LAND_CSS = `
 .sl{--brand:#0078d4;--brand-ink:#005a9e;--brand-700:#0a4e86;--brand-soft:#e6f2fd;--brand-soft2:#f3f9fe;--accent:#5b63c7;--accent-soft:#eceefb;--ok:#1f8a5b;--ok-soft:#e7f6ee;--warn:#c2410c;--warn-soft:#fdeee5;--ink:#121725;--ink-2:#39404f;--muted:#64708a;--line:#e7eaf0;--line-2:#eef1f6;--bg-alt:#f5f8fc;--shadow-s:0 1px 2px rgba(16,24,40,.05);--shadow:0 2px 6px rgba(16,24,40,.05),0 14px 36px rgba(16,24,40,.08);--shadow-lg:0 10px 24px rgba(0,88,158,.10),0 30px 60px rgba(16,24,40,.12);--disp:"Figtree","Segoe UI",system-ui,sans-serif;font-family:"Segoe UI",-apple-system,system-ui,"Helvetica Neue",Arial,sans-serif;color:var(--ink-2);line-height:1.55}
 .sl h1,.sl h2,.sl h3{font-family:var(--disp);color:var(--ink);margin:0;letter-spacing:-.02em;font-weight:700;line-height:1.1;text-wrap:balance}
 .sl p{margin:0}.sl svg{display:block}
+/* Grafica nuova 13/10/2026 (stile pulito tipo Microsoft, come la home): Segoe e titoli meno pesanti */
+.sl{--disp:"Segoe UI Variable Display","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif}
+.sl h1,.sl h2,.sl h3{font-weight:600;letter-spacing:-.015em}
 `;
 
 export function SaLandHero({ settings }: { settings: S }) {
@@ -942,6 +945,13 @@ const LAND_HERO_CSS = `
 .sl-send{width:32px;height:32px;flex:none;border-radius:9px;background:#c7cdd8;color:#fff;display:grid;place-items:center}.sl-send.ready{background:var(--brand)}
 @media (max-width:900px){.sl-hero{padding-block:52px}.sl-hero-in{grid-template-columns:1fr;gap:36px;padding-block:40px 34px}}
 @media (prefers-reduced-motion:reduce){.sl-typing span{animation:none}.sl-comp{display:none}}
+/* Grafica nuova 13/10/2026: apertura su fondo chiaro piatto, occhiello senza pillola, pulsanti squadrati blu */
+.sl-hero{background:#f5f4ee}.sl-hero::before{display:none}
+.sl-h1{font-weight:600!important;letter-spacing:-.02em}
+.sl-eyebrow{background:none;padding:0;border-radius:0;color:#0067b8;font-weight:600;letter-spacing:.08em}
+.sl-btn,.sl-btn.lg{border-radius:6px}
+.sl-btn-p{background:#0067b8;box-shadow:0 1px 2px rgba(0,0,0,.08)}.sl-btn-p:hover{background:#005a9e}
+.sl-btn-g{color:#0067b8;border-color:#0067b8}
 `;
 const VS_CSS = `
 .sl-vs{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow-s)}
