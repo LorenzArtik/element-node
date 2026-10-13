@@ -1342,7 +1342,7 @@ export const WIDGETS: Record<WidgetType, WidgetDescriptor> = {
     type: 'sa-land-hero', label: t('Landing · hero con chat', 'Landing · hero with chat'), icon: 'LayoutTemplate', category: 'pro', order: 9.1,
     defaults: { eyebrow: 'Consulta CGA · Comparatore', title: 'Titolo della landing', lead: 'Testo di apertura.', cta1Text: 'Prova gratis', cta1Url: '#', cta2Text: '', cta2Url: '', reassure: '30 giorni di prova|Senza carta di credito', avatar: '', address: 'app.smartagency.cloud · Charlie', mode: 'Analisi CGA', question: '', answerIntro: '', rows: '', source: '' },
     fields: [
-      { key: 'eyebrow', label: 'Etichetta', control: 'text' }, { key: 'title', label: 'Titolo (a capo con invio)', control: 'textarea' }, { key: 'lead', label: 'Testo (HTML ammesso)', control: 'textarea' },
+      { key: 'eyebrow', label: 'Etichetta', control: 'text' }, { key: 'title', label: 'Titolo (a capo con invio, *parola* = in blu)', control: 'textarea' }, { key: 'lead', label: 'Testo (HTML ammesso)', control: 'textarea' },
       { key: 'cta1Text', label: 'Pulsante 1', control: 'text' }, { key: 'cta1Url', label: 'Link 1', control: 'url' }, { key: 'cta2Text', label: 'Pulsante 2', control: 'text' }, { key: 'cta2Url', label: 'Link 2', control: 'url' },
       { key: 'chips', label: 'Etichette colorate (Icona:Testo|Icona:Testo)', control: 'text' }, { key: 'reassure', label: 'Rassicurazioni (separate da |)', control: 'text' }, { key: 'avatar', label: 'Icona Charlie', control: 'media' }, { key: 'address', label: 'Indirizzo finestra', control: 'text' }, { key: 'mode', label: 'Etichetta modulo', control: 'text' },
       { key: 'question', label: 'Domanda', control: 'text' }, { key: 'answerIntro', label: 'Risposta (intro, HTML ammesso)', control: 'textarea' },

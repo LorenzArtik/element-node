@@ -808,7 +808,7 @@ export function SaLandHero({ settings }: { settings: S }) {
       <div className="sl-hero-in">
         <div>
           {!!g('eyebrow') && <span className="sl-eyebrow">{g('eyebrow')}</span>}
-          <h1 className="sl-h1">{g('title').split('\n').map((l, i) => <Fragment key={i}>{i > 0 && <br />}{l}</Fragment>)}</h1>
+          <h1 className="sl-h1">{g('title').split('\n').map((l, i) => <Fragment key={i}>{i > 0 && <br />}{l.split(/(\*[^*]+\*)/).map((p, k) => (p.startsWith('*') && p.endsWith('*') ? <em key={k}>{p.slice(1, -1)}</em> : <Fragment key={k}>{p}</Fragment>))}</Fragment>)}</h1>
           <p className="sl-lead" dangerouslySetInnerHTML={{ __html: g('lead') }} />
           <div className="sl-cta">
             {!!g('cta1Text') && <a className="sl-btn sl-btn-p lg" href={g('cta1Url', '#')}>{g('cta1Text')}</a>}
@@ -947,6 +947,7 @@ const LAND_HERO_CSS = `
 @media (prefers-reduced-motion:reduce){.sl-typing span{animation:none}.sl-comp{display:none}}
 /* Grafica nuova 13/10/2026: occhiello senza pillola, pulsanti squadrati blu (l'apertura resta azzurrina, come chiesto da Lorenzo) */
 .sl-h1{font-weight:600!important;letter-spacing:-.02em}
+.sl-h1 em{font-style:normal;color:#0067b8}
 .sl-eyebrow{background:none;padding:0;border-radius:0;color:#0067b8;font-weight:600;letter-spacing:.08em}
 .sl-btn,.sl-btn.lg{border-radius:6px}
 .sl-btn-p{background:#0067b8;box-shadow:0 1px 2px rgba(0,0,0,.08)}.sl-btn-p:hover{background:#005a9e}
