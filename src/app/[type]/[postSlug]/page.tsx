@@ -1,4 +1,4 @@
-import { notFound, redirect as redirectTo } from 'next/navigation';
+import { notFound, permanentRedirect, redirect as redirectTo } from 'next/navigation';
 import type { Metadata } from 'next';
 import { prisma } from '@/lib/db';
 import { getPostBySlug } from '@/lib/posts';
@@ -48,7 +48,7 @@ export default async function SinglePostPage({ params }: { params: Promise<{ typ
   const { type, postSlug } = await params;
 
   const r = await findRedirect(`/${type}/${postSlug}`);
-  if (r) { incrementHits(r.fromPath); redirectTo(r.toPath); }
+  if (r) { incrementHits(r.fromPath); if (r.type === 301 || r.type === 308) permanentRedirect(r.toPath); else redirectTo(r.toPath); }
 
   const site = await getSiteSettings();
   if (site.maintenance) return <MaintenancePage />;

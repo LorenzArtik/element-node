@@ -1,4 +1,4 @@
-import { notFound, redirect as redirectTo } from 'next/navigation';
+import { notFound, permanentRedirect, redirect as redirectTo } from 'next/navigation';
 import type { Metadata } from 'next';
 import { prisma } from '@/lib/db';
 import { PublicShell } from '@/components/public/PublicShell';
@@ -40,7 +40,7 @@ export default async function PublicPage({ params }: { params: Promise<{ type: s
   const r = await findRedirect(`/${slug}`);
   if (r) {
     incrementHits(r.fromPath);
-    redirectTo(r.toPath);
+    if (r.type === 301 || r.type === 308) permanentRedirect(r.toPath); else redirectTo(r.toPath);
   }
 
   const site = await getSiteSettings();

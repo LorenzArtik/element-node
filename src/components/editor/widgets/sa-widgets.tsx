@@ -153,6 +153,8 @@ export function SaHeroCarousel({ settings }: { settings: S }) {
         {slides.map((s, i) => {
           const pills = str(s.pills).split(',').map((x) => x.trim()).filter(Boolean);
           const vis = str(s.visual);
+          // la prima slide è il titolo della pagina (H1, uno solo); le altre restano H2
+          const Titolo = (i === 0 ? 'h1' : 'h2') as 'h1' | 'h2';
           const v = kv(str(s.visualData));
           const tone = str(s.chipTone, 'violet');
           const [tbg, tc] = tintOf(tone === 'blue' ? 'blue' : tone === 'green' ? 'green' : 'violet');
@@ -174,7 +176,7 @@ export function SaHeroCarousel({ settings }: { settings: S }) {
               )}
               <div className="sa-wrap"><div className="sa-panel">
                 {!!s.chip && <span className="sa-chip" style={{ background: tbg, color: tc }}>{!!s.chipIcon && <img className="sa-chip-ico" src={str(s.chipIcon)} alt="" />}{s.chip}</span>}
-                <h2 className="sa-h">{str(s.title).split(/(\*[^*]+\*)/).map((p, k) => (p.startsWith('*') && p.endsWith('*') ? <em key={k}>{p.slice(1, -1)}</em> : <Fragment key={k}>{p}</Fragment>))}</h2>
+                <Titolo className="sa-h">{str(s.title).split(/(\*[^*]+\*)/).map((p, k) => (p.startsWith('*') && p.endsWith('*') ? <em key={k}>{p.slice(1, -1)}</em> : <Fragment key={k}>{p}</Fragment>))}</Titolo>
                 {!!s.text && <p className="sa-lead">{str(s.text)}</p>}
                 {pills.length > 0 && <div className="sa-pills">{pills.map((p, k) => <span key={k} className="sa-pill">{p}</span>)}</div>}
                 <div className="sa-cta">
@@ -605,6 +607,7 @@ const HERO_CSS = BASE + `
 .sa-dot i{position:absolute;inset:0;width:0;background:#1f1e26}
 .sa-dot.on i{animation:sa-fill var(--sa-dur,7s) linear forwards}.sa-dot.on.paused i{animation:none;width:100%}
 @keyframes sa-fill{from{width:0}to{width:100%}}
+@media (max-width:768px){.en-frontend .sa-h{font-size:clamp(24px,7vw,32px)!important}}
 @media (max-width:1000px){
  .sa-slide{flex-direction:column;align-items:stretch;justify-content:flex-end;min-height:0!important}
  .sa-bg{position:relative;inset:auto;height:230px;z-index:0}.sa-bgi{position:relative;display:block;width:100%!important;height:100%;-webkit-mask-image:none;mask-image:none}
