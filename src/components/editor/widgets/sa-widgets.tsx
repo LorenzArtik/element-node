@@ -945,8 +945,7 @@ const LAND_HERO_CSS = `
 .sl-send{width:32px;height:32px;flex:none;border-radius:9px;background:#c7cdd8;color:#fff;display:grid;place-items:center}.sl-send.ready{background:var(--brand)}
 @media (max-width:900px){.sl-hero{padding-block:52px}.sl-hero-in{grid-template-columns:1fr;gap:36px;padding-block:40px 34px}}
 @media (prefers-reduced-motion:reduce){.sl-typing span{animation:none}.sl-comp{display:none}}
-/* Grafica nuova 13/10/2026: apertura su fondo chiaro piatto, occhiello senza pillola, pulsanti squadrati blu */
-.sl-hero{background:#f5f4ee}.sl-hero::before{display:none}
+/* Grafica nuova 13/10/2026: occhiello senza pillola, pulsanti squadrati blu (l'apertura resta azzurrina, come chiesto da Lorenzo) */
 .sl-h1{font-weight:600!important;letter-spacing:-.02em}
 .sl-eyebrow{background:none;padding:0;border-radius:0;color:#0067b8;font-weight:600;letter-spacing:.08em}
 .sl-btn,.sl-btn.lg{border-radius:6px}
