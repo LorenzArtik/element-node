@@ -6,7 +6,7 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 const schema = z.object({
-  tipo: z.enum(['demo', 'webinar']),
+  tipo: z.enum(['demo', 'webinar', 'webinar_iscritto']),
   pagina: z.string().optional(), fonte: z.string().optional(), campagna: z.string().optional(), contenuto: z.string().optional(),
 }).strip();
 
