@@ -123,7 +123,11 @@ interface HeroSlide {
   chip?: string; chipTone?: string; chipIcon?: string; title?: string; text?: string; pills?: string;
   cta1Text?: string; cta1Url?: string; cta2Text?: string; cta2Url?: string;
   image?: string; imageWidth?: string; visual?: string; visualData?: string; bgFrom?: string; bgTo?: string;
+  imageAlt?: string; note?: string;
 }
+
+/** Testo del titolo con *parola* evidenziata. */
+const titoloEm = (t: unknown) => str(t).split(/(\*[^*]+\*)/).map((p, k) => (p.startsWith('*') && p.endsWith('*') ? <em key={k}>{p.slice(1, -1)}</em> : <Fragment key={k}>{p}</Fragment>));
 
 export function SaHeroCarousel({ settings }: { settings: S }) {
   const slides = (settings.slides as HeroSlide[]) || [];
@@ -143,6 +147,54 @@ export function SaHeroCarousel({ settings }: { settings: S }) {
   if (!n) return <div style={{ padding: 40, textAlign: 'center' }}>Aggiungi slide al carosello</div>;
   const go = (i: number) => setCur((i + n) % n);
   const minH = str(settings.minHeight, 'clamp(480px,46vw,600px)');
+  /* Impaginazione «affiancata» (14/10/2026): come l'apertura del sito, immagine a sinistra e testo a destra
+   * su fondo piatto, senza pannello vetro. Le slide hanno tutte l'altezza della più alta. Frecce accanto ai puntini. */
+  const split = settings.layout === 'split';
+  const frecce = settings.showArrows !== false && n > 1 && (
+    <>
+      <button className="sa-circ" onClick={() => go(cur - 1)} aria-label="Precedente"><Ico name="ChevronLeft" size={17} /></button>
+      <button className="sa-circ" onClick={() => go(cur + 1)} aria-label="Successiva"><Ico name="ChevronRight" size={17} /></button>
+    </>
+  );
+
+  if (split) return (
+    <div className="sa-hero sa-split" style={{ ['--sa-dur' as string]: `${ms}ms` } as React.CSSProperties}
+      onTouchStart={(e) => { touchX.current = e.touches[0].clientX; }}
+      onTouchEnd={(e) => { if (touchX.current == null) return; const dx = e.changedTouches[0].clientX - touchX.current; if (Math.abs(dx) > 50) go(cur + (dx < 0 ? 1 : -1)); touchX.current = null; }}>
+      <style>{HERO_CSS}</style>
+      <div className="sa-track" style={{ transform: `translateX(-${cur * 100}%)` }}>
+        {slides.map((s, i) => {
+          const Titolo = (i === 0 ? 'h1' : 'h2') as 'h1' | 'h2';
+          return (
+            <article key={i} className="sa-slide sa-sp" aria-hidden={i !== cur} inert={i !== cur}>
+              <div className="sa-sp-img">{!!s.image && <img src={str(s.image)} alt={str(s.imageAlt)} />}</div>
+              <div className="sa-sp-tx">
+                {!!s.chip && <p className="sa-sp-ey">{!!s.chipIcon && <img src={str(s.chipIcon)} alt="" />}{str(s.chip)}</p>}
+                <Titolo className="sa-sp-h">{titoloEm(s.title)}</Titolo>
+                {!!s.text && <p className="sa-sp-lead">{str(s.text)}</p>}
+                {(!!s.cta1Text || !!s.cta2Text) && (
+                  <div className="sa-sp-cta">
+                    {!!s.cta1Text && <a className="sa-sp-b p" href={str(s.cta1Url, '#')}>{str(s.cta1Text)}</a>}
+                    {!!s.cta2Text && <a className="sa-sp-b o" href={str(s.cta2Url, '#')}>{str(s.cta2Text)}</a>}
+                  </div>
+                )}
+                {!!s.note && <p className="sa-sp-note">{str(s.note)}</p>}
+              </div>
+            </article>
+          );
+        })}
+      </div>
+      {n > 1 && (
+        <div className="sa-ui"><div className="sa-ui-in">
+          <div className="sa-dots">{slides.map((_, i) => (
+            <button key={`${i}-${i === cur ? cur : 'x'}`} className={`sa-dot${i === cur ? ' on' : ''}${!playing ? ' paused' : ''}`} onClick={() => go(i)} aria-label={`Diapositiva ${i + 1}`}><i /></button>
+          ))}</div>
+          <button className="sa-circ" onClick={() => setPlaying((p) => !p)} aria-label={playing ? 'Pausa' : 'Riprendi'}><Ico name={playing ? 'Pause' : 'Play'} size={16} /></button>
+          {frecce}
+        </div></div>
+      )}
+    </div>
+  );
 
   return (
     <div className={`sa-hero${settings.compact ? " sa-compact" : ""}`} style={{ ['--sa-dur' as string]: `${ms}ms` } as React.CSSProperties}
@@ -615,6 +667,30 @@ const HERO_CSS = BASE + `
  .sa-vchat{display:none}.sa-ui{position:relative;bottom:auto;background:#fff;padding-block:14px}.sa-arrows{display:none}
 }
 @media (prefers-reduced-motion:reduce){.sa-track{transition:none}.sa-dot.on i{animation:none;width:100%}}
+/* affiancata: come l'apertura del sito (immagine 55% a sinistra, testo a destra, fondo della sezione) */
+.sa-split{background:transparent}
+.sa-split .sa-slide.sa-sp{display:grid;grid-template-columns:55fr 45fr;align-items:center;min-height:0}
+.sa-split .sa-sp-img img{display:block;width:100%;height:auto}
+.sa-split .sa-sp-tx{padding-left:clamp(0px,2vw,24px)}
+.sa-split .sa-sp-ey{margin:0;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#0067b8;line-height:1.6}
+.sa-split .sa-sp-ey img{width:26px;height:auto;flex:none}
+.sa-split .sa-sp-h{margin:14px 0 0;font-family:"Segoe UI Variable Display","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;font-size:clamp(36px,4.4vw,56px);font-weight:600;letter-spacing:-.015em;line-height:1.12;color:#1b1a1f;text-wrap:balance}
+.sa-split .sa-sp-h em{font-style:normal;color:#0067b8}
+.sa-split .sa-sp-lead{margin:18px 0 0;font-size:18px;line-height:1.6;color:#4b4a55}
+.sa-split .sa-sp-cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:28px}
+.sa-split .sa-sp-b{display:inline-flex;align-items:center;justify-content:center;padding:13px 24px;border-radius:6px;font-size:16px;font-weight:600;line-height:1.6;text-decoration:none;border:1px solid #0067b8;white-space:nowrap}
+.sa-split .sa-sp-b.p{background:#0067b8;color:#fff}.sa-split .sa-sp-b.p:hover{background:#005a9e;border-color:#005a9e;color:#fff}
+.sa-split .sa-sp-b.o{background:#fff;color:#0067b8}.sa-split .sa-sp-b.o:hover{background:#e7f0f9}
+.sa-split .sa-sp-note{margin:16px 0 0;font-size:14px;line-height:1.6;color:#6b6a75}
+.sa-split .sa-ui{position:relative;bottom:auto;margin-top:clamp(12px,2vw,20px);background:transparent;padding:0}
+.sa-split .sa-ui-in{display:flex;align-items:center;gap:10px;padding-left:calc(55% + clamp(0px,2vw,24px))}
+@media (max-width:767px){
+ .sa-split .sa-slide.sa-sp{grid-template-columns:1fr;align-content:start}
+ .sa-split .sa-sp-img{order:2;margin-top:28px}.sa-split .sa-sp-img img{max-width:420px;margin:0 auto}
+ .sa-split .sa-sp-tx{padding-left:0}
+ .en-frontend .sa-split .sa-sp-h,.sa-split .sa-sp-h{font-size:clamp(28px,9vw,40px)!important}
+ .sa-split .sa-ui{margin-top:20px}.sa-split .sa-ui-in{padding-left:0}
+}
 `;
 const CARD_CSS = BASE + `
 .sa-car{width:100%}
